@@ -1,0 +1,17 @@
+[Unit]
+Description=Tenant and User Management for Bold Enterprise Products
+
+[Service]
+WorkingDirectory=/var/www/bold-services/application/idp/ums
+ExecStart=/var/www/bold-services/dotnet/dotnet /var/www/bold-services/application/idp/ums/Syncfusion.TenantManagement.Core.dll --urls=http://localhost:6502
+Restart=always
+# Restart service after 10 seconds if the dotnet service crashes:
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=bold-ums-web
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+
+[Install]
+WantedBy=multi-user.target

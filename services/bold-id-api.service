@@ -1,0 +1,17 @@
+[Unit]
+Description=Identity Provider REST API for Bold Enterprise Products
+
+[Service]
+WorkingDirectory=/var/www/bold-services/application/idp/api
+ExecStart=/var/www/bold-services/dotnet/dotnet /var/www/bold-services/application/idp/api/Syncfusion.Server.IdentityProvider.API.Core.dll --urls=http://localhost:6501
+Restart=always
+# Restart service after 10 seconds if the dotnet service crashes:
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=bold-id-api
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+
+[Install]
+WantedBy=multi-user.target
