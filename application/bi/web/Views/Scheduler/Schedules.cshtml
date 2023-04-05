@@ -1,5 +1,4 @@
-﻿@addTagHelper *, Microsoft.FeatureManagement.AspNetCore
-@{
+﻿@{
     var globalAppSettings = _globalAppSettings;
 
     ViewBag.Title = T["Schedules"].Value + " - " + globalAppSettings.SystemSettings.OrganizationName;
@@ -20,12 +19,13 @@
 @section styles{
     @await Html.PartialAsync("~/Views/Shared/_ApplicationThemeStyleSheet.cshtml")
     @await Html.PartialAsync("~/Views/Shared/_BaseThemeStyleSheet.cshtml")
-    @await Html.PartialAsync("~/Views/Shared/_BaseFontStyleSheet.cshtml")
     <environment include="Development,CloudDevelopment">
         <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/schedules.css" />
+        <link rel="stylesheet" asp-append-version="true" href="@ServerAppConfig.CustomFontUrl(globalAppSettings?.SystemSettings?.FontPreference, dashboardServerResourceUrl)" />
     </environment>
     <environment exclude="Development,CloudDevelopment">
         <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/schedules.min.css" />
+        <link rel="stylesheet" asp-append-version="true" href="@ServerAppConfig.CustomFontUrl(globalAppSettings?.SystemSettings?.FontPreference, dashboardServerResourceUrl)" />
     </environment>
 }
 
@@ -319,12 +319,7 @@
                 <div class="bi-page-content col-md-12 no-padding">
                     <div class="bi-page-header col-xs-12">
                         <div class="bi-page-header-description col-xs-8 no-padding">
-                            <h1 class="h2 page-title">
-                                @T["SCHEDULES"]
-                                <feature name=@FeatureManagement.Yokogawa>
-                                    (<span id="schedule-count">@itemsCount[ItemType.Schedule]</span>)
-                                </feature>
-                            </h1>
+                            <h1 class="h2 page-title">@T["SCHEDULES"]</h1>
                             <h5 class="page-description">@T["Create and manage dashboard schedules to send out dashboard reports either at a specific date and time interval or when data changes."]</h5>
                         </div>
                         <div class="col-xs-4 no-padding bi-header-btn">

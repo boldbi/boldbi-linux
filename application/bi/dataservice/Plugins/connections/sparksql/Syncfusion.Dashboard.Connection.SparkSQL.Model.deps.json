@@ -1,11 +1,11 @@
 {
   "runtimeTarget": {
-    "name": ".NETCoreApp,Version=v6.0",
+    "name": ".NETCoreApp,Version=v3.1",
     "signature": ""
   },
   "compilationOptions": {},
   "targets": {
-    ".NETCoreApp,Version=v6.0": {
+    ".NETCoreApp,Version=v3.1": {
       "Syncfusion.Dashboard.Connection.SparkSQL.Model/1.0.0": {
         "dependencies": {
           "SSH.NET": "2020.0.2",

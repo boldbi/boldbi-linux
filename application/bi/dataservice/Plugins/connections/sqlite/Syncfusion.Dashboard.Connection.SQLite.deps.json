@@ -1,15 +1,17 @@
 {
   "runtimeTarget": {
-    "name": ".NETCoreApp,Version=v6.0",
+    "name": ".NETCoreApp,Version=v3.1",
     "signature": ""
   },
   "compilationOptions": {},
   "targets": {
-    ".NETCoreApp,Version=v6.0": {
+    ".NETCoreApp,Version=v3.1": {
       "Syncfusion.Dashboard.Connection.SQLite/1.0.0": {
         "dependencies": {
           "Syncfusion.Dashboard.Connection.SQLite.Json": "1.0.0",
-          "Syncfusion.Dashboard.Connection.SQLite.Model": "1.0.0"
+          "Syncfusion.Dashboard.Connection.SQLite.Model": "1.0.0",
+          "Syncfusion.Dashboard.Connection.SQLite.Json.Reference": "5.3.167.0",
+          "Syncfusion.Dashboard.Connection.SQLite.Model.Reference": "5.3.167.0"
         },
         "runtime": {
           "Syncfusion.Dashboard.Connection.SQLite.dll": {}
@@ -58,22 +60,36 @@
           }
         }
       },
-      "Syncfusion.Dashboard.Connection.SQLite.Json/1.0.0": {
-        "dependencies": {
-          "Newtonsoft.Json": "12.0.3",
-          "Syncfusion.Dashboard.Connection.SQLite.Model": "1.0.0"
-        },
+      "Syncfusion.Dashboard.Connection.SQLite.Json.Reference/5.3.167.0": {
         "runtime": {
-          "Syncfusion.Dashboard.Connection.SQLite.Json.dll": {}
+          "Syncfusion.Dashboard.Connection.SQLite.Json.dll": {
+            "assemblyVersion": "5.3.167.0",
+            "fileVersion": "5.3.167.0"
+          }
         }
       },
-      "Syncfusion.Dashboard.Connection.SQLite.Model/1.0.0": {
-        "dependencies": {
-          "System.Data.SQLite": "1.0.112",
-          "System.Data.SQLite.Core": "1.0.112"
-        },
+      "Syncfusion.Dashboard.Connection.SQLite.Model.Reference/5.3.167.0": {
         "runtime": {
-          "Syncfusion.Dashboard.Connection.SQLite.Model.dll": {}
+          "Syncfusion.Dashboard.Connection.SQLite.Model.dll": {
+            "assemblyVersion": "5.3.167.0",
+            "fileVersion": "5.3.167.0"
+          }
+        }
+      },
+      "Syncfusion.Dashboard.Core.JsonRepository/5.3.167.0": {
+        "runtime": {
+          "Syncfusion.Dashboard.Core.JsonRepository.dll": {
+            "assemblyVersion": "5.3.167.0",
+            "fileVersion": "5.3.167.0"
+          }
+        }
+      },
+      "Syncfusion.Dashboard.Designer.Logger/5.3.167.0": {
+        "runtime": {
+          "Syncfusion.Dashboard.Designer.Logger.dll": {
+            "assemblyVersion": "5.3.167.0",
+            "fileVersion": "5.3.167.0"
+          }
         }
       }
     }
@@ -105,13 +121,23 @@
       "path": "system.data.sqlite.core/1.0.112",
       "hashPath": "system.data.sqlite.core.1.0.112.nupkg.sha512"
     },
-    "Syncfusion.Dashboard.Connection.SQLite.Json/1.0.0": {
-      "type": "project",
+    "Syncfusion.Dashboard.Connection.SQLite.Json.Reference/5.3.167.0": {
+      "type": "reference",
       "serviceable": false,
       "sha512": ""
     },
-    "Syncfusion.Dashboard.Connection.SQLite.Model/1.0.0": {
-      "type": "project",
+    "Syncfusion.Dashboard.Connection.SQLite.Model.Reference/5.3.167.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Syncfusion.Dashboard.Core.JsonRepository/5.3.167.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Syncfusion.Dashboard.Designer.Logger/5.3.167.0": {
+      "type": "reference",
       "serviceable": false,
       "sha512": ""
     }

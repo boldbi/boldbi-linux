@@ -41,6 +41,7 @@
                          currentUrl.IndexOf(".svg", StringComparison.CurrentCultureIgnoreCase) > 0;
 
     var dashboardPageUrl = Url.Action("Dashboards", "Dashboards");
+
     var widgetsPageUrl = Url.Action("Widgets", "Widgets");
     var dataSourcesPageUrl = Url.Action("DataSources", "DataSources");
     var schedulePageUrl = Url.Action("Schedules", "Scheduler");
@@ -72,18 +73,7 @@
     }
     var hasDashboardSettingsPermission = hasDashboardSettingsPermissionFlag.ToString();
     var url = new Uri(Context.Request.GetDisplayUrl());
-    var designerServiceUrl = ServerAppConfig.GetServiceEndPointUrl(ServerAppConfig.InternalAppDataServiceUrl, _globalAppSettings);
-    var dashboardCutomTheme = string.Empty;
-    var isEmbedSignature = url.Query.ToLower().Contains("embed_signature") && globalAppSettings.GetLicenseSettings().EnterpriseFeatures.Embed;
-    var isEmbedTrue = ((Context.Request.Query["isembed"].ToString() != null && Context.Request.Query["isembed"].ToString().ToLower() == "true") || isEmbedSignature) && !string.IsNullOrWhiteSpace(Context.Request.Query["embed_theme"]);
-    if (isEmbedTrue)
-    {
-        dashboardCutomTheme = Context.Request.Query["embed_theme"];
-    }
-    else
-    {
-        dashboardCutomTheme = ServerAppConfig.IsSelfHosted && globalAppSettings.SystemSettings.IsInheritFromGlobalLookAndFeelSettings ? ServerAppConfig.Theme.DashboardTheme : globalAppSettings.SystemSettings.CustomDashboardTheme;
-    }
+    var isEmbedTrue = (Convert.ToBoolean(url.Query.ToLower().Contains("embed_signature")) || Context.Request.QueryString.ToString().ToLower().Contains("isembed")) && !string.IsNullOrWhiteSpace(Context.Request.Query["embed_theme"]);
 }
 <!DOCTYPE html>
 
@@ -98,9 +88,9 @@
 
     <meta name="dashboard_server:url" content="@dashboardServerApiUrl" />
     <meta name="dashboard_service:url" content="@globalAppSettings.SystemSettings.InternalAppDataServiceUrl" />
-    <meta name="designer_service:url" content="@designerServiceUrl" />
+    <meta name="designer_service:url" content="@ServerAppConfig.InternalAppDataServiceUrl" />
     <meta name="designer_service:access_token" content="@ViewBag.AccessToken" />
-    <meta name="data_service:url" content="@designerServiceUrl" />
+    <meta name="data_service:url" content="@ServerAppConfig.InternalAppDataServiceUrl" />
     <meta name="datasource_schedule:url" content="@Url.Action("GetRecurrenceTypeView", "DataSources")" />
     <meta name="dashboard:version" content="@ViewBag.Version" />
     <meta name="dashboard:id" content="@ViewBag.DashboardId" />
@@ -139,7 +129,7 @@
 
     @await Html.PartialAsync("~/Views/Shared/_LoaderIcon.cshtml")
 
-    @if ((!ServerAppConfig.IsSelfHosted && string.IsNullOrWhiteSpace(_globalAppSettings.SystemSettings.FontPreference)) || (ServerAppConfig.FontFamily == "Robotoregular" && _globalAppSettings.SystemSettings.IsInheritFromGlobalLookAndFeelSettings))
+    @if (!ServerAppConfig.IsSelfHosted || (ServerAppConfig.FontFamily == "Robotoregular" && _globalAppSettings.SystemSettings.IsInheritFromGlobalLookAndFeelSettings))
     {
         <style>
             :root {
@@ -193,12 +183,11 @@
         var timeZone = "@_clientDateTimeInfo.ClientDateTime.TimeZone";
         var granularPermissions = @Html.Raw(JsonConvert.SerializeObject(granularPermissions));
         var confirmationMessage = "@T["Are you sure you want to close? The current progress will be lost if you continue."]";
-        var dashboardCustomThemename = "@dashboardCutomTheme";
+        var dashboardCustomThemename = "@(ServerAppConfig.IsSelfHosted && globalAppSettings.SystemSettings.IsInheritFromGlobalLookAndFeelSettings ? ServerAppConfig.Theme.DashboardTheme : globalAppSettings.SystemSettings.CustomDashboardTheme)";
         var customThemeAppearance = "@(ServerAppConfig.IsSelfHosted && globalAppSettings.SystemSettings.IsInheritFromGlobalLookAndFeelSettings ? ServerAppConfig.Theme.Appearance : globalAppSettings.SystemSettings.ThemeAppearance)";
         var applicationTheme = "@(ServerAppConfig.IsSelfHosted && globalAppSettings.SystemSettings.IsInheritFromGlobalLookAndFeelSettings ? ServerAppConfig.Theme.ApplicationTheme : globalAppSettings.SystemSettings.CustomApplicationTheme)";
         var enableApplicationEmbed =@ServerAppConfig.EnableSameTabLinkTarget.ToString().ToLower();
         var dataCache = @Json.Serialize(@globalAppSettings.SystemSettings.DataCacheSetting);
-        var isUmsAdmin = "@_identityResponse.IsUmsAdmin";
     </script>
     <script type="text/javascript">
         window.addEventListener("beforeunload", function (e) {
@@ -228,19 +217,18 @@
 
     <environment include="Development,CloudDevelopment">
         <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/designer/dashboard-designer.css" />
-        <link rel="stylesheet" asp-append-version="true" href="@dashboardDesignerResourceUrl/cdn/css/designer/dashboard-designer-bundle.css" />
+        <link rel="stylesheet" asp-append-version="true" href="@dashboardDesignerResourceUrl/cdn/css/designer/dashboard-designer-component.css" />
         <script asp-append-version="true" src="@dashboardDesignerResourceUrl/cdn/scripts/designer/dashboard-designer-dependency.js"></script>
     </environment>
     <environment exclude="Development,CloudDevelopment">
         <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/designer/dashboard-designer.min.css" />
-        <link rel="stylesheet" asp-append-version="true" href="@dashboardDesignerResourceUrl/cdn/css/designer/dashboard-designer-bundle.min.css" />
+        <link rel="stylesheet" asp-append-version="true" href="@dashboardDesignerResourceUrl/cdn/css/designer/dashboard-designer-component.min.css" />
         <script asp-append-version="true" src="@dashboardDesignerResourceUrl/cdn/scripts/designer/dashboard-designer-dependency.min.js"></script>
     </environment>
-    <script asp-append-version="true" src="@designerServiceUrl/scripts/designerlocalization.js?v=@ServerAppConfig.ProductVersion&c=@System.Globalization.CultureInfo.CurrentCulture"></script>
+    <script asp-append-version="true" src="@ServerAppConfig.InternalAppDataServiceUrl/scripts/designerlocalization.js?v=@ServerAppConfig.ProductVersion&c=@System.Globalization.CultureInfo.CurrentCulture"></script>
 
     <script type="text/javascript" src="https://www.bing.com/api/maps/mapcontrol" async></script>
 
-    @*Referred directly in the view page due to pivot grid changes and sfcompressor minification issue*@
     <script asp-append-version="true" src="@dashboardDesignerResourceUrl/cdn/scripts/designer/ej1.web.all.min.js"></script>
     <script asp-append-version="true" src="@dashboardDesignerResourceUrl/cdn/scripts/designer/ej2.web.all.min.js"></script>
 
@@ -251,13 +239,31 @@
         <script asp-append-version="true" src="@dashboardDesignerResourceUrl/cdn/scripts/designer/bbi-designerpage.min.js"></script>
     </environment>
 
-     @await Html.PartialAsync("~/Views/Shared/_BaseFontStyleSheet.cshtml")
+    @*Referred directly in the view page due to pivot grid changes and sfcompressor minification issue*@
+    @if (isSelfHosted)
+    {
+    <environment include="Development,CloudDevelopment">
+        <link rel="stylesheet" asp-append-version="true" href="@ServerAppConfig.CustomFontUrl(globalAppSettings?.SystemSettings?.FontPreference, dashboardServerResourceUrl)" />
+    </environment>
+    <environment exclude="Development,CloudDevelopment">
+        <link rel="stylesheet" asp-append-version="true" href="@ServerAppConfig.CustomFontUrl(globalAppSettings?.SystemSettings?.FontPreference, dashboardServerResourceUrl)" />
+    </environment>
+    }
+    else
+    {
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700">
+
+    }
 
     <environment include="Development,CloudDevelopment">
         <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/designer/dashboard-designer.js"></script>
+        <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/signalr/signalr.js"></script>
+        <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/signalr-bundle.js"></script>
     </environment>
     <environment exclude="Development,CloudDevelopment">
         <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/designer/dashboard-designer.min.js"></script>
+        <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/signalr/signalr.min.js"></script>
+        <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/signalr-bundle.min.js"></script>
     </environment>
 
     <section id="menu-area" style="display:none" class="custom-bootstrap-styles">
@@ -280,19 +286,19 @@
     </div>
     @if (showTour && ViewBag.isEmbed != "true")
     {
-        <environment include="Development,CloudDevelopment">
-            <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/dashboard-designer-tour.css" />
-        </environment>
-        <environment exclude="Development,CloudDevelopment">
-            <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/dashboard-designer-tour.min.css" />
-        </environment>
+    <environment include="Development,CloudDevelopment">
+        <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/dashboard-designer-tour.css" />
+    </environment>
+    <environment exclude="Development,CloudDevelopment">
+        <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/dashboard-designer-tour.min.css" />
+    </environment>
         await Html.RenderPartialAsync("~/Views/Shared/_DesignerTour.cshtml");
-        <environment include="Development,CloudDevelopment">
-            <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/dashboard-designer-tour.js"></script>
-        </environment>
-        <environment exclude="Development,CloudDevelopment">
-            <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/dashboard-designer-tour.min.js"></script>
-        </environment>
+    <environment include="Development,CloudDevelopment">
+        <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/dashboard-designer-tour.js"></script>
+    </environment>
+    <environment exclude="Development,CloudDevelopment">
+        <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/dashboard-designer-tour.min.js"></script>
+    </environment>
     }
     <environment include="Development,CloudDevelopment">
         <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/dashboard-feedback.css" />
@@ -303,13 +309,13 @@
 
     @if (!ServerAppConfig.IsSelfHosted && (ViewBag.isEmbed != null && ViewBag.isEmbed.ToString().ToLower() != "true"))
     {
-        @await Html.PartialAsync("~/Views/Shared/_GeneralFeedback.cshtml")
-        <environment include="Development,CloudDevelopment">
-            <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/dashboard-feedback.js"></script>
-        </environment>
-        <environment exclude="Development,CloudDevelopment">
-            <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/dashboard-feedback.min.js"></script>
-        </environment>
+    @await Html.PartialAsync("~/Views/Shared/_GeneralFeedback.cshtml")
+    <environment include="Development,CloudDevelopment">
+        <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/dashboard-feedback.js"></script>
+    </environment>
+    <environment exclude="Development,CloudDevelopment">
+        <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/dashboard-feedback.min.js"></script>
+    </environment>
 
     }
     <environment include="Development,CloudDevelopment">

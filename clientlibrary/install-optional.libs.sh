@@ -5,6 +5,7 @@ command=$1
 arguments=$2
 root_path=$3
 installoptionlibs="install-optional-libs"
+installphantomjs="installphantomjs"
 if [ -z "$root_path" ]
 then
 root_path="/var/www/bold-services"
@@ -45,7 +46,7 @@ fi
 
 # split assembly name into array
 IFS=', ' read -r -a assmeblyarguments <<< "$arguments"
-assembly=("mongodb" "mysql" "influxdb" "snowflake" "oracle" "clickhouse" "google")
+assembly=("phantomjs" "mongodb" "mysql" "influxdb" "snowflake" "oracle" "npgsql" "clickhouse" "google")
 nonexistassembly=()
 
 # create  invalid assembly array
@@ -84,7 +85,6 @@ yes | cp -rf $clientlibraryextractpath/MongoDB.Bson.dll $destination
 yes | cp -rf $clientlibraryextractpath/MongoDB.Driver.Core.dll $destination
 yes | cp -rf $clientlibraryextractpath/MongoDB.Driver.dll $destination
 yes | cp -rf $clientlibraryextractpath/MongoDB.Driver.Legacy.dll $destination
-yes | cp -rf $clientlibraryextractpath/MongoDB.Libmongocrypt.dll $destination
 echo "mongodb libraries are installed"
 ;;
 "mysql")
@@ -116,6 +116,23 @@ echo "google libraries are installed"
 destination=$pluginpath/clickhouse
 yes | cp -rf $clientlibraryextractpath/ClickHouse.Client.dll $destination
 echo "clickhouse libraries are installed"
+;;
+"npgsql")
+destination=$pluginpath/postgresql
+yes | cp -rf $clientlibraryextractpath/Npgsql.dll $destination
+echo "postgresql libraries are installed"
+;;
+"phantomjs")
+export PHANTOM_JS="phantomjs-2.1.1-linux-x86_64"
+rm -r $PHANTOM_JS
+wget https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOM_JS.tar.bz2
+tar xvjf $PHANTOM_JS.tar.bz2
+dataservicepath=$root_path/application/app_data/bi/dataservice/
+phantomjspath=$clientlibrary/$PHANTOM_JS/bin/phantomjs
+yes | cp -rf $phantomjspath $dataservicepath
+echo "phantomjs libraries are installed"
+rm -r $PHANTOM_JS.tar.bz2
+rm -r $PHANTOM_JS
 ;;
 esac
 done

@@ -11,8 +11,6 @@
 	<DataSourceExtractIntervals></DataSourceExtractIntervals>
 	<IsUserBasedMenu>false</IsUserBasedMenu>
 	<CanIgnorePublishResourceValidation>false</CanIgnorePublishResourceValidation>
-	<CanShowDownloadDashboardOption>false</CanShowDownloadDashboardOption>
-	<OfflineCapable>false</OfflineCapable>
 	<FailureOccurrence>5</FailureOccurrence>
 	<DataRefreshTimeout>720</DataRefreshTimeout>
 	<SilentAuthDomain></SilentAuthDomain>

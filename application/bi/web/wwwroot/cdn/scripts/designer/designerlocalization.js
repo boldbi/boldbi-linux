@@ -224,18 +224,7 @@ var Designer = {
                 designerExpDisableInfo: "You do not have permission to edit this datasource. Contact site administrator.",
                 minimumToolText: "The field bind in this section will be considered as a start value of the Gauge Range. For setting static values, use the properties panel.",
 				maximumToolText: "The field bind in this section will be considered as an end value of the Gauge Range. For setting static values, use the properties panel.",
-                rangeNavigatorToolTextMessage:"Range Navigator requires at least one value and one argument to render.The argument section supports only the Date field.",
-				hiddenColumnMessage: {
-					chart: "The field bind in this section should not be a lower hierarchy compared to the field bind in the Column or Row section",
-					radarPolarChart: "The field bind in this section should not be a lower hierarchy compared to the field bind in the Column section",
-					treeMap: "The field bind in this section should not be a lower hierarchy compared to the field bind in the Column section",
-					heatMap: "The field bind in this section should not be a lower hierarchy compared to the field bind in the Size or X-Axis or Y-Axis section",
-					map: "The field bind in this section should not be a lower hierarchy compared to the field bind in the Location Name section",
-					bingMap: "The field bind in this section should not be a lower hierarchy compared to the field bind in the Location Name section",
-					bubbleSactterChart: "The field bind in this section should not be a lower hierarchy compared to the field bind in the X-Axis or Label or Size or Row section",
-					circularGauge: "The field bind in this section should not be a lower hierarchy compared to the field bind in the Series section",
-					comboChart: "The field bind in this section should not be a lower hierarchy compared to the field bind in the Column section"
-				}
+                rangeNavigatorToolTextMessage:"Range Navigator requires at least one value and one argument to render.The argument section supports only the Date field."
             },
             propertyPanel: {
                 headerText: "Properties",
@@ -298,17 +287,6 @@ var Designer = {
 					pagerTemplateItemsText: "Items",
 					disableVirtualization: "Disable Virtual Loading"
 				},
-                summaryRowSettings: {
-                    summaryRowTitle: "Summary Row",
-					enableSummaryRow: "Enable Summary Row",
-					enableSummaryHeight: "Auto Height",
-					summaryheight: "Height",
-					enableSummaryPadding: "Auto Padding",
-					summaryPadding: "Padding",
-					enableSummaryFontSize: "Auto Font Size",
-					summaryFontSize: "Font Size",
-					customizeButton: "Customize"
-                },
                 filter: {
                     actAsMasterWidget: "Act As Master Widget",
                     ignoreFilterActions: "Ignore Filter Actions",
@@ -510,12 +488,6 @@ var Designer = {
                     top: "Top",
                     middle: "Middle",
                     bottom: "Bottom"
-                },
-                emptyPointMode:{
-                    gap: "Gap",
-                    zero: "Zero",
-                    average: "Average",
-                    connect: "Connect"
                 },
                 fontSettings: {
                     categoryDisplayName: "Font Settings",
@@ -898,18 +870,18 @@ var Designer = {
 				dataCacheFlushDBSuccess: "All respective data has been removed",
 				dataCacheFlushDBSuccessTitle: "Clear cache",
 				dataCacheFlushDBErrorTitle: "Clear cache empty message",
+				dataCacheConfigDefaultConnString: "localhost:6379",
+				dataCacheConfigRefreshTime: "Display refresh time",
 				dataCacheTestConnectionSuccess: "Connection established successfully",
 				dataCacheTestConnectionError: "Invalid connection string",
 				dataCacheTestConnectionErrorTitle: "Test connection error message",
 				dataCacheConfigMode: "Cache mode",
 				dataCacheConfigConnString: "Connection string",
-				dataCacheConfigDefaultConnString: "Connection string",
 				dataCacheConfigConnStringValidation: "Connection string is empty",
 				dataCacheConfigTestConn: "Test Connection",
 				dataCacheConfigCacheSize: "Current cache size",
 				dataCacheConfigMaxCacheSize: "Maximum cache size",
 				dataCacheConfigFlushCache: "Clear Cache",
-				dataCacheConfigRefreshTime: "Display refresh time",
 				dataCacheConfigSuccessMessage: "Settings has been updated successfully.",
 				clearCacheButtonText: "Clear",
                 refreshScheduleText: "Refresh Schedule",
@@ -1608,12 +1580,6 @@ var Designer = {
                             { projects: { name: '', desc: '' } }
                         ]
                     },
-                    gohighlevel: {
-                        name: 'GoHighLevel',
-                        templates: [
-                            { projects: { name: '', desc: '' } }
-                        ]
-                    },
                 },
                 oauthConnectors: {
                     facebook: "Facebook",
@@ -1671,7 +1637,6 @@ var Designer = {
                     zoom: "Zoom",
                     fitbit: "Fitbit",
                     xeroWorkflowMax: "Xero WorkflowMax",
-                    gohighlevel: "GoHighLevel"
                 },
                 errorMessageForTotalExpressionContainsRowExpression: "Total expression must not contains any ROW expression.",
                 parameterMustBeAnAggregated: "Parameter must be an aggregated expression.",
@@ -2836,7 +2801,6 @@ var Designer = {
                 almaApplicationText: "Application Key",
                 emptyApplicationnameValidation: "The Application name should not be empty",
                 validApplicationNameValidation: "Please enter a valid Application Key",
-                locationIdDisplayText: "Location Id",
             },
             asanaWebDataSource: {
                 showAttachment: "Show Attachment",
@@ -5971,47 +5935,6 @@ var Designer = {
                 allWebhooks: 'All Webhooks',
                 getWebhookById: 'Get webhook By Id',
                 allLinkedItems: 'All Linked Items',
-            },
-            gohighlevelDataSource: {
-                businesses: 'Businesses',
-                businessesbylocation: 'Businesses By Location',
-                calender: "Calendar",
-                calenderEvents: "CalenderEvents",
-                campaigns: "Campaigns",
-                contacts: "Contacts",
-                tasks: "Tasks",
-                appointments: "Appointments",
-                notes: "Notes",
-                search: "Search",
-                conversations: "Conversations",
-                forms: "Forms",
-                triggerLinks: "TriggerLinks",
-                location: "Location",
-                opportunities: "Opportunities",
-                surveys: "Surveys",
-                users: "Users",
-                workFlows: "WorkFlows",
-                allGroups: "All Groups",
-                allCalenders: "All Calenders",
-                allCampaigns: "All Campaigns",
-                allContacts: "All Contacts",
-                allTasks: "All Tasks",
-                allAppointmentsByContact: "All Appointments By Contact",
-                allNotes: "All Notes",
-                allDuplicateContacts: "All Duplicate Contacts",
-                allFormsSubmissions: "All Forms Submissions",
-                allForms: "All Forms",
-                allLinks: "All Links",
-                allTagsByLocation: "All Tags By Location",
-                allCustomFields: "All Custom Fields",
-                allCustomValues: "All Custom Values",
-                allTemplates: "All Templates",
-                searchOpportunities: "Search Opportunities",
-                allPipelines: "All Pipelines",
-                allSubmissions: "All Submissions",
-                allSurveys: "All Surveys",
-                allUsers: "All Users",
-                allWorkFlows: "All Work Flows",
             },
             almaDataSource: {
                 ping: "Ping",

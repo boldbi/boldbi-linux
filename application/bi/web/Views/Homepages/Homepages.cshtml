@@ -16,7 +16,7 @@
     var isUseCdn = globalAppSettings.SystemSettings.UseCDN;
     var cdnLink = globalAppSettings.SystemSettings.CDNLink;
     ViewBag.HelpSiteUrl = GlobalAppSettings.GetHelpSiteUrl(HelpSiteUrlNames.ManagePinboards);
-    var dataServiceUrl = ServerAppConfig.GetServiceEndPointUrl(ServerAppConfig.InternalAppDataServiceUrl, _globalAppSettings).TrimEnd('/');
+    var dataServiceUrl = ServerAppConfig.InternalAppDataServiceUrl.TrimEnd('/');
     bool isSelfHosted = ServerAppConfig.IsSelfHosted;
     var dashboardServerApiUrl = new DashboardServerApiEndPoints(globalAppSettings).DashboardServerApiUrl();
     var isSyncfusionIdentifier = GlobalAppSettings.Branding == AppBranding.Syncfusion.Identifier ? true : false;
@@ -29,19 +29,19 @@
 @section styles{
     <environment include="Development,CloudDevelopment">
         <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/homepages-page.css" />
-        <link rel="stylesheet" asp-append-version="true" href="@dashboardDesignerResourceUrl/cdn/css/designer/dashboard-viewer-bundle.css" />
+        <link rel="stylesheet" asp-append-version="true" href="@dashboardDesignerResourceUrl/cdn/css/designer/dashboard-viewer-component.css" />
     </environment>
     <environment exclude="Development,CloudDevelopment">
         <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/homepages-page.min.css" />
-        <link rel="stylesheet" asp-append-version="true" href="@dashboardDesignerResourceUrl/cdn/css/designer/dashboard-viewer-bundle.min.css" />
+        <link rel="stylesheet" asp-append-version="true" href="@dashboardDesignerResourceUrl/cdn/css/designer/dashboard-viewer-component.min.css" />
     </environment>
 }
 @section scripts{
-    <script src="@dataServiceUrl/scripts/designerlocalization.js?v=@ServerAppConfig.ProductVersion&c=@System.Globalization.CultureInfo.CurrentCulture"></script>
+    <script src="@ServerAppConfig.InternalAppDataServiceUrl/scripts/designerlocalization.js?v=@ServerAppConfig.ProductVersion&c=@System.Globalization.CultureInfo.CurrentCulture"></script>
     <environment include="Development,CloudDevelopment">
         <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/viewer/homepages-page-v1-dependency.js"></script>
         @*<script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/viewer/dashboard-viewer-v1-common-all.js"></script>
-            <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/viewer/dashboard-viewer-v1-all.js"></script>*@
+          <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/viewer/dashboard-viewer-v1-all.js"></script>*@
         <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/viewer/homepages-page-v1-utilities.js"></script>
     </environment>
     <environment exclude="Development,CloudDevelopment">
@@ -64,28 +64,33 @@
         <script asp-append-version="true" src="@dashboardDesignerResourceUrl/cdn/scripts/designer/bbi-dashboard.min.js"></script>
     </environment>
 
-    @if (!isSelfHosted)
+@if (!isSelfHosted)
+{
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+
+}
+else
+{
+    <environment include="Development,CloudDevelopment">
+        <link rel="stylesheet" asp-append-version="true" href="@ServerAppConfig.CustomFontUrl(globalAppSettings?.SystemSettings?.FontPreference, dashboardServerResourceUrl)" />
+    </environment>
+    <environment exclude="Development,CloudDevelopment">
+        <link rel="stylesheet" asp-append-version="true" href="@ServerAppConfig.CustomFontUrl(globalAppSettings?.SystemSettings?.FontPreference, dashboardServerResourceUrl)" />
+    </environment>
+}
+
+@* Need to check for cloud
+    @if (isDebug)
     {
-        <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
-
-    }
-    else
-    {
-        @await Html.PartialAsync("~/Views/Shared/_BaseFontStyleSheet.cshtml")
-    }
-
-    @* Need to check for cloud
-        @if (isDebug)
-        {
-            <script asp-append-version="true" src="@(dashboardServiceResourceUrl + "/scripts/ej.dashboard.ejcommon.all.min.js")"></script>
-            <script asp-append-version="true" src="@(dashboardServiceResourceUrl + "/scripts/ej.dashboard.viewer.all.min.js")"></script>
-        }*@
+        <script asp-append-version="true" src="@(dashboardServiceResourceUrl + "/scripts/ej.dashboard.ejcommon.all.min.js")"></script>
+        <script asp-append-version="true" src="@(dashboardServiceResourceUrl + "/scripts/ej.dashboard.viewer.all.min.js")"></script>
+    }*@
 
 
-    <script type="text/javascript">
+<script type="text/javascript">
         var allHomepages = @Html.Raw(@ViewBag.UserHomepages);
         var allHomepagesCount = allHomepagesCount;
-        var baseUrl = "@(baseUrl.TrimEnd('/'))";
+        var baseUrl = "@baseUrl";
         var homepageBaseUrl = "@(baseUrl.TrimEnd('/') + "/pinboards")";
         var dashboardServiceUrl = "@dashboardServiceUrl";
         var accessToken = "@ViewBag.AccessToken";
@@ -127,7 +132,7 @@
             //Add placeholder for search box in 'Select a default pinboard' selectpicker in homepage
             $("#widget-container #no-default-homepage-container .bootstrap-select .bs-searchbox .input-block-level").attr("placeholder", window.Server.App.Localization.SearchPinboards);
         }
-    </script>
+</script>
 }
 @section MainSection{
     <div id="homepage-page-container" ng-app="serverApp" ng-controller="homepagesController">
@@ -219,7 +224,7 @@
                     <div id="select-default-content">@T["Select a pinboard to set as default."]</div>
                 </div>
                 <div id="no-default-homepage-container">
-                    <select class="selectpicker" id="select-default-homepage" data-live-search="true" data-size="10" title="" data-original-value="" data-none-results-text="@T["No results match"]">
+                    <select class="selectpicker" id="select-default-homepage" data-live-search="true" data-size="10" title="" data-original-value="" data-none-results-text = "@T["No results match"]">
                         <option data-hidden="true" value="">@T["Select a default pinboard"]</option>
                         <option ng-repeat="homepage in allHomepages|orderBy:'Name'" value="{{homepage.Id}}">{{homepage.Name}}</option>
                     </select>
@@ -383,7 +388,7 @@
     }
 
     @*@if (isDebug)
-        {
-            <link rel="stylesheet" type="text/css" href="@(dashboardServiceResourceUrl + "/themes/default-theme/ej.dashboardviewer.all.min.css")" />
-        }*@
+    {
+        <link rel="stylesheet" type="text/css" href="@(dashboardServiceResourceUrl + "/themes/default-theme/ej.dashboardviewer.all.min.css")" />
+    }*@
 }

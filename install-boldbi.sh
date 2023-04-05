@@ -44,24 +44,6 @@ is_bing_map_enabled=false
 bing_map_api_key=""
 app_data_location="$install_dir/application/app_data"
 puppeteer_location="$app_data_location/bi/dataservice/puppeteer"
-lic_key=""
-db_type=""
-db_host=""
-db_user=""
-db_pwd=""
-db_name=""
-db_port=""
-maintain_db=""
-email=""
-epwd=""
-add_parameters=""
-main_logo=""
-login_logo=""
-email_logo=""
-favicon=""
-footer_logo=""
-site_name=""
-site_identifier=""
 
 while [ $# -ne 0 ]
 do
@@ -81,96 +63,6 @@ do
             shift
             user="$1"
             ;;
-			
-		-[Ll]icense)
-		  shift
-		  lic_key="$1"
-		  ;;
-
-		-[Dd]atabasetype)
-		  shift
-		  db_type="$1"
-		  ;;
-
-		-[Dd]atabasehost)
-		  shift
-		  db_host="$1"
-		  ;;
-
-		-[Dd]atabaseport)
-		  shift
-		  db_port="$1"
-		  ;;		  
-
-		-[Dd]atabasename)
-		  shift
-		  db_name="$1"
-		  ;;
-
-		-[Mm]aintaindb)
-		  shift
-		  maintain_db="$1"
-		  ;;
-
-		-[Dd]atabaseuser)
-		  shift
-		  db_user="$1"
-		  ;;
-
-		-[Dd]atabasepwd)
-		  shift
-		  db_pwd="$1"
-		  ;;
-
-		-[Aa]dditionalparameters)
-		  shift
-		  add_parameters="$1"
-		  ;;
-
-		-[Ee]mail)
-		  shift
-		  email="$1"
-		  ;;
-
-		-[Ee]mailpwd)
-		  shift
-		  epwd="$1"
-		  ;;
-		  
-		-[Mm]ainlogo)
-		  shift
-		  main_logo="$1"
-		  ;;
-		  
-		-[Ll]oginlogo)
-		  shift
-		  login_logo="$1"
-		  ;;
-		  
-		-[Ee]maillogo)
-		  shift
-		  email_logo="$1"
-		  ;;
-		  
-		-[Ff]avicon)
-		  shift
-		  favicon="$1"
-		  ;;
-		  
-		-[Ff]ooterlogo)
-		  shift
-		  footer_logo="$1"
-		  ;;
-		  
-		-[Ss]itename)
-		  shift
-		  site_name="$1"
-		  ;;
-		  
-		-[Ss]iteidentifier)
-		  shift
-		  site_identifier="$1"
-		  ;;
 			
 		-h|--host|-[Hh]ost)
             shift
@@ -297,7 +189,7 @@ install-chromium-dependencies() {
     eval $invocation
 	
     if [ $distribution == "centos" ]; then
-            yum update && yum -y install pango.x86_64 libXcomposite.x86_64 libXcursor.x86_64 libXdamage.x86_64 libXext.x86_64 libXi.x86_64 libXtst.x86_64 cups-libs.x86_64 libXScrnSaver.x86_64 libXrandr.x86_64 alsa-lib.x86_64 atk.x86_64 gtk3.x86_64 xorg-x11-fonts-100dpi xorg-x11-fonts-75dpi xorg-x11-utils xorg-x11-fonts-cyrillic xorg-x11-fonts-Type1 xorg-x11-fonts-misc
+            yum update && yum -y install pango.x86_64 libXcomposite.x86_64 libXcursor.x86_64 libXdamage.x86_64 libXext.x86_64 libXi.x86_64 libXtst.x86_64 cups-libs.x86_64 libXScrnSaver.x86_64 libXrandr.x86_64 GConf2.x86_64 alsa-lib.x86_64 atk.x86_64 gtk3.x86_64 xorg-x11-fonts-100dpi xorg-x11-fonts-75dpi xorg-x11-utils xorg-x11-fonts-cyrillic xorg-x11-fonts-Type1 xorg-x11-fonts-misc
     else
             apt-get update && apt-get -y install xvfb gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget && rm -rf /var/lib/apt/lists/*
     fi
@@ -676,7 +568,14 @@ configure_apache () {
 install_client_libraries () {
 	eval $invocation
 	mkdir -p $install_dir/clientlibrary/temp
-	bash $install_dir/clientlibrary/install-optional.libs.sh install-optional-libs mongodb,influxdb,snowflake,mysql,oracle,google,clickhouse
+	bash $install_dir/clientlibrary/install-optional.libs.sh install-optional-libs npgsql,mongodb,influxdb,snowflake,mysql,oracle,google,clickhouse
+}
+
+install_phanthomjs () {
+	eval $invocation
+	mkdir -p $install_dir/application/app_data/bi/dataservice
+	mkdir -p $install_dir/clientlibrary/temp
+	bash $install_dir/clientlibrary/install-optional.libs.sh install-optional-libs phantomjs
 }
 
 update_optional_lib() {
@@ -871,36 +770,14 @@ check_boldbi_directory_structure() {
 			mv "$install_dir/boldbi" "$install_dir/application"
 		fi
 	elif [ "$1" = "remove_services" ]; then
-        find "$system_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i "s|Environment=export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1||g"
-        systemctl daemon-reload	    
 		if grep -qF "/boldbi-embedded/boldbi/" "$system_dir/bold-bi-web.service"; then
 			say "Removing old service files."
 			rm -rf $system_dir/bold-*
 			systemctl daemon-reload
 			find "$services_dir" -type f -name "*.service" -print0 | xargs -0 sed -i "s|www-data|$user|g"
 			if [ "$distribution" = "centos" ]; then
-			find "$services_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=LD_LIBRARY_PATH=/usr/local/lib'			
-			fi
-			if [ ! -z "$lic_key" ]; then
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=BOLD_SERVICES_UNLOCK_KEY='$lic_key''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_UNLOCK_KEY/a Environment=BOLD_SERVICES_HOSTING_ENVIRONMENT=k8s'
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_HOSTING_ENVIRONMENT/a Environment=BOLD_SERVICES_DB_TYPE='$db_type''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_TYPE/a Environment=BOLD_SERVICES_DB_PORT='$db_port''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_PORT/a Environment=BOLD_SERVICES_DB_HOST='$db_host''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_HOST/a Environment=BOLD_SERVICES_POSTGRESQL_MAINTENANCE_DB='$maintain_db''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_POSTGRESQL_MAINTENANCE_DB/a Environment=BOLD_SERVICES_DB_USER='$db_user''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_USER/a Environment=BOLD_SERVICES_DB_PASSWORD='$db_pwd''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_PASSWORD/a Environment=BOLD_SERVICES_DB_NAME='$db_name''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_NAME/a Environment=BOLD_SERVICES_DB_ADDITIONAL_PARAMETERS='$add_parameters''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_ADDITIONAL_PARAMETERS/a Environment=BOLD_SERVICES_USER_EMAIL='$email''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_USER_EMAIL/a Environment=BOLD_SERVICES_USER_PASSWORD='$epwd''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_USER_PASSWORD/a Environment=BOLD_SERVICES_BRANDING_MAIN_LOGO='$main_logo''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_MAIN_LOGO/a Environment=BOLD_SERVICES_BRANDING_LOGIN_LOGO='$login_logo''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_LOGIN_LOGO/a Environment=BOLD_SERVICES_BRANDING_EMAIL_LOGO='$email_logo''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_EMAIL_LOGO/a Environment=BOLD_SERVICES_BRANDING_FAVICON='$favicon''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_FAVICON/a Environment=BOLD_SERVICES_BRANDING_FOOTER_LOGO='$footer_logo''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_FOOTER_LOGO/a Environment=BOLD_SERVICES_SITE_NAME='$site_name''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_SITE_NAME/a Environment=BOLD_SERVICES_SITE_IDENTIFIER='$site_identifier''
+			find "$services_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=LD_LIBRARY_PATH=/usr/local/lib'
+			find "$services_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i '/LD_LIBRARY_PATH/a Environment=export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1'
 			fi
 			copy_service_files "$services_dir/." "$system_dir"		
 			enable_boldbi_services
@@ -936,8 +813,6 @@ common_idp_integration() {
 
 	Extracted_Dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 	cp -a "$Extracted_Dir/application/utilities/installutils" "$install_dir/application/utilities/"	
-        cp -a "$Extracted_Dir/dotnet/shared" "$install_dir/dotnet/"
-        cp -a "$Extracted_Dir/dotnet/host" "$install_dir/dotnet/"
 	say "Modifying product.json"
 	"$install_dir/dotnet/dotnet" "$install_dir/application/utilities/installutils/installutils.dll" common_idp_setup $Extracted_Dir
 	
@@ -969,29 +844,10 @@ common_idp_integration() {
 	if ! $common_idp_upgrade; then
 		find "services" -type f -name "*.service" -print0 | xargs -0 sed -i "s|www-data|$user|g"
 		if [ "$distribution" = "centos" ]; then
-			find "$services_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=LD_LIBRARY_PATH=/usr/local/lib'
+		find "$services_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=LD_LIBRARY_PATH=/usr/local/lib'
+		find "$services_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i '/LD_LIBRARY_PATH/a Environment=export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1'
 		fi
-		if [ ! -z "$lic_key" ]; then
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=BOLD_SERVICES_UNLOCK_KEY='$lic_key''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_UNLOCK_KEY/a Environment=BOLD_SERVICES_HOSTING_ENVIRONMENT=k8s'
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_HOSTING_ENVIRONMENT/a Environment=BOLD_SERVICES_DB_TYPE='$db_type''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_TYPE/a Environment=BOLD_SERVICES_DB_PORT='$db_port''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_PORT/a Environment=BOLD_SERVICES_DB_HOST='$db_host''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_HOST/a Environment=BOLD_SERVICES_POSTGRESQL_MAINTENANCE_DB='$maintain_db''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_POSTGRESQL_MAINTENANCE_DB/a Environment=BOLD_SERVICES_DB_USER='$db_user''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_USER/a Environment=BOLD_SERVICES_DB_PASSWORD='$db_pwd''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_PASSWORD/a Environment=BOLD_SERVICES_DB_NAME='$db_name''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_NAME/a Environment=BOLD_SERVICES_DB_ADDITIONAL_PARAMETERS='$add_parameters''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_ADDITIONAL_PARAMETERS/a Environment=BOLD_SERVICES_USER_EMAIL='$email''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_USER_EMAIL/a Environment=BOLD_SERVICES_USER_PASSWORD='$epwd''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_USER_PASSWORD/a Environment=BOLD_SERVICES_BRANDING_MAIN_LOGO='$main_logo''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_MAIN_LOGO/a Environment=BOLD_SERVICES_BRANDING_LOGIN_LOGO='$login_logo''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_LOGIN_LOGO/a Environment=BOLD_SERVICES_BRANDING_EMAIL_LOGO='$email_logo''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_EMAIL_LOGO/a Environment=BOLD_SERVICES_BRANDING_FAVICON='$favicon''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_FAVICON/a Environment=BOLD_SERVICES_BRANDING_FOOTER_LOGO='$footer_logo''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_FOOTER_LOGO/a Environment=BOLD_SERVICES_SITE_NAME='$site_name''
-			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_SITE_NAME/a Environment=BOLD_SERVICES_SITE_IDENTIFIER='$site_identifier''
-		fi
+		
 		say "Moving BoldBI service files"
 		cp -a services/bold-bi-* "$services_dir"
 		cp -a services/bold-bi-* "$system_dir"
@@ -1202,32 +1058,12 @@ install_boldbi() {
 			update_url_in_product_json
 			find "$services_dir" -type f -name "*.service" -print0 | xargs -0 sed -i "s|www-data|$user|g"
 			if [ "$distribution" = "centos" ]; then
-			find "$services_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=LD_LIBRARY_PATH=/usr/local/lib'
-			fi
-			if [ ! -z "$lic_key" ]; then
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=BOLD_SERVICES_UNLOCK_KEY='$lic_key''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_UNLOCK_KEY/a Environment=BOLD_SERVICES_HOSTING_ENVIRONMENT=k8s'
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_HOSTING_ENVIRONMENT/a Environment=BOLD_SERVICES_DB_TYPE='$db_type''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_TYPE/a Environment=BOLD_SERVICES_DB_PORT='$db_port''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_PORT/a Environment=BOLD_SERVICES_DB_HOST='$db_host''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_HOST/a Environment=BOLD_SERVICES_POSTGRESQL_MAINTENANCE_DB='$maintain_db''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_POSTGRESQL_MAINTENANCE_DB/a Environment=BOLD_SERVICES_DB_USER='$db_user''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_USER/a Environment=BOLD_SERVICES_DB_PASSWORD='$db_pwd''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_PASSWORD/a Environment=BOLD_SERVICES_DB_NAME='$db_name''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_NAME/a Environment=BOLD_SERVICES_DB_ADDITIONAL_PARAMETERS='$add_parameters''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_DB_ADDITIONAL_PARAMETERS/a Environment=BOLD_SERVICES_USER_EMAIL='$email''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_USER_EMAIL/a Environment=BOLD_SERVICES_USER_PASSWORD='$epwd''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_USER_PASSWORD/a Environment=BOLD_SERVICES_BRANDING_MAIN_LOGO='$main_logo''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_MAIN_LOGO/a Environment=BOLD_SERVICES_BRANDING_LOGIN_LOGO='$login_logo''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_LOGIN_LOGO/a Environment=BOLD_SERVICES_BRANDING_EMAIL_LOGO='$email_logo''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_EMAIL_LOGO/a Environment=BOLD_SERVICES_BRANDING_FAVICON='$favicon''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_FAVICON/a Environment=BOLD_SERVICES_BRANDING_FOOTER_LOGO='$footer_logo''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_FOOTER_LOGO/a Environment=BOLD_SERVICES_SITE_NAME='$site_name''
-				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_SITE_NAME/a Environment=BOLD_SERVICES_SITE_IDENTIFIER='$site_identifier''
+				find "$services_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=LD_LIBRARY_PATH=/usr/local/lib'
+				find "$services_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i '/LD_LIBRARY_PATH/a Environment=export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1'
 			fi
 			copy_service_files "$services_dir/." "$system_dir"
 			#install_client_libraries
-	
+			#install_phanthomjs
 			
 			chown -R "$user" "$install_dir"
 		

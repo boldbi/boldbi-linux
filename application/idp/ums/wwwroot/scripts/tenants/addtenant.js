@@ -3,7 +3,6 @@ var regexIe8 = new RegExp("Trident(\/4.0)|(Trident\/5.0)");
 var isSafari = navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1;
 var selectedAdmins = [];
 var gridAdminData = [];
-var userId = [];
 var isFirstRequest = false;
 var waitingPopUpElement;
 var tenantNameinDB = "";
@@ -12,7 +11,6 @@ var gridHeight = 355;
 var databaseFormData, intermediateFormData, clonedDBFormData, azuredetails;
 var storageFlag = 0;
 var previousIndex = [];
-var previousIndexUserId = [];
 var prevDomain = "";
 var haveTenantIdentifier = true;
 var validateTimer;
@@ -627,7 +625,7 @@ function addTenant() {
     else if (brandingType == "Enterprise Reporting") {
         brandingType = "boldreports"
     }
-    postSystemSettingsData(systemSettingsDetails, azuredetails, selectedAdmins, tenantInfo, brandingType, true, userId);
+    postSystemSettingsData(systemSettingsDetails, azuredetails, selectedAdmins, tenantInfo, brandingType, true);
 
 }
 

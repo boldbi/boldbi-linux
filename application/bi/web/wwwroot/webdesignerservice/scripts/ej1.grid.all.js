@@ -1,6 +1,6 @@
 /*!
 *  filename: ej1.grid.all.js
-*  version : 6.1.8
+*  version : 5.3.167
 *  Copyright Syncfusion Inc. 2001 - 2023. All rights reserved.
 *  Use of this code is subject to the terms of our license.
 *  A copy of the current license can be obtained at any time by e-mailing
@@ -2606,12 +2606,8 @@
                         if (proxy.model.scrollSettings.allowVirtualScrolling) {
                             if (proxy.model.scrollSettings.enableVirtualization && proxy.model.scrollSettings.virtualScrollMode == "continuous")
                                 e["reachedEnd"] = e.scrollData.scrollable - e.model.scrollTop == 0;
-                                else if (e.originalEvent && (!bbdesigner$(e.originalEvent.target).hasClass("e-rowcell") || e.originalEvent.type == "touchend")) {
-                                    if (e.originalEvent.type == "touchend")
-                                        e["reachedEnd"] = Math.ceil(parseFloat(this._vScrollbar.element.find(".e-vhandle").css('top'))) + Math.ceil(parseFloat(this._vScrollbar.element.find(".e-vhandle").height())) >= this._vScrollbar.element.find(".e-vhandlespace").height() - 2;
-                                    else
-                                        e["reachedEnd"] = this.content()[0].scrollHeight - e.scrollData.sTop == this.content()[0].clientHeight;
-                                }  
+                            else if (e.originalEvent && !bbdesigner$(e.originalEvent.target).hasClass("e-rowcell"))
+                                e["reachedEnd"] = this.content()[0].scrollHeight - Math.ceil(e.scrollData.sTop) == this.content()[0].clientHeight;
                             if (e.scrollData.handler == "e-hhandle")
                                 return;
                             if (proxy.model != null && e.originalEvent) {
@@ -3057,7 +3053,7 @@
             else
                 currentPage = Math.ceil(currentPage);
 
-            if (Math.ceil(args.scrollTop) >= Math.ceil(this._scrollValue) && args.virtualScrollMode == "continuous" && args.reachedEnd) {
+            if (args.scrollTop >= this._scrollValue && args.virtualScrollMode == "continuous" && args.reachedEnd) {
                 currentPage = this.virtualLoadedPages[this.virtualLoadedPages.length - 1] / pageSize + 2;
             }
 
