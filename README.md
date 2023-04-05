@@ -4,27 +4,31 @@ This section explains how to deploy the Bold BI application for both fresh insta
 ## Deployment prerequisites
  
  1. Install Git based on your environment. </br>
-    <table>
+<table>
+  <thead>
     <tr>
-        <td>
-        <b>Ubuntu</b>
-        </td>
-        <td>
-        sudo apt-get update </br>
-        sudo apt-get install git -y
-        </td>
+      <th>Operating System</th>
+      <th>Command</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Ubuntu</td>
+      <td>
+        <code>sudo apt-get update</code><br>
+        <code>sudo apt-get install git -y</code>
+      </td>
     </tr>
     <tr>
-        <td>
-        <b>Centos</b>
-        </td>
-        <td>
-        sudo yum install epel-release </br>
-        sudo yum install git -y
-        </td>
+      <td>CentOS</td>
+      <td>
+        <code>sudo yum install epel-release</code><br>
+        <code>sudo yum install git -y</code>
+      </td>
     </tr>
-    <tr>
-    </table>
+  </tbody>
+</table>
+
 2. Enter the following details in the autodeploy-boldbi.sh shell script file.</br>
    **CHECKOUT_DIR:** Create and enter the directory path into this variable where you want to checkout a branch from GitHub. </br>
    **REPO_NAME:** The default repository name is `boldbi-linux`. If you wish to customize the repository name, please specify it here. </br>
