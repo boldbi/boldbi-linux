@@ -47,8 +47,7 @@ This section explains how to deploy the Bold BI application for both fresh insta
     ```
    > **Note:** If the Bold BI application is already present on that host machine, it will automatically upgrade with the latest changes. Otherwise, it will perform a fresh installation. 
 
-   ### Next steps for Fresh Installation.
-   1. If you want configure SSL. Follow [this](https://help.boldbi.com/embedded-bi/setup/deploying-in-linux/installation-and-deployment/bold-bi-on-ubuntu/#configure-ssl) document.
-   2. [Install Optional Libraries](https://help.boldbi.com/embedded-bi/setup/deploying-in-linux/install-optional-libraries/)
-   3. [Application Startup](https://help.boldbi.com/embedded-bi/application-startup/)
-
+### Next steps for Fresh Installation.
+1. If you want configure SSL. Follow [this](https://help.boldbi.com/embedded-bi/setup/deploying-in-linux/installation-and-deployment/bold-bi-on-ubuntu/#configure-ssl) document.
+2. [Install Optional Libraries](https://help.boldbi.com/embedded-bi/setup/deploying-in-linux/install-optional-libraries/)
+3. [Application Startup](https://help.boldbi.com/embedded-bi/application-startup/)
