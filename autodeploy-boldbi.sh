@@ -4,7 +4,7 @@
 
 # Set the repository URL, branch name, and directory paths
 REPO_URL="https://github.com/boldbi/boldbi-linux.git"
-BRANCH_NAME="master"
+BRANCH_NAME="KC282151"
 REPO_NAME="boldbi-linux"
 CHECKOUT_DIR=""
 user=""
