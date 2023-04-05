@@ -31,6 +31,7 @@ This section explains how to deploy the Bold BI application for both fresh insta
    **user:** Specify the user or group that manages the service. Please ensure that this user exists in your Linux server.</br>
    **host_url:** Domain or IP address of the machine with http protocol.</br>
    > **Note:** The `host_url` is only applicable for fresh deployments. This is optional for upgrade case.</br>
+   
    **Example for above variable:** </br>
    CHECKOUT_DIR="/home/syncfusion/boldbi" </br>
    REPO_NAME="boldbi-linux" </br>
