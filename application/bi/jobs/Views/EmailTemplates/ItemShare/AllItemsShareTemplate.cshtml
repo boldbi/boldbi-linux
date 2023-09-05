@@ -122,19 +122,22 @@
                                         </td>
                                         <td align="left" valign="top">
                                         <![endif]-->
-                                        <div class="" style="display: inline-block; vertical-align: top; width: 100%; max-width: 50px;  float: right; " width="50">
-                                            <table style="border-collapse: separate;width: 100%;" class="" align="left" border="0" cellpadding="0" cellspacing="0">
-                                                <tbody>
-                                                    <tr>
-                                                        <td style="font-size: 16px;font-family: Arial, Helvetica, sans-serif; color: #3f3f3f; text-align: right; height: 40px;vertical-align:bottom;">
-                                                            <span data-id="hidden">
-                                                                <a href="@(Model.BaseUrl.TrimEnd('/') + "/login")" target='' style='text-decoration: none; color: #3f3f3f; font-weight: normal;'>Login</a>
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        @if (!Model.HideLoginOption)
+                                        {
+                                            <div class="" style="display: inline-block; vertical-align: top; width: 100%; max-width: 50px;  float: right; " width="50">
+                                                <table style="border-collapse: separate;width: 100%;" class="" align="left" border="0" cellpadding="0" cellspacing="0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="font-size: 16px;font-family: Arial, Helvetica, sans-serif; color: #3f3f3f; text-align: right; height: 40px;vertical-align:bottom;">
+                                                                <span data-id="hidden">
+                                                                    <a href="@(Model.BaseUrl.TrimEnd('/') + "/login")" target='' style='text-decoration: none; color: #3f3f3f; font-weight: normal;'>Login</a>
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        }
                                         <!--[if (gte mso 9)|(lte ie 8)]>
                                                 </td>
                                             </tr>
@@ -201,6 +204,14 @@
                                                                 You have been given @Model.PermissionType access to all groups.
                                                             </span>
 
+                                                        }
+                                                        else if (Model.ItemType == "AllUsers")
+                                                        {
+                                                            <span>
+
+                                                                You have been given access to manage all users.
+
+                                                            </span>
                                                         }
                                                         else
                                                         {
@@ -293,6 +304,14 @@
                                                                 @Model.Admin has given you @Model.PermissionType access to all groups.<br />
                                                             </span>
                                                         }
+                                                        else if (Model.ItemType == "AllUsers")
+                                                        {
+                                                            <span>
+
+                                                                @Model.Admin has given you create and manage access to all users.<br />
+                                                            </span>
+
+                                                        }
                                                         else
                                                         {
                                                             <span>
@@ -332,7 +351,7 @@
                                                     {
                                                         <td style="padding-left:20px;padding-right:20px;font-size: 14px; padding-right: 20px;font-family: Arial, Helvetica, sans-serif; color: #3f3f3f; text-align:left;">
                                                             <span data-id="hidden" style="color: #3f3f3f;">
-                                                                <a href="@Model.BaseUrl/@Model.ItemUrl" target='' style='text-decoration: none; word-break:break-all; color: #4a90e2; font-weight: normal;'>All @(Model.ItemType)</a>
+                                                                <a href="@(Model.BaseUrl.TrimEnd('/') + "/" + Model.ItemUrl)" target='' style='text-decoration: none; word-break:break-all; color: #4a90e2; font-weight: normal;'>All @(Model.ItemType)</a>
                                                             </span>
                                                         </td>
                                                     }
@@ -340,7 +359,7 @@
                                                     {
                                                         <td style="padding-left:20px;padding-right:20px;font-size: 14px; padding-right: 20px;font-family: Arial, Helvetica, sans-serif; color: #3f3f3f; text-align:left;">
                                                             <span data-id="hidden" style="color: #3f3f3f;">
-                                                                <a href="@Model.BaseUrl/@Model.ItemUrl" target='' style='text-decoration: none; word-break:break-all; color: #4a90e2; font-weight: normal;'>@(Model.ItemType)</a>
+                                                                <a href="@(Model.BaseUrl.TrimEnd('/') + "/" + Model.ItemUrl)" target='' style='text-decoration: none; word-break:break-all; color: #4a90e2; font-weight: normal;'>@(Model.ItemType)</a>
                                                             </span>
                                                         </td>
                                                     }
@@ -348,7 +367,7 @@
                                                     {
                                                         <td style="padding-left:20px;padding-right:20px;font-size: 14px; padding-right: 20px;font-family: Arial, Helvetica, sans-serif; color: #3f3f3f; text-align:left;">
                                                             <span data-id="hidden" style="color: #3f3f3f;">
-                                                                <a href="@Model.BaseUrl/@Model.ItemUrl" target='' style='text-decoration: none; word-break:break-all; color: #4a90e2; font-weight: normal;'>All @(Model.ItemType)</a>
+                                                                <a href="@(Model.BaseUrl.TrimEnd('/') + "/" + Model.ItemUrl)" target='' style='text-decoration: none; word-break:break-all; color: #4a90e2; font-weight: normal;'>All @(Model.ItemType)</a>
                                                             </span>
                                                         </td>
                                                     }
@@ -356,7 +375,15 @@
                                                     {
                                                         <td style="padding-left:20px;padding-right:20px;font-size: 14px; padding-right: 20px;font-family: Arial, Helvetica, sans-serif; color: #3f3f3f; text-align:left;">
                                                             <span data-id="hidden" style="color: #3f3f3f;">
-                                                                <a href="@Model.BaseUrl/@Model.ItemUrl" target='' style='text-decoration: none; word-break:break-all; color: #4a90e2; font-weight: normal;'>@(Model.ItemType)</a>
+                                                                <a href="@(Model.BaseUrl.TrimEnd('/') + "/" + Model.ItemUrl)" target='' style='text-decoration: none; word-break:break-all; color: #4a90e2; font-weight: normal;'>@(Model.ItemType)</a>
+                                                            </span>
+                                                        </td>
+                                                    }
+                                                    else if (Model.ItemType == "AllUsers")
+                                                    {
+                                                        <td style="padding-left:20px;padding-right:20px;font-size: 14px; padding-right: 20px;font-family: Arial, Helvetica, sans-serif; color: #3f3f3f; text-align:left;">
+                                                            <span data-id="hidden" style="color: #3f3f3f;">
+                                                                <a href="@(Model.BaseUrl.TrimEnd('/') + "/" + Model.ItemUrl)" target='' style='text-decoration: none; word-break:break-all; color: #4a90e2; font-weight: normal;'>@(Model.ItemType)</a>
                                                             </span>
                                                         </td>
                                                     }
@@ -364,7 +391,7 @@
                                                     {
                                                         <td style="padding-left:20px;padding-right:20px;font-size: 14px; padding-right: 20px;font-family: Arial, Helvetica, sans-serif; color: #3f3f3f; text-align:left;">
                                                             <span data-id="hidden" style="color: #3f3f3f;">
-                                                                <a href="@Model.BaseUrl/@Model.ItemUrl" target='' style='text-decoration: none; word-break:break-all; color: #4a90e2; font-weight: normal;'>All @(Model.ItemType + "s")</a>
+                                                                <a href="@(Model.BaseUrl.TrimEnd('/') + "/" + Model.ItemUrl)" target='' style='text-decoration: none; word-break:break-all; color: #4a90e2; font-weight: normal;'>All @(Model.ItemType + "s")</a>
                                                             </span>
                                                         </td>
                                                     }

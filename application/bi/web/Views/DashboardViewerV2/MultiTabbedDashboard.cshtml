@@ -27,10 +27,12 @@
     var isSlideshow = false;
     var isViewNotFound = (ViewBag.ViewNotFound != null && ViewBag.ViewNotFound) ? true : false;
     var isCommentNotFound = (ViewBag.CommentNotFound != null && ViewBag.CommentNotFound) ? true : false;
+    var isInvalidComment = (ViewBag.InValidCommentId != null && ViewBag.InValidCommentId) ? true : false;
     var designerServiceUrl = ServerAppConfig.GetServiceEndPointUrl(ServerAppConfig.InternalAppDataServiceUrl, _globalAppSettings);
     var isPublic = globalAppSettings.SystemSettings.IsMarkItemsPublic && ViewBag.MultiDashboardDetails.IsPublic;
     var dashboardCutomTheme = string.Empty;
     var isEmbedSignature = requestUrl.Query.ToLower().Contains("embed_signature") && globalAppSettings.GetLicenseSettings().EnterpriseFeatures.Embed;
+    var themeInViewer = await _featureManager.IsEnabledAsync(FeatureManagement.ThemeInViewer);
     if (((Context.Request.Query["isembed"].ToString() != null && Context.Request.Query["isembed"].ToString().ToLower() == "true") || isEmbedSignature) && !string.IsNullOrWhiteSpace(Context.Request.Query["embed_theme"]))
     {
         dashboardCutomTheme = Context.Request.Query["embed_theme"];
@@ -106,7 +108,7 @@
             var multiTabDashboardDetails = @Html.Raw(Json.Serialize(ViewBag.MultiTabDashboardDetails));
             var childIds = @Html.Raw(Json.Serialize(ViewBag.childIdList));
             var cdnPath = "@dashboardDesignerResourceUrl/cdn/scripts/designer/";
-            var dashboardTheme = "@ViewBag.Theme";
+            var dashboardTheme = "@(!ServerAppConfig.IsSelfHosted ? "" : ViewBag.Theme)";
             var baseUrl = "@globalAppSettings.SystemSettings.BaseUrl";
             var embedConfig = @Html.Raw(Json.Serialize(embedConfig));
             var exportFormat = @Html.Raw(Json.Serialize(ViewBag.ExportFormat));
@@ -151,12 +153,14 @@
             var dashboardServerApiUrlForServerEmbed = "@dashboardServerApiUrlForServerEmbed";
             var isViewNotFound = @Html.Raw(Json.Serialize(isViewNotFound));
             var isCommentNotFound = @Html.Raw(Json.Serialize(isCommentNotFound));
+            var isInvalidComment = @Html.Raw(Json.Serialize(isInvalidComment));
             var cdnLink = "@dashboardServerResourceUrl";
-            var theming = @Json.Serialize(globalAppSettings.SystemSettings.Theming);
+            var theming = @(!ServerAppConfig.IsSelfHosted ? "false" : themeInViewer ? Json.Serialize(globalAppSettings.SystemSettings.Theming) : "false");
             var dashboardCustomThemename = "@dashboardCutomTheme";
             var customThemeAppearance = "@(ServerAppConfig.IsSelfHosted && globalAppSettings.SystemSettings.IsInheritFromGlobalLookAndFeelSettings ? ServerAppConfig.Theme.Appearance : globalAppSettings.SystemSettings.ThemeAppearance)";
             var applicationTheme = "@(ServerAppConfig.IsSelfHosted && globalAppSettings.SystemSettings.IsInheritFromGlobalLookAndFeelSettings ? ServerAppConfig.Theme.ApplicationTheme : globalAppSettings.SystemSettings.CustomApplicationTheme)";
             var enableApplicationEmbed =@ServerAppConfig.EnableSameTabLinkTarget.ToString().ToLower();
+            var appVersion = "@ServerAppConfig.ProductVersion";
     </script>
     @await Html.PartialAsync("~/Views/Shared/_LoaderIcon.cshtml")
 </head>

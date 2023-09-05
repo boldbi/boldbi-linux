@@ -2,11 +2,10 @@
     var globalAppSettings = _globalAppSettings;
     ViewBag.Title = T["Webhook Settings"].Value + " - " + globalAppSettings.SystemSettings.OrganizationName;
     var dashboardServerResourceUrl = globalAppSettings.SystemSettings.CDNLink.TrimEnd('/');
-    var isSettingsTab = (string.IsNullOrWhiteSpace(Context.Request.Query["tab"]) || Context.Request.Query["tab"] == "webhook-settings") ? "active" : string.Empty;
-    var isLogsTab = (Context.Request.Query["tab"].ToString() == "webhook-logs") ? "active" : string.Empty;
+    var isLogsTab = (Context.Request.Query["tab"].ToString().ToLower() == "webhook-logs") ? "active" : string.Empty;
+    var isSettingsTab = (string.IsNullOrWhiteSpace(Context.Request.Query["tab"]) || Context.Request.Query["tab"].ToString().ToLower() == "webhook-settings") || (!string.IsNullOrWhiteSpace(Context.Request.Query["tab"]) && string.IsNullOrWhiteSpace(isLogsTab)) ? "active" : string.Empty;
     var model = ViewBag.GranularPermissions as Dictionary<object, bool>;
-    var scopeList = ServerAppConfig.SettingsScopesList;
-    var canShowAdminMenu = _identityResponse.IsAdmin || model[SettingsScopes.All] || model.Select(x => x).Where(x => scopeList.Contains(x.Key.ToString()) && x.Value == true).Count() > 1 || (model.Select(x => x).Where(x => scopeList.Contains(x.Key.ToString()) && x.Value == true).Count() == 1 && (model[PermissionEntity.UsersandGroups] || model[PermissionEntity.SpecificGroup] || model[PermissionEntity.AllGroups])) || model[PermissionEntity.UsersandGroups];
+    var canShowAdminMenu = await ServerAppConfig.CanShowAdminMenu(model, _identityResponse.IsAdmin, _featureManager);
 }
 
 @section styles{
@@ -113,10 +112,10 @@
                 load: "fnOnGridLoad",
                 actionBegin: "fnActionBegin",
                 actionComplete: function (args) {
-                    $('[data-toggle="tooltip"]').tooltip();
+                    $('[data-toggle="tooltip"]').tooltip({ container: $('body') });
                     showOrHideGridPager("#webhooksGridSettings");
                     if (args.model.currentViewData.length === 0) {
-                        this.getContentTable().find("tbody .emptyrecord").html("No webhooks available to display");
+                        this.getContentTable().find("tbody .emptyrecord").html(window.Server.App.Localization.NoWebhookRecords);
                         rowBound();
                     }
                 },
@@ -125,10 +124,10 @@
                     if (height != null) {
                         rowBound();
                     }
-                    $("[data-toggle='tooltip']").tooltip();
+                    $('[data-toggle="tooltip"]').tooltip({ container: $('body') });
                 },
                 dataBound: function (args) {
-                    $("[data-toggle='tooltip']").tooltip();
+                    $('[data-toggle="tooltip"]').tooltip({ container: $('body') });
                 },
                 columns: [
                     {
@@ -189,37 +188,35 @@
 
 @section MainSection{
     @await Html.PartialAsync("_AdminMenu")
-    <div id="webhook-settings-container" class="bi-page-container @(canShowAdminMenu ? string.Empty : "admin-panel-full-width")" role="tabpanel" aria-labelledby="webhook-settings">
+    <div class="col-xs-12 no-padding no-margin @(canShowAdminMenu ? "width-alignment" : "admin-panel-full-width")">
+        <div class="col-xs-12 no-padding">
+            @await Html.PartialAsync("../Shared/_TopHeaderSection", new ViewDataDictionary(ViewData) { { "PageHeader", @T["Webhook"] }, { "PageDescription", @T["Manage all webhooks here."] } })
+        </div>
+        <div id="webhook-setting" class="col-xs-12 bi-page-header tabs-header-padding top-nav-btn-secton top-nav-search-secton">
+            <div class="col-xs-12 no-padding">
+                <div id="search-area" class="pull-left col-xs-4">
+                    <input type="text" class="pull-left" id="search-webhooks-grid" placeholder="@T["Search"]" />
+                    <span class="su su-inner-close close-icon pull-left" id="clear-search" title="@T["Clear search"]"></span>
+                    <span class="su su-search search-accounts pull-left" title="@T["Search"]"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-12 no-padding bi-page-nav-bar">
+            <ul id="email-settings-tab-nav" class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="@isSettingsTab">
+                    <a href="#webhook-settings" id="webhook-settings-tab" aria-controls="webhook-settings-tab" role="tab" data-toggle="tab">@T["General"]</a>
+                </li>
+                <li role="presentation" class="@isLogsTab">
+                    <a href="#webhook-logs" id="webhook-logs-tab" aria-controls="webhook-activity-logs-tab" role="tab" data-toggle="tab">@T["Failure Logs"]</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div id="webhook-settings-container" class="bi-page-container bi-page-container-with-tab @(canShowAdminMenu ? string.Empty : "admin-panel-full-width")" role="tabpanel" aria-labelledby="webhook-settings">
         <div class="bi-page-content col-xs-12 no-padding">
-            <div id="webhook-setting" class="bi-page-header tabs-header-padding col-md-12 col-lg-12 col-sm-12">
-                <hgroup class="bi-page-header-description">
-                    <h1 class="h2 page-title">
-                        @T["Webhook"]
-                    </h1>
-                    <h5 class="page-description">
-                        @T["Manage all webhooks here."]
-                    </h5>
-                </hgroup>
-            </div>
-            <div class="col-xs-12 no-padding bi-page-nav-bar">
-                <ul id="email-settings-tab-nav" class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="@isSettingsTab">
-                        <a href="#webhook-settings" id="webhook-settings-tab" aria-controls="webhook-settings-tab" role="tab" data-toggle="tab">@T["General"]</a>
-                    </li>
-                    <li role="presentation" class="@isLogsTab">
-                        <a href="#webhook-logs" id="webhook-logs-tab" aria-controls="webhook-activity-logs-tab" role="tab" data-toggle="tab">@T["Failure Logs"]</a>
-                    </li>
-                </ul>
-            </div>
-
             <div class="tab-content col-xs-12 no-padding">
                 <div role="tabpanel" class="tab-pane bi-page-body @isSettingsTab" id="webhook-settings">
                     <div id="webhook-setting-body" class="col-xs-12 no-padding">
-                        <div id="search-area" class="pull-right">
-                            <input type="text" class="pull-left" id="search-webhooks-grid" placeholder="@T["Search"]" />
-                            <span class="su su-inner-close close-icon pull-left" id="clear-search" title="@T["Clear search"]"></span>
-                            <span class="su su-search search-accounts pull-left" title="@T["Search"]"></span>
-                        </div>
                         <div class="col-xs-12 no-padding ">
                             <div id="webhooksGridSettings"></div>
                         </div>

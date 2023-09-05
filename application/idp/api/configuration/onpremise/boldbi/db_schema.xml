@@ -286,6 +286,7 @@
 		<Id>Id</Id>
 		<ScheduleId>ScheduleId</ScheduleId>
 		<ItemId>ItemId</ItemId>
+		<DashboardWidgetId>DashboardWidgetId</DashboardWidgetId>
 		<Name>Name</Name>
 		<RecurrenceTypeId>RecurrenceTypeId</RecurrenceTypeId>
 		<RecurrenceInfo>RecurrenceInfo</RecurrenceInfo>
@@ -316,7 +317,18 @@
 		<Message>Message</Message>
 		<IsOnDemand>IsOnDemand</IsOnDemand>
 		<IsActive>IsActive</IsActive>
+		<RequestId>RequestId</RequestId>
+		<LogExist>LogExist</LogExist>
 	</DB_ScheduleLog>
+	<DB_ScheduleMissingLogs>
+		<DB_TableName>ScheduleMissingLogs</DB_TableName>
+		<Id>Id</Id>
+		<ScheduleId>ScheduleId</ScheduleId>
+		<MissingType>MissingType</MissingType>
+		<StartDate>StartDate</StartDate>
+		<EndDate>EndDate</EndDate>
+		<IsActive>IsActive</IsActive>
+	</DB_ScheduleMissingLogs>
 	<DB_ScheduleLogGroup>
 		<DB_TableName>ScheduleLogGroup</DB_TableName>
 		<Id>Id</Id>
@@ -751,6 +763,7 @@
 		<ModifiedDate>ModifiedDate</ModifiedDate>
 		<IsActive>IsActive</IsActive>
 		<PublishType>PublishType</PublishType>
+		<ExternalSiteId>ExternalSiteId</ExternalSiteId>
 	</DB_PublishedItem>
 	<DB_PublishJobs>
 		<DB_TableName>PublishJobs</DB_TableName>
@@ -762,6 +775,7 @@
 		<CompletedDate>CompletedDate</CompletedDate>
 		<Status>Status</Status>
 		<IsActive>IsActive</IsActive>
+		<Type>Type</Type>
 	</DB_PublishJobs>
 	<DB_DeploymentDashboards>
 		<DB_TableName>DeploymentDashboards</DB_TableName>
@@ -963,7 +977,7 @@
 		<Browser>Browser</Browser>
 		<LastActive>LastActive</LastActive>
 	</DB_UserSession>
-<DB_BackgroundJobs>
+	<DB_BackgroundJobs>
 		<DB_TableName>BackgroundJobs</DB_TableName>
 		<Id>Id</Id>
 		<JobType>JobType</JobType>
@@ -978,5 +992,25 @@
 		<CanIncludeSensitiveInfo>CanIncludeSensitiveInfo</CanIncludeSensitiveInfo>
 		<IsSampleData>IsSampleData</IsSampleData>
 		<IsActive>IsActive</IsActive>
-</DB_BackgroundJobs>>
+</DB_BackgroundJobs>
+  <DB_UploadDataSourceMapping>
+		<DB_TableName>UploadDataSourceMapping</DB_TableName>
+		<Id>Id</Id>
+		<DownloadedTenantId>DownloadedTenantId</DownloadedTenantId>
+		<DownloadedItemId>DownloadedItemId</DownloadedItemId>
+		<UploadedItemId>UploadedItemId</UploadedItemId>
+		<UploadedDate>UploadedDate</UploadedDate>
+		<IsActive>IsActive</IsActive>
+  </DB_UploadDataSourceMapping>
+  <DB_ScheduleRunHistory>
+    <DB_TableName>ScheduleRunHistory</DB_TableName>
+    <Id>Id</Id>
+    <ScheduleStatusId>ScheduleStatusId</ScheduleStatusId>
+    <ScheduleId>ScheduleId</ScheduleId>
+    <StartedDate>StartedDate</StartedDate>
+    <ModifiedDate>ModifiedDate</ModifiedDate>
+    <Message>Message</Message>
+    <IsOnDemand>IsOnDemand</IsOnDemand>
+    <IsActive>IsActive</IsActive>
+  </DB_ScheduleRunHistory>
 </DB_SyncUMP>

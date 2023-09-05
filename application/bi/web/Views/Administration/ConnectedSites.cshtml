@@ -4,11 +4,10 @@
 
     ViewBag.Title = T["Connected Sites"].Value + " - " + globalAppSettings.SystemSettings.OrganizationName;
     var model = ViewBag.GranularPermissions as Dictionary<object, bool>;
-    var scopeList = ServerAppConfig.SettingsScopesList;
-    var canShowAdminMenu = _identityResponse.IsAdmin || model[SettingsScopes.All] || model.Select(x => x).Where(x => scopeList.Contains(x.Key.ToString()) && x.Value == true).Count() > 1 || (model.Select(x => x).Where(x => scopeList.Contains(x.Key.ToString()) && x.Value == true).Count() == 1 && (model[PermissionEntity.UsersandGroups] || model[PermissionEntity.SpecificGroup] || model[PermissionEntity.AllGroups])) || model[PermissionEntity.UsersandGroups];
+    var canShowAdminMenu = await ServerAppConfig.CanShowAdminMenu(model, _identityResponse.IsAdmin, _featureManager);
     var dashboardServerResourceUrl = globalAppSettings.SystemSettings.CDNLink.TrimEnd('/');
-    var isBISitesTab = (string.IsNullOrWhiteSpace(Context.Request.Query["tab"]) || Context.Request.Query["tab"] == "bi-sites") ? "active" : string.Empty;
-    var isReportsSitesTab = (Context.Request.Query["tab"].ToString() == "reports-sites") ? "active" : string.Empty;
+    var isBISitesTab = (string.IsNullOrWhiteSpace(Context.Request.Query["tab"]) || Context.Request.Query["tab"].ToString().ToLower() == "bi-sites") ? "active" : string.Empty;
+    var isReportsSitesTab = (Context.Request.Query["tab"].ToString().ToLower() == "reports-sites") ? "active" : string.Empty;
 }
 
 @section scripts{
@@ -72,16 +71,16 @@
             <div class="bi-page-header col-xs-12">
                 <hgroup class="col-xs-8 bi-page-header-description no-padding">
                     <h1 class="page-title">@T["Connected Sites"]</h1>
-                    <h5 class="no-padding page-description">@T["Manage all the BI and Reports connected sites"]</h5>
+                    <h5 class="no-padding page-description">@string.Format(T["Manage all the {0} and {1} connected sites"].Value, "BI", "Reports")</h5>
                 </hgroup>
             </div>
             <div class="col-xs-12 no-padding bi-page-nav-bar">
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="@isBISitesTab">
-                        <a href="#bi-sites" id="bi-sites-tab" aria-controls="bi-sites-tab" role="tab" data-toggle="tab">@T["BI Sites"]</a>
+                        <a href="#bi-sites" id="bi-sites-tab" aria-controls="bi-sites-tab" role="tab" data-toggle="tab">@string.Format(T["{0} Sites"].Value, "BI")</a>
                     </li>
                     <li role="presentation" class="@isReportsSitesTab">
-                        <a href="#reports-sites" id="reports-sites-tab" aria-controls="reports-sites-tab" role="tab" data-toggle="tab">@T["Reports Sites"]</a>
+                        <a href="#reports-sites" id="reports-sites-tab" aria-controls="reports-sites-tab" role="tab" data-toggle="tab">@string.Format(T["{0} Sites"].Value, "Reports")</a>
                     </li>
                 </ul>
             </div>

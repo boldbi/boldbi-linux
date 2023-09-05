@@ -1,387 +1,401 @@
-msgid "Tab name already exists"
+msgid "Tab Security"
 msgstr ""
 
-msgid "A file with the same name already exists."
+msgid "Tab security changes have been saved successfully."
 msgstr ""
 
-msgid "Please enter valid BI site details"
+msgid "Failed to save tab security changes."
 msgstr ""
 
-msgid "Please enter valid Reports site details"
+msgid "Tab security has been enabled."
 msgstr ""
 
-msgid "Oops! The widget you are trying to access is restricted from viewing from the current IP address:"
+msgid "Tab security has been disabled."
 msgstr ""
 
-msgid "Edit External Sites"
+msgid "Tab security has already been enabled."
 msgstr ""
 
-msgid "Add External BI Sites"
+msgid "Tab security has already been disabled."
 msgstr ""
 
-msgid "Edit External BI Sites"
+msgid "Refresh settings has been configured."
 msgstr ""
 
-msgid "Add External Reports Sites"
+msgid "Refresh settings has been enabled."
 msgstr ""
 
-msgid "Edit External Report Sites"
+msgid "Refresh settings has been disabled."
 msgstr ""
 
-msgid "External site edited successfully."
+msgid "Refresh settings has been disabled by the system due to 5 consecutive failure."
 msgstr ""
 
-msgid "Failed to edit external site."
+msgid "Refresh not started"
 msgstr ""
 
-msgid "Only admin and owner can edit or delete the site."
+msgid "The refresh could not commence because a service was offline or there was an undetermined problem."
 msgstr ""
 
-msgid "To create Multitabbed Dashboard: Click Add dashboards, select category, select dashboard and then you can add multiple dashboards."
+msgid "Refresh cannot be initiated as another refresh is currently in progress"
 msgstr ""
 
-msgid "To create Slideshow: Click Add dashboards, select category, select dashboard and then you can add multiple dashboards."
+msgid "View Status"
 msgstr ""
 
-msgid "Error occured while processing your request."
+msgid "Please select a CSV file with user count of {0} or less."
 msgstr ""
 
-msgid "You do not have permission to make this item public."
+msgid "Delete bulk users import job"
 msgstr ""
 
-msgid "You do not have permission to delete this item."
+msgid "Error while importing users."
 msgstr ""
 
-msgid "You do not have permission to share this item."
+msgid "Are you sure you want to delete the bulk users import job - {0}?"
 msgstr ""
 
-msgid "This item has been deleted or moved."
+msgid "Are you sure you want to suspend the bulk users import job - {0}?"
 msgstr ""
 
-msgid "You do not have permission to run this schedule."
+msgid "Import users’ job has been deleted successfully."
 msgstr ""
 
-msgid "You do not have permission to enable this schedule."
+msgid "Failed to delete import users’ job."
 msgstr ""
 
-msgid "You do not have permission to disable this schedule."
+msgid "Import users’ job has been suspended successfully."
 msgstr ""
 
-msgid "An error occurred while processing data cache settings."
+msgid "Failed to suspend import users’ job"
 msgstr ""
 
-msgid "An error occurred while processing data store settings."
+msgid "Suspend bulk users import job"
 msgstr ""
 
-msgid "Please select any group."
+msgid "Bulk users import job has already been deleted. Please refresh the page."
 msgstr ""
 
-msgid "Header key already exists"
+msgid "Bulk users import job has already been suspended. Please refresh the page."
 msgstr ""
 
-msgid "Please add the custom header values"
+msgid "Bulk User Import"
 msgstr ""
 
-msgid "Look and feel Settings"
+msgid "A background job for importing users has been created, and the import process will start within 3 minutes of the job’s creation. Please check the import job status."
 msgstr ""
 
-msgid "Look and feel Settings has been updated successfully."
+msgid "Another import is currently in process. Multiple imports cannot be triggered simultaneously."
 msgstr ""
 
-msgid "Manage Application Theme"
+msgid "Yet to start"
 msgstr ""
 
-msgid "Manage Dashboard Theme"
+msgid "In progress"
 msgstr ""
 
-msgid "Please select a {0} file with a valid format."
+msgid "Yet to complete"
 msgstr ""
 
-msgid "Security  Settings"
+msgid "Status unknown"
 msgstr ""
 
-msgid "Enter the list of URL separated by commas"
+msgid "Refresh Disabled"
 msgstr ""
 
-msgid "Please enter a valid URL"
+msgid "PREVIEW"
 msgstr ""
 
-msgid "Table names"
+msgid "Selected ({0})"
 msgstr ""
 
-msgid "Existing table names separated by commas"
+msgid "Processing Request"
 msgstr ""
 
-msgid "Look and Feel"
+msgid "Initiating Fetching of Data source"
 msgstr ""
 
-msgid "Data Process"
+msgid "Data source yet to be started"
 msgstr ""
 
-msgid "CORS Policy"
+msgid "Multi-tabbed dashboards do not support downloads."
 msgstr ""
 
-msgid "Please enter the user pool ID"
+msgid "Upload Drafts"
 msgstr ""
 
-msgid "Please enter the access key ID"
+msgid "Are you sure you want to lock editing in the published dashboard in {0}?"
 msgstr ""
 
-msgid "Please enter the access key secret"
+msgid "Are you sure you want to unlock editing in the published dashboard in {0}?"
 msgstr ""
 
-msgid "Please enter the region"
+msgid "Are you sure you want to lock editing in the published data source in {0}?"
 msgstr ""
 
-msgid "Please enter the audience"
+msgid "Are you sure you want to unlock editing in the published data source in {0}?"
 msgstr ""
 
-msgid "Please enter the URL extension"
+msgid "Lock edit"
 msgstr ""
 
-msgid "Please enter the API token"
+msgid "Unlock edit"
 msgstr ""
 
-msgid "Please enter the API client ID"
+msgid "Please refresh the page published item details not found."
 msgstr ""
 
-msgid "Please enter the API client secret"
+msgid "Editing has been locked successfully in the published dashboard."
 msgstr ""
 
-msgid "Enable User Account Creation"
+msgid "Editing has been unlocked successfully in the published dashboard."
 msgstr ""
 
-msgid "Create a new user account if doesn't exist."
+msgid "Editing has been locked successfully in the published data source."
 msgstr ""
 
-msgid "These claims are normally represented by a JSON object that contains a collection of name and value pairs for each claim. Provide the JSON key to identify the unique identity (email) of the user."
+msgid "Editing has been unlocked successfully in the published data source."
 msgstr ""
 
-msgid "Organisation Name"
+msgid "Failed to lock editing in the published dashboard."
 msgstr ""
 
-msgid "Name of the organisation to be displayed in the login page"
+msgid "Failed to unlock editing in the published dashboard."
 msgstr ""
 
-msgid "Organistaion Name"
+msgid "Failed to lock editing in the published data source."
 msgstr ""
 
-msgid "Please enter the Organisation name"
+msgid "Failed to unlock editing in the published data source."
 msgstr ""
 
-msgid "Organisation Logo"
+msgid "Failed to update published item details in destination site."
 msgstr ""
 
-msgid "Logo of the organisation to be displayed in the login page."
+msgid "Failed to update published item details in source site."
 msgstr ""
 
-msgid "Application id"
+msgid "The dashboard edit has been locked."
 msgstr ""
 
-msgid "A unique identifier used to register the Embedded BI web app in azure AD B2C."
+msgid "The dashboard edit has been unlocked."
 msgstr ""
 
-msgid "Application ID"
+msgid "The data source edit has been locked."
 msgstr ""
 
-msgid "Please enter the application id"
+msgid "The data source edit has been unlocked."
 msgstr ""
 
-msgid "A dedicated instance of azure AD B2C service."
+msgid "No schedules to display."
 msgstr ""
 
-msgid "Sign in Policy"
+msgid "No connected accounts to display."
 msgstr ""
 
-msgid "The Name of the Sign in/Sign up user flow created in Azure B2C"
+msgid "No connected sites to display."
 msgstr ""
 
-msgid "Please enter the sign in policy"
+msgid "No email activity logs to display."
 msgstr ""
 
-msgid "User can logout of both the application and Azure AD B2C using single Logout (SLO)."
+msgid "No webhook activity logs to display."
 msgstr ""
 
-msgid "This category may contain a dashboard that is not listed here due to its visibility settings."
+msgid "No users to display."
 msgstr ""
 
-msgid "Select variables"
+msgid "No groups to display."
 msgstr ""
 
-msgid "Please enter the email subject"
+msgid "No permissions to display."
 msgstr ""
 
-msgid "Body"
+msgid "No schedule history to display."
 msgstr ""
 
-msgid "Update Schema"
+msgid "No users available for synchronization"
 msgstr ""
 
-msgid "Please add required reports site here which will be shown when you configure the report widget."
+msgid "No groups available for synchronization."
 msgstr ""
 
-msgid "Add new site"
+msgid "No attributes to display."
 msgstr ""
 
-msgid "Choose Theme File"
+msgid "You don't have any categories to upload dashboards. Please create a category."
 msgstr ""
 
-msgid "Please ensure your custom theme file is valid by uploading it into this {0}online validation helper{1}."
+msgid "Site Credentials"
 msgstr ""
 
-msgid "Theme Name"
+msgid "A data refresh is currently in progress. Another refresh request will not be initiated until the current one is complete, or 12 hours have elapsed since the initial request."
 msgstr ""
 
-msgid "Please download the default color definition files for dark and light themes from this {0}link{1}."
+msgid "The completion status of the refresh is not being updated by the refreshing service."
 msgstr ""
 
-msgid "You can customize the color code in this definition file and upload it to the application."
+msgid "The refresh log has either been deleted or is currently not available."
 msgstr ""
 
-msgid "Please refer to this {0}link{1} to learn more about how to customize color codes."
+msgid "Started Date"
 msgstr ""
 
-msgid "Modified By"
+msgid "All files prepared more than 48 hours ago will be deleted automatically. Please click Status to see the progress of the file preparation."
 msgstr ""
 
-msgid "Modified On"
+msgid "Selected (0)"
 msgstr ""
 
-msgid "Enable X-Frame-Options"
+msgid "Download All"
 msgstr ""
 
-msgid "If you enable this option, the application will add an X-Frame-Options header, SAMEORIGIN, meaning that the page will only be displayed if all frame ancestors and the page origin are the same. By default, this option is disabled."
+msgid "Complete Upload"
 msgstr ""
 
-msgid "Please make sure that you are not using iframe embedding, as it will not work when this setting is saved."
+msgid "Failure at "
 msgstr ""
 
-msgid "Manage all the BI and Reports connected sites"
+msgid "Last Successful at {0}"
 msgstr ""
 
-msgid "BI Sites"
+msgid "Refresh Started at {0}"
 msgstr ""
 
-msgid "Reports Sites"
+msgid "Import Groups — {0}"
 msgstr ""
 
-msgid "Configure CORS settings for your site."
+msgid "Import Selected Users"
 msgstr ""
 
-msgid "Show get Embed code for Dashboards"
+msgid "Import All Users"
 msgstr ""
 
-msgid "This setting will allow the user to hide or show the Get Embed Code option in the context menu of the dashboard in the listing page and also in the share dialog of the dashboard."
+msgid "Import all users and activate their accounts"
 msgstr ""
 
-msgid "Show get Embed code for Widgets"
+msgid "Bulk import Result"
 msgstr ""
 
-msgid "This setting will allow the user to hide or show the Get Embed Code option in the context menu of the widget in the dashboard view page."
+msgid "The user import process will start on or before 3 minutes from the job creation time."
 msgstr ""
 
-msgid "Data Process Settings"
+msgid "Job Id"
 msgstr ""
 
-msgid "Configure the database for storing extracted data and the settings for data caching."
+msgid "Import Type"
 msgstr ""
 
-msgid "Data Store Configuration"
+msgid "Started On"
 msgstr ""
 
-msgid "Data Cache Configuration"
+msgid "Suspend"
 msgstr ""
 
-msgid "Customize the look and feel of the application."
+msgid "Type Of import"
 msgstr ""
 
-msgid "Inherit from Global Settings"
+msgid "Bulk user import Result"
 msgstr ""
 
-msgid "Enabling this setting will cause the look and feel to be inherited from the UMS settings."
+msgid "The bulk user import status will be marked as completed within 3 minutes after all the users have been imported successfully."
 msgstr ""
 
-msgid "Fonts"
+msgid "Total User Count"
 msgstr ""
 
-msgid "Theme Mode"
+msgid "Imported Users"
 msgstr ""
 
-msgid "Light"
+msgid "Yet To Import"
 msgstr ""
 
-msgid "Dark"
+msgid "Failed User"
 msgstr ""
 
-msgid "Custom Theme"
+msgid "Date Created"
 msgstr ""
 
-msgid "Upload the theme file here."
+msgid "Last Updated"
 msgstr ""
 
-msgid "A custom theme can only be created for either a dark or light mode. A single custom theme will not work for both. Please choose a custom theme based on your current application mode. To reset the custom theme, please select the default value."
+msgid "The import has been suspended by system due to 5 consecutive Failure."
 msgstr ""
 
-msgid "Dashboard Theme"
+msgid "Type Of Import"
 msgstr ""
 
-msgid "Your preferred application and data language will not be applied here as the user preference for these settings is disabled."
+msgid "Failed Import"
 msgstr ""
 
-msgid "Security Settings"
+msgid "Click to view"
 msgstr ""
 
-msgid "Content Security Policy"
+msgid "{0}Go to sites page{1} or {2}Create a support ticket{3}"
 msgstr ""
 
-msgid "X-Frame-Options"
+msgid "{0}Go to home page{1} or {2}Create a support ticket{3}"
 msgstr ""
 
-msgid "Enable Content-Security-Policy"
+msgid "Shows the bulk user import detail"
 msgstr ""
 
-msgid "You can configure a content security policy (CSP) for your site. CSP will not be applied if this option is disabled."
+msgid "Bulk Import Result"
 msgstr ""
 
-msgid "Click {0}here{1} to learn more."
+msgid "The import of {0} users from {1} is still in progress"
 msgstr ""
 
-msgid "Style Source"
+msgid "Import users job Not Found"
 msgstr ""
 
-msgid "This directive specifies valid sources for stylesheets."
+msgid "Refresh Logs Not Found"
 msgstr ""
 
-msgid "Enter a list of URLs separated by commas"
+msgid "Import users job details not found"
 msgstr ""
 
-msgid "Script Source"
+msgid "Sorry! The import users job detail you’re looking for isn’t available. The job detail may have been deleted or the job id is invalid. Please refresh the bulk import result page."
 msgstr ""
 
-msgid "This directive specifies valid sources for JavaScript."
+msgid "Refresh logs not found"
 msgstr ""
 
-msgid "Font Source"
+msgid "Sorry! The logs you’re looking for isn’t available. The logs may have been deleted or haven't been logged."
 msgstr ""
 
-msgid "This directive specifies valid sources for fonts."
+msgid "This dashboard has been configured to show tabs based on individual dashboard permissions. You do not have the permission to view any of the tabs in this dashboard."
 msgstr ""
 
-msgid "Image Source"
+msgid "The synchronization process will disregard deleted sites during the bulk sync process. To synchronize the latest changes, please remove dashboards/data sources of the deleted sites and publish it again."
 msgstr ""
 
-msgid "This directive specifies valid sources for images."
+msgid "Lock Edit"
 msgstr ""
 
-msgid "Connect Source"
+msgid "Unlock Edit"
 msgstr ""
 
-msgid "This directive specifies the sources that can be used to make Fetch/XHR requests."
+msgid "No upload drafts available to display."
 msgstr ""
 
-msgid "Frame Source"
+msgid "No upload drafts were found that match your search. Try modifying your search."
 msgstr ""
 
-msgid "This directive specifies valid sources for the nested document using elements like &lt;frame&gt; and &lt;iframe&gt;."
+msgid "Enabling tab-level security will restrict tab visibility to users with the individual dashboard permission when dashboards are added as tabs. By default, all tabs will be visible to the user if the user has access to a multitab dashboard."
 msgstr ""
 
+msgid "Enable tab-level security"
+msgstr ""
+
+msgid "All tabs will be visible to the dashboard owner and administrators. Public dashboards added as tabs will also be visible."
+msgstr ""
+
+msgid "Refresh logs"
+msgstr ""
+
+msgid "Session Timeout"
+msgstr ""
+
+msgid "Your session has expired. Please login again or refresh the page and try again"
+msgstr ""

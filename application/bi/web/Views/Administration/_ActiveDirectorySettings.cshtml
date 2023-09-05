@@ -20,8 +20,7 @@
     var model = ViewBag.GranularPermissions as Dictionary<object, bool>;
     var isAdmin = _identityResponse.IsAdmin;
     var loginDisclaimerObject = ServerAppConfig.IsSelfHosted ? string.Empty : ViewBag.SystemSettings.LoginDisclaimer;
-    var scopeList = ServerAppConfig.SettingsScopesList;
-    var canShowAdminMenu = _identityResponse.IsAdmin || model[SettingsScopes.All] || model.Select(x => x).Where(x => scopeList.Contains(x.Key.ToString()) && x.Value == true).Count() > 1 || (model.Select(x => x).Where(x => scopeList.Contains(x.Key.ToString()) && x.Value == true).Count() == 1 && (model[PermissionEntity.UsersandGroups] || model[PermissionEntity.SpecificGroup] || model[PermissionEntity.AllGroups])) || model[PermissionEntity.UsersandGroups];
+    var canShowAdminMenu = await ServerAppConfig.CanShowAdminMenu(model, _identityResponse.IsAdmin, _featureManager);
 }
 <script>
     var defaultAuthentication = "";
@@ -146,17 +145,13 @@
 
 @section MainSection{
     @await Html.PartialAsync("_AdminMenu")
-<div id="active-directory-container" role="tabpanel" class="bi-page-container @(ViewBag.ThirdPartyLogins ? string.Empty : "unlock-enterprise-features blur-content") @(canShowAdminMenu ? string.Empty : "admin-panel-full-width")" aria-labelledby="active-directory-settings-link" ng-controller="adSettingsController">
-    <div class="bi-page-content col-xs-12 no-padding">
-        <div class="col-xs-12 import-area bi-page-header @(((ServerAppConfig.IsSelfHosted && enableWindowsAD && (isAdmin || (model != null && (model[SettingsScopes.All] || model[SettingsScopes.UserDirectorySettings])))) && (isAdmin || (model != null && (model[SettingsScopes.All] || model[SettingsScopes.UserDirectorySettings])))) ? "tabs-header-padding" : string.Empty)">
+    <div class="col-xs-12 no-padding no-margin @(canShowAdminMenu ? "width-alignment" : "admin-panel-full-width")">
+        @await Html.PartialAsync("../Shared/_TopHeaderSection", new ViewDataDictionary(ViewData) { { "PageHeader", @T["User Directories"] }, { "PageDescription", @T["Configure external user directories."] } })
+        <div class="col-xs-12 bi-page-header top-nav-btn-secton @(((ServerAppConfig.IsSelfHosted && enableWindowsAD && (isAdmin || (model != null && (model[SettingsScopes.All] || model[SettingsScopes.UserDirectorySettings])))) && (isAdmin || (model != null && (model[SettingsScopes.All] || model[SettingsScopes.UserDirectorySettings])))) ? "tabs-header-padding" : string.Empty)">
             <div class="col-xs-12 no-padding">
-                <hgroup class="col-xs-6 col-xs-6 col-sm-6 col-xs-12 no-padding bi-page-header-description">
-                    <h1 class="h2 page-title">@T["User Directories"]</h1>
-                    <h5 class="page-description">@T["Configure external user directories."]</h5>
-                </hgroup>
-                @if (isAdmin || (model != null && (model[SettingsScopes.All] || model[SettingsScopes.UserDirectorySettings])))
-                {
-                    <div class="col-xs-6 col-xs-6 col-sm-6 col-xs-12 no-padding">
+                <div class="col-xs-6 no-padding button-section">
+                    @if (isAdmin || (model != null && (model[SettingsScopes.All] || model[SettingsScopes.UserDirectorySettings])))
+                    {
                         <button class="dropdown-toggle primary-button app-btn-primary pull-right" data-toggle="dropdown" id="schedule-synchronization" title="@T["Synchronize schedules"]">
                             <span class="sync-btn-text">@T["Synchronization"] </span>
                             <span class="caret"></span>
@@ -181,8 +176,8 @@
                                 </a>
                             </li>
                         </ul>
-                    </div>
-                }
+                    }
+                </div>
             </div>
         </div>
         <div class="col-xs-12 no-padding bi-page-nav-bar">
@@ -204,6 +199,9 @@
                 }
             </ul>
         </div>
+    </div>
+<div id="active-directory-container" role="tabpanel" class="bi-page-container  @(((ServerAppConfig.IsSelfHosted && enableWindowsAD && (isAdmin || (model != null && (model[SettingsScopes.All] || model[SettingsScopes.UserDirectorySettings])))) && (isAdmin || (model != null && (model[SettingsScopes.All] || model[SettingsScopes.UserDirectorySettings])))) ? "bi-page-container-with-tab" : string.Empty) @(ViewBag.ThirdPartyLogins ? string.Empty : "unlock-enterprise-features blur-content") @(canShowAdminMenu ? string.Empty : "admin-panel-full-width")" aria-labelledby="active-directory-settings-link" ng-controller="adSettingsController">
+    <div class="bi-page-content col-xs-12 no-padding">
         <div class="tab-content">
             @if (ServerAppConfig.IsSelfHosted && enableWindowsAD && (isAdmin || (model != null && (model[SettingsScopes.All] || model[SettingsScopes.UserDirectorySettings]))))
             {
@@ -533,25 +531,16 @@
 
             }
 
-            <div id="select-existing-join">
+            <div id="select-existing-join" style="display:none">
                 <div class="col-xs-12 no-padding">
-                    <div class="col-xs-12 no-padding">
-                        <h3>@T["Select Relation"]</h3>
-                    </div>
                     <div class="col-xs-12 no-padding table-content">
                         <table class="relation-list"></table>
                     </div>
                 </div>
-                <div class="col-xs-12 btn-relation-holder">
-                    <button type="button" id="select-relation" class="primary-button app-btn-primary pull-right">@T["Apply"]</button>
-                </div>
             </div>
 
-            <div id="get-join-details">
+            <div id="get-join-details" style="display:none">
                 <div class="col-xs-12 no-padding">
-                    <div class="col-xs-12 no-padding">
-                        <span class="join-dialog-title">@T["Form Relation"]</span>
-                    </div>
                     <div class="col-xs-12 no-padding relation-select-content">
                         <div class="col-xs-5 no-padding">
                             <h5>@T["Left table"]</h5>
@@ -579,14 +568,6 @@
                                 <ul></ul>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-xs-12 btn-relation-holder">
-                    <div class="col-xs-6">
-                    </div>
-                    <div class="col-xs-6 rightAlign">
-                        <button type="button" id="apply-relation" class="app-button app-primary-button app-btn-primary" disabled="disabled">@T["Apply"]</button>
-                        <input type="button" title="" class="app-button app-secondary-button app-btn-secondary" onclick="closeJoinsPopup()" value="@T["Cancel"]" tabindex="1">
                     </div>
                 </div>
             </div>

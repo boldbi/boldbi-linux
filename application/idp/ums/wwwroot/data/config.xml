@@ -52,6 +52,10 @@
   <HideMobileAppRedirectURI>false</HideMobileAppRedirectURI>
   <ResourceModifiedDate></ResourceModifiedDate>
 	<IsCustomBranding>false</IsCustomBranding>
+	<HideLicenseManagement>false</HideLicenseManagement>
+	<ShowStackTrace>false</ShowStackTrace>
+	<SessionIdleMinutes>60</SessionIdleMinutes>
+	<HideLoginOptionInEmail>false</HideLoginOptionInEmail>
 <BrandingImages>
 		<MainLogo>main_logo.svg</MainLogo>
 		<LoginLogo>login_logo.svg</LoginLogo>
@@ -59,4 +63,11 @@
 		<FavIcon>favicon.ico</FavIcon>
 		<PoweredByLogo>powered_by_logo.svg</PoweredByLogo>
 	</BrandingImages>
+	<EnableApplicationEmbed>false</EnableApplicationEmbed>
+	<ProfileMenu>
+		<HideYourSites>false</HideYourSites>
+		<HideManageSites>false</HideManageSites>
+		<HideLogout>false</HideLogout>
+	</ProfileMenu>
+	<IgnoreSslValidation>false</IgnoreSslValidation>
 </SystemSettings>

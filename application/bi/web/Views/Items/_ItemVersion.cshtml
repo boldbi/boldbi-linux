@@ -41,10 +41,10 @@
                     <div class="modal-body col-lg-12">
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active versions-tab">
-                                <a id="version-tab" href="" data-report-id="" data-created-by="" data-report-name="" class="folder-manage-tab folder-tab-color active-tab" data-purpose="View" role="tab" data-toggle="tab" aria-controls="versions">@T["Versions"]</a>
+                                <a id="version-tab" href="" data-report-id="" data-created-by="" data-report-name="" class="folder-manage-tab folder-tab-color active-tab" data-purpose="View" role="tab" aria-controls="versions">@T["Versions"]</a>
                             </li>
                             <li role="presentation">
-                                <a id="item-log-tab" href="" data-report-id="" data-created-by="" data-report-name="" class="folder-manage-tab section-gray-heading" data-isrightpane="false" role="tab" data-toggle="tab" aria-controls="file-logs">@T["File Logs"]</a>
+                                <a id="item-log-tab" href="" data-report-id="" data-created-by="" data-report-name="" class="folder-manage-tab section-gray-heading" data-isrightpane="false" role="tab" aria-controls="file-logs">@T["File Logs"]</a>
                             </li>
                         </ul>
                         <input id="report-action" type="hidden" value="">
@@ -127,12 +127,19 @@
                     </li>
                     {{/if}}
                 </ul>
-                {{else}}
+               {{else}}
                 {{if !IsCurrentVersion && CanWrite}}
                 <span class="dropdown-toggle option-icon" title="@T["Actions"]" data-toggle="dropdown">
                     <span class="su su-options"></span>
                 </span>
                 <ul class="dropdown-menu" role="menu">
+                    <li>
+                        <a title="@T["Edit"]" href="@Url.Action("Index", "DataSourceDesigner")?datasourceId={{:ItemId}}&v={{:VersionNumber}}" target="_blank">
+                            <i class="su su-edit"></i>
+                            <span>@T["Edit"]</span>
+                        </a>
+                    </li>
+                    <li role="separator" class="divider"></li>
                     <li>
                         <a data-itemid="{{:ItemId}}" title="@T["Restore"]" data-item-version="{{:VersionNumber}}" data-item-type="{{:ItemTypeId}}" class="item-roll-back" href="javascript:void(0);"><i class="su su-roll-back"></i><span>@T["Restore"]</span></a>
                     </li>
@@ -166,7 +173,6 @@
                     enableAltRow: false,
                     allowSelection: true,
                     enableRowHover: true,
-                    locale: "en-us",
                     rowDataBound: function () {
                         $('[data-toggle="tooltip"]').tooltip();
                     },
@@ -227,7 +233,6 @@
                     allowFiltering: false,
                     allowSelection: true,
                     enableRowHover: true,
-                    locale: "en-us",
                     rowDataBound: function () {
                         $('[data-toggle="tooltip"]').tooltip();
                     },

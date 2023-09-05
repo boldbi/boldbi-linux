@@ -185,10 +185,10 @@ $(document).ready(function () {
         content: document.getElementById("download-logs-dialog"),
         showCloseIcon: true,
         width: '500px',
-        height: '284px',
+        height: '300px',
         isModal: true,
         visible: false,
-        beforeOpen: fnBeforeOpen,
+        beforeOpen: fnBeforeDownloadDialogsOpen,
         animationSettings: { effect: 'Zoom' }
     });
 
@@ -210,6 +210,7 @@ $(document).ready(function () {
 
 $(document).on("click", "#download-log", function () {
     downloadLogsDialog.show();
+    document.getElementById("is-include-configuration").checked = false
 });
 
 $(document).on("click", "#download-logs-dialog-cancel", function () {
@@ -223,7 +224,8 @@ $(document).on("click", ".dropdown-backdrop", function () {
 $(document).on("click", "#download-logs-dialog-proceed", function () {
     downloadLogsDialog.hide();
     var val = document.getElementById("download-logs-dialog-dropdown").ej2_instances[0].value;
-    window.location = getDiagnosticLogsUrl + "?span=" + val;
+    var isIncludeConfiguration = $("#is-include-configuration").is(":checked");
+    window.location = getDiagnosticLogsUrl + "?span=" + val + "&isIncludeConfiguration=" + isIncludeConfiguration;
 });
 
 $(document).on("click", "#notification-link, #account-profile, #upload-item-section", function (e) {
@@ -437,7 +439,7 @@ function PerformSearch(currentId) {
     }
 }
 
-function fnBeforeOpen() {
+function fnBeforeDownloadDialogsOpen() {
     document.getElementById('download-logs-dialog').style.visibility = 'visible';
 }
 
@@ -749,7 +751,7 @@ function IsEmail(email) {
 }
 
 function UsernameValidation(username) {
-    var filter = /^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){1,252}[a-zA-Z0-9]$/;
+    var filter = /^(?:(?!\.{2}|_{2}|-{2})[\p{L}\p{N}0-9_.-]+@[\p{L}\p{N}\-]+(\.[\p{L}\-]+)*|[\p{L}\p{N}0-9_.-]+)$/u;
     if (filter.test(username)) {
         return true;
     }

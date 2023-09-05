@@ -1,16 +1,21 @@
 ﻿@inject ServerPrincipal _identityResponse
 @using Newtonsoft.Json
 @{
+    var refreshDisabledContent = T["Refresh Disabled"];
+    var failureAttempt = T["Failure at "];
     var gridName = ViewBag.gridName;
     var permissionData = ViewBag.Permissions;
     var userId = _identityResponse.User.UserId;
     var globalAppSettings = _globalAppSettings;
     var isMobile = new DeviceDetection(Context).IsMobile;
     var query = ViewBag.SearchQuery;
+    var theme = ViewBag.Theme;
     var customUI = globalAppSettings.SystemSettings.CustomUI;
     var schemes = customUI?.Profiles != null && customUI.Profiles[0].DataSources != null ? customUI.Schemes.Where(x => x.Name == customUI.Profiles[0].DataSources.Scheme).FirstOrDefault() : null;
     var granularPermissions = ViewBag.GranularPermissions as Dictionary<object, bool>;
     var enablePublishModule = ServerAppConfig.IsSelfHosted ? ServerAppConfig.EnablePublishModule : globalAppSettings.SystemSettings.PreviewFeatures.EnablePublishModule;
+    var dashboardDesignerResourceUrl = globalAppSettings.SystemSettings.DesignerCdnLink.TrimEnd('/');
+    var providerTypeUrl = dashboardDesignerResourceUrl + "/cdn/css/designer" + theme;
 }
 <script>
     var copyIframeUrl = "@Url.Action("copyviewitem", "items")";
@@ -52,6 +57,9 @@
 <script type="text/x-jsrender" id="ownerheader">
     <div class="item-header">@T["Owner"]</div>
 </script>
+<script type="text/x-jsrender" id="displayname">
+    <div class="item-header">@T["Data Type"]</div>
+</script>
 <script type="text/x-jsrender" id="last-modified-header">
     <div class="item-header">@T["Last Modified"]</div>
 </script>
@@ -86,6 +94,19 @@
         {{:ModifiedDate}}
     </div>
 </script>
+
+@*<script type="text/x-jsrender" id="data-source-display-name">
+        {{if DatasourceType=="@((int)ConnectionMode.FailedToFetch)"}}
+        <div>
+            <span class="failed data-refresh-status su-schedule-status"></span><span>@T["Failed to fetch"]</span>
+        </div>
+        {{else}}
+    <img class="service-image" title="{{:DisplayName}}" data-toggle="tooltip" src="@providerTypeUrl/images/datasource/{{toLowerCase:ProviderType}}/{{toLowerCase:IconName}}.png" style="width:20px;height:20px">
+        <span title="{{:DisplayName}}" data-toggle="tooltip" data-placement="top">
+            {{:DisplayName}}
+        </span>
+        {{/if}} 
+</script>*@
 
 
 <script type="text/x-jsrender" id="itemname">
@@ -310,13 +331,13 @@
 
             {{if ~checkMobile()}}
             {{if (CreatedById==@(userId) || @(Convert.ToBoolean(Context.Session.GetString("IsAdmin")).ToString().ToLower()) == true || @(granularPermissions[ItemType.Datasource].ToString().ToLower()) == true) && !IsDraft}}
-            <li class="@(schemes != null && !schemes.Publish || !enablePublishModule ? "hide" : string.Empty)">
+            <li class="@(schemes != null && !schemes.Publish ? "hide" : string.Empty)">
                 <a href="javascript:void(0);" class="publish-datasource">
                     <i class="su su-publish"></i>
                     <span>@T["Publish"]</span>
                 </a>
             </li>
-            <li role="separator" class="divider @(schemes != null && !schemes.Publish || !enablePublishModule ? "hide" : string.Empty)"></li>
+            <li role="separator" class="divider @(schemes != null && !schemes.Publish ? "hide" : string.Empty)"></li>
             {{/if}}
             {{/if}}
 
@@ -425,16 +446,33 @@
     <div>
         {{if ScheduleStatus=="@((int)ScheduleStatus.Success)"}}
         <div>
-            <span data-toggle="tooltip" data-placement="top" title="@Html.Raw(String.Format(T["Successful at {0}"].Value,"{{:LastAttemptAt}}"))">
-                <span class="success data-refresh-status su su-schedule-status"></span>
-                <span>@Html.Raw(String.Format(T["Successful at {0}"].Value, "{{:LastAttemptAt}}"))</span>
-            </span>
+            {{if !IsScheduleEnabled}}
+                <span class="refresh-data" data-toggle="tooltip" data-placement="top" data-icon="success" data-last-attempt="@Html.Raw(String.Format(T["Successful at {0}"].Value,"{{:LastAttemptAt}}"))" data-status="success" title="@T["Refresh Disabled"]">
+                    <span class="data-refresh-status su su-schedule-status {{:!IsScheduleEnabled ? 'failed' : 'success'}}"></span>
+                    <Span class="data-refresh">@T["Refresh Disabled"]</Span>
+                </span>
+                <div class="success-refresh">
+                    <Span class="lastsuccessful">@Html.Raw(String.Format(T["Last Successful at {0}"].Value, "{{:LastAttemptAt}}"))</Span>
+                </div>
+            {{else}}
+                <span class="refresh-data" data-toggle="tooltip" data-placement="top" data-icon="success" data-status="success" data-last-attempt="@Html.Raw(String.Format(T["Successful at {0}"].Value, "{{:LastAttemptAt}}"))" data-refresh-status="success" title="@Html.Raw(String.Format(T["Successful at {0}"].Value,"{{:LastAttemptAt}}"))">
+                    <span class="data-refresh-status su su-schedule-status {{:!IsScheduleEnabled ? 'failed' : 'success'}}"></span>
+                    <Span class="data-refresh">@Html.Raw(String.Format(T["Successful at {0}"].Value, "{{:LastAttemptAt}}"))</Span>
+                </span>
+                <div class="success-refresh hide">
+                    <Span class="lastsuccessful">@Html.Raw(String.Format(T["Last Successful at {0}"].Value, "{{:LastAttemptAt}}"))</Span>
+                </div>
+            {{/if}}
         </div>
         {{else ScheduleStatus=="@((int)ScheduleStatus.Fail)"}}
         <div>
-            <span data-toggle="tooltip" data-placement="top" title="@Html.Raw(String.Format(T["Failure at {0}"].Value,"{{:LastAttemptAt}}"))">
+            <span class="refresh-data" data-toggle="tooltip" data-placement="top" data-icon="failed" data-last-attempt="@Html.Raw(String.Format(T["Failure at {0}"].Value,"{{:LastAttemptAt}}"))" data-status="failed" title='{{:~refreshEncode(IsScheduleEnabled, LastAttemptAt)}}'>
                 <span class="failed data-refresh-status su su-schedule-status {{:LastSuccessfulAttemptAt == null ? '' : 'has-last-success'}}"></span>
-                <span>@Html.Raw(String.Format(T["Failure at {0}"].Value, "{{:LastAttemptAt}}"))</span>
+                {{if !IsScheduleEnabled}}
+                       <Span class="data-refresh">@T["Refresh Disabled"]</span>
+                  {{else}}
+                       <span class="data-refresh">@Html.Raw(String.Format(T["Failure at {0}"].Value, "{{:LastAttemptAt}}"))</span>
+                 {{/if}}
             </span>
             {{if LastSuccessfulAttemptAt != null}}
             <div>
@@ -446,9 +484,9 @@
         </div>
         {{else ScheduleStatus=="@((int)ScheduleStatus.Run)"}}
         <div>
-            <span data-toggle="tooltip" data-placement="top" title="@T["Refresh Started"]">
+            <span data-toggle="tooltip" data-placement="top" title="@Html.Raw(String.Format(T["Refresh Started at {0}"].Value, "{{:LastAttemptAt}}"))">
                 <span class="refresh-started data-refresh-status su su-schedule-status {{:LastSuccessfulAttemptAt == null ? '' : 'has-last-success'}}"></span>
-                <span>@T["Refresh Started"]</span>
+                <span>@Html.Raw(String.Format(T["Refresh Started at {0}"].Value, "{{:LastAttemptAt}}"))</span>
             </span>
             {{if LastSuccessfulAttemptAt != null}}
             <div>
@@ -460,35 +498,43 @@
         </div>
         {{else !IsScheduleConfigured}}
         <div>
-            <span data-toggle="tooltip" data-placement="top" title="@T["Refresh schedule not configured"]">
+            <span class="refresh-data" data-toggle="tooltip" data-placement="top" data-icon="not-refreshed" data-last-attempt="" data-status="refreshnotconfigured" title="@T["Refresh schedule not configured"]">
                 <span class="not-refreshed data-refresh-status su su-schedule-status"></span>
-                <span class="refresh-status">@T["Refresh schedule not configured"]</span>
+                <span class="data-refresh">@T["Refresh schedule not configured"]</span>
             </span>
         </div>
         {{else}}
         <div>
-            <span data-toggle="tooltip" data-placement="top" title="@T["Not refreshed yet"]">
-                <span class="not-refreshed data-refresh-status su su-schedule-status"></span>
-                <span class="refresh-status">@T["Not refreshed yet"]</span>
+            <span class="refresh-data" data-toggle="tooltip" data-placement="top" data-icon="not-refreshed" data-last-attempt="" data-status="notrefreshed" title="{{:!IsScheduleEnabled ? "@T["Refresh Disabled"]" : "@T["Not refreshed yet"]" }}">
+                <span class="data-refresh-status su su-schedule-status {{:!IsScheduleEnabled ? 'failed' : 'not-refreshed'}}"></span>
+                {{if !IsScheduleEnabled}}
+                     <Span class="data-refresh">@T["Refresh Disabled"]</span>
+                {{else}}
+                     <span class="data-refresh">@T["Not refreshed yet"]</span>
+                {{/if}}
             </span>
         </div>
         {{/if}}
     </div>
     {{else DatasourceType=="@((int)ConnectionMode.ExtractWithoutRefresh)"}}
     <div>
-        <span class="not-applicable data-refresh-status su su-schedule-status"></span><span>NA</span>
+        <span class="not-applicable data-refresh-status su su-schedule-status"></span>
+        <span>NA</span>
     </div>
     {{else DatasourceType=="@((int)ConnectionMode.MergeDataSource)"}}
     <div>
-        <span class="not-applicable data-refresh-status su su-schedule-status"></span><span>@T["Combined Data Source"]</span>
+        <span class="not-applicable data-refresh-status su su-schedule-status"></span>
+        <span>@T["Combined Data Source"]</span>
     </div>
     {{else DatasourceType=="@((int)ConnectionMode.Live)"}}
     <div>
-        <span class="live-connection data-refresh-status su-schedule-status"></span><span>@T["Live Connection"]</span>
+        <span class="live-connection data-refresh-status su-schedule-status"></span>
+        <span  data-toggle="tooltip" data-placement="top" title="@T["Live Connection"]">@T["Live Connection"]</span>
     </div>
     {{else}}
     <div>
-        <span class="failed data-refresh-status su-schedule-status"></span><span>@T["Failed to fetch"]</span>
+        <span class="failed data-refresh-status su-schedule-status"></span>
+        <span>@T["Failed to fetch"]</span>
     </div>
     {{/if}}
 </script>
@@ -541,7 +587,7 @@
                 if (location.pathname.toLowerCase() === "/" || location.pathname.split("/")[location.pathname.split("/").length - 1].toLowerCase() == "dashboards") {
                     refreshScroller();
                 }
-                $('[data-toggle="tooltip"]').tooltip();
+                $('[data-toggle="tooltip"]').tooltip({ container: $('body') });
             },
             enableRowHover: true,
             columns: [
@@ -637,7 +683,20 @@
             },
             renderDoubleQuotes: function (inputString) {
                 return inputString.replace(new RegExp("\"", 'g'), '&quot;');
+            },
+            refreshEncode: function (IsScheduleEnabled, LastAttemptAt) {
+                return (!IsScheduleEnabled ? "@refreshDisabledContent" : "@failureAttempt" + LastAttemptAt);
             }
+        });
+        
+        $.views.converters("toLowerCase", function (name) {
+            if (name != null) {
+                name = String(name).trim();
+                if (name !== '') {
+                    return name.toLowerCase();
+                }
+            }
+            return '';
         });
     });
 </script>

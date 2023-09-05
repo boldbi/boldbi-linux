@@ -1,6 +1,6 @@
 /*!
 *  filename: ej1.chart.all.js
-*  version : 6.1.8
+*  version : 6.12.12
 *  Copyright Syncfusion Inc. 2001 - 2023. All rights reserved.
 *  Use of this code is subject to the terms of our license.
 *  A copy of the current license can be obtained at any time by e-mailing
@@ -4524,6 +4524,7 @@ BoldBIDashboard.EjSvgRender.utils = {
                 else if (intersectAction == 'rotate90')
                     intersectRotation = 90;
                 labelRotation = labelRotation!=null || orientation== "vertical" ? labelRotation : intersectRotation;
+                labelRotation = typeof(labelRotation) === "string" ? parseFloat(labelRotation) : labelRotation;
                 axis.rotationValue = labelRotation;
                 if (labelRotation) {                
                     rotateLabel = (!BoldBIDashboard.isNullOrUndefined(rotateLabel)) ? rotateLabel : '';
@@ -5107,6 +5108,7 @@ BoldBIDashboard.EjSvgRender.utils = {
         return (value <= range.max) && (value >= range.min);
     },
     _logBase: function (val, base) {
+        val = val < 0? Math.abs(val) : val;
         return Math.log(val) / Math.log(base);
     },
     _correctRect: function (x1, y1, x2, y2) {
@@ -12151,7 +12153,7 @@ BoldBIDashboard.EjTrendLineRenderer = function () {
                     this.calculateMovingAverageTrendline(series, trendline, axis);
                     break;
             }
-            if (series.points.length > 1)
+            if (series.points.length > 1 && trendline.points.length > 1)
                 this.calculateTrendLineRange(trendline, axis);
             return false;
         },
@@ -17187,7 +17189,7 @@ BoldBIDashboard.ejTMA = ejExtendClass(BoldBIDashboard.EjIndicatorRender, {
                     commonEventArgs, textsize,
                     positionX = 0, textWidth, textHeight,
                     positionY = 0,
-                    pointColor;
+                    pointColor, chartHeight = !legend.visible? 200 : 250;
 
                 if ((type == "pyramid" || type == "funnel") && _labelPosition == 'outsideextended')
                     _labelPosition = 'inside';
@@ -17231,11 +17233,13 @@ BoldBIDashboard.ejTMA = ejExtendClass(BoldBIDashboard.EjIndicatorRender, {
                         svgWidth = bbdesigner$(chartObj.svgObject).width(),
                         svgHeight = bbdesigner$(chartObj.svgObject).height();
 
-                    // This condition is removed due to datalabel crop issue (JS-63856)
-                     if (currentseries._enableSmartLabels && (svgWidth < 250 || svgHeight < 250)) {
-                         dataLabelFont.size = "9px"; //Change pie/doughnut text size dynamically
-                         size = measureText(commonEventArgs.data.text, svgWidth, dataLabelFont);
-                         textOffset = 10;
+                    // This condition is removed due to datalabel crop issue (JS-63856)                     
+					  if (currentseries._enableSmartLabels && (svgWidth < 250 || svgHeight < chartHeight)) {
+                        //if(!legend.visible){
+							//dataLabelFont.size = "11.5px"; //Change pie/doughnut text size dynamically
+							//size = measureText(commonEventArgs.data.text, svgWidth, dataLabelFont);
+						//}
+                         textOffset = !legend.visible? 8 : 10;
                      }
                     if (isNull(connectorLine.height))
                         textOffset = textOffset || measureText(commonEventArgs.data.text, null, dataLabelFont).height;
@@ -17522,6 +17526,9 @@ BoldBIDashboard.ejTMA = ejExtendClass(BoldBIDashboard.EjIndicatorRender, {
                       //      point.hide = true;
                       //  }
                         // To check the datalabel overlaps with chart bounds - (End)
+						if ((textOptions.y - textsize.height/2) < 0 || textOptions.y > svgHeight) {
+                            point.hide = true;
+                        }
 						if (!point.hide) chartObj.svgRenderer.drawText(textOptions, datalabelText, chartObj.gSeriesTextEle[seriesIndex]);
 
                         var datalabelSize = measureText(datalabelText, datalabelText.length, dataLabelFont);
@@ -21404,7 +21411,7 @@ var Gradient = function (colors) {
                                 }
                             }
                             if (!(currentSeries._hiloTypes)) {
-                                currentSeries.points[k].YValues[0] = currentSeries.points[k].y;
+                                currentSeries.points[k].YValues[0] = currentSeries.points[k].y == "" ? 0 : currentSeries.points[k].y;
 
                                 if (!BoldBIDashboard.util.isNullOrUndefined(currentSeries.points[k].size))
                                     currentSeries.points[k].YValues[1] = currentSeries.points[k].size;

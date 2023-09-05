@@ -2,11 +2,11 @@
 @{
     var globalAppSettings = _globalAppSettings;
     var model = ViewBag.GranularPermissions as Dictionary<object, bool>;
-    var scopeList = ServerAppConfig.SettingsScopesList;
-    var canShowAdminMenu = _identityResponse.IsAdmin || model[SettingsScopes.All] || model.Select(x => x).Where(x => scopeList.Contains(x.Key.ToString()) && x.Value == true).Count() > 1 || (model.Select(x => x).Where(x => scopeList.Contains(x.Key.ToString()) && x.Value == true).Count() == 1 && (model[PermissionEntity.UsersandGroups] || model[PermissionEntity.SpecificGroup] || model[PermissionEntity.AllGroups])) || model[PermissionEntity.UsersandGroups];
+    var canShowAdminMenu = await ServerAppConfig.CanShowAdminMenu(model, _identityResponse.IsAdmin, _featureManager);
     var tenantAppConfig = new TenantAppConfiguration(globalAppSettings);
     var showSyncfusionBrand = globalAppSettings.SystemSettings.IsShowPoweredBySyncfusion ? "form-group" : "form-group hide";
-    var defaultAppLogo = globalAppSettings.SystemSettings.CDNLink + "/cdn/images/application/" + ServerAppConfig.AppSettings.AppBranding.Identifier + "/" + IconFileNames.MainLogo;
+    var themeAppearance = globalAppSettings.SystemSettings.IsInheritFromGlobalLookAndFeelSettings ? ServerAppConfig.Theme.Appearance : globalAppSettings.SystemSettings.ThemeAppearance;
+    var defaultAppLogo = globalAppSettings.SystemSettings.CDNLink + "/cdn/images/application/" + ServerAppConfig.AppSettings.AppBranding.Identifier + "/" + themeAppearance + "/" + IconFileNames.MainLogo;
     var appLogo = (globalAppSettings.SystemSettings.MainScreenLogo.EndsWith(IconFileNames.MainLogo) || globalAppSettings.SystemSettings.MainScreenLogo.EndsWith("main_logo.png")) ? defaultAppLogo : globalAppSettings.SystemSettings.MainScreenLogo;
     var helpSiteUrl = GlobalAppSettings.GetHelpSiteUrl(HelpSiteUrlNames.DomainBinding);
     var isEnableCopyrightInfo = (bool)ViewBag.SystemSettings.IsEnableCopyrightInfo;
@@ -17,15 +17,21 @@
     var isEnableCopyrightInfo = @Json.Serialize(isEnableCopyrightInfo);
     var isEnablePoweredBySyncfusion = @Json.Serialize(isEnablePoweredBySyncfusion);
 </script>
+<div class="col-xs-12 no-padding no-margin @(canShowAdminMenu ? "width-alignment" : "admin-panel-full-width")">
+    @await Html.PartialAsync("../Shared/_TopHeaderSection", new ViewDataDictionary(ViewData) { { "PageHeader", @T["Site Settings"] }, { "PageDescription", @T["Rebrand with your company name, logo, domain, time zone, and date-time display formats."] } })
+    <div class="col-xs-12 import-area bi-page-header top-nav-btn-secton">
+        <div class="col-xs-12 no-padding">
+            <div class="col-xs-6 no-padding button-section">
+                <a href="@Url.Action("Index","Home")" class="secondary-button  app-btn-secondary pull-right" id="cancel-site-settings" title="">@T["Cancel"]</a>
+                <button type="button" title="" id="update-mail-settings" name="UpdateSystemSettings" class="primary-button app-btn-primary pull-right update-system-settings">
+                    @T["Save"]
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="look-and-feel-container" class="bi-page-container col-xs-12 @(canShowAdminMenu ? string.Empty : "admin-panel-full-width")">
     <div id="organization-block" class="bi-page-content col-xs-12 no-padding">
-        <div class="col-md-12 import-area bi-page-header">
-            <hgroup class="bi-page-header-description">
-                <h1 class="h2 page-title">@T["Site Settings"]</h1>
-                <h5 class="page-description">@T["Rebrand with your company name, logo, domain, time zone, and date-time display formats."]</h5>
-            </hgroup>
-        </div>
-
         <form id="look-and-feel-form" class="col-md-12 form-horizontal bi-page-body" autocomplete="off">
             <input type="hidden" id="default-domain-id" value="@globalAppSettings.SystemSettings.OriginalDomain" />
             @if (ServerAppConfig.IsSelfHosted)
@@ -118,6 +124,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <div id="upload-login-image-textbox" class="col-xs-12 validation-error-image has-error hide">@T["Invalid file format"]</div>
                         </div>
                         <div class="form-group highlight-image col-xs-6 branding-logo header-logo no-padding" data-image="header-logo">
                             <div class="col-xs-3 logo-section">
@@ -131,10 +138,11 @@
                                     </div>
                                 </div>
                             </div>
+                            <div id="upload-main-screen-image-textbox" class="col-xs-12 validation-error-image has-error hide">@T["Invalid file format"]</div>
                         </div>
                     </div>
                     <div class="col-xs-12 no-padding">
-                        <div class="form-group highlight-image col-xs-6 branding-logo no-margin no-padding" data-image="favicon">
+                        <div class="form-group highlight-image col-xs-6 branding-logo no-margin no-padding fav-logo" data-image="favicon">
                             <div class="col-xs-3 logo-section">
                                 <span class="app-img-container favicon tooltip-container" data-toggle="tooltip" data-animation="true" data-image="favicon">
                                     <img id="favicon_logo_img" src="@globalAppSettings.SystemSettings.FavIcon" alt="@T["Favicon"]" />
@@ -148,6 +156,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <div id="upload-favicon-image-textbox" class="col-xs-12 validation-error-image has-error hide">@T["Invalid file format"]</div>
                         </div>
                         <div class="form-group highlight-image col-xs-6 branding-logo email-logo no-padding" data-image="email-logo">
                             <div class="col-xs-3 logo-section">
@@ -161,6 +170,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <div id="upload-emaillogo-image-textbox" class="col-xs-12 validation-error-image has-error hide">@T["Invalid file format"]</div>
                         </div>
                     </div>
                 </div>
@@ -187,11 +197,12 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div id="upload-footerlogo-image-textbox" class="col-xs-12 validation-error-image has-error hide">@T["Invalid file format"]</div>
                             </div>
                         }
                     </div>
                 </div>
-                <div class="form-group blur-whitelable-content col-xs-12 no-margin no-padding">
+                <div class="form-group blur-whitelable-content col-xs-12 no-margin no-padding copy-right-info">
                     <div class="col-xs-12 no-padding">
                         <div class="form-group no-margin">
                             <div id="enable-checkbox">
@@ -313,14 +324,6 @@
 
             }
             </form>
-        <div class="bi-page-footer col-xs-12">
-            <div class="bi-page-actions col-lg-12 col-md-12 no-margin">
-                <a href="@Url.Action("Index","Home")" class="secondary-button  app-btn-secondary pull-right" id="cancel-site-settings" title="">@T["Cancel"]</a>
-                <button type="button" title="" id="update-mail-settings" name="UpdateSystemSettings" class="primary-button app-btn-primary pull-right update-system-settings">
-                    @T["Save"]
-                </button>
-            </div>
-        </div>
     </div>
     @await Html.PartialAsync("../Shared/_Footer", new ViewDataDictionary(ViewData) { { "appsettings", globalAppSettings } })
 </div>

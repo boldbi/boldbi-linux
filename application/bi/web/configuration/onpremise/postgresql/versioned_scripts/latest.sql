@@ -1,30 +1,23 @@
-CREATE TABLE SyncDS_UserSession(
-	Id uuid primary key NOT NULL,
-	IdpReferenceId uuid NOT NULL,
-	SessionId uuid NOT NULL,
-	DirectoryTypeId int NOT NULL DEFAULT 0,
-	IpAddress varchar(255) NULL,
-	Browser varchar(1024) NULL,
-	LoggedInTime timestamp NULL,
-	LastActive timestamp NULL,
-	IsActive smallint NOT NULL)
+ALTER TABLE SyncDS_ScheduleDetail ADD COLUMN DashboardWidgetId uuid NULL
 ;
 
-ALTER TABLE SyncDS_Item ADD COLUMN IsUploadDraft smallint NOT NULL default 0
+CREATE TABLE SyncDS_DSMetrics (
+   Id SERIAL PRIMARY KEY,
+   DataSourceID VARCHAR(255),
+   IsRefresh BOOLEAN,
+   RefreshStartTime VARCHAR(255),
+   RefreshEndTime VARCHAR(255),
+   IsIncremental VARCHAR(255),
+   TableDetails VARCHAR(255),
+   RowsUpdated INTEGER,
+   TotalRows INTEGER,
+   CustomQuery VARCHAR(700),
+   SourceConnectionDetails VARCHAR(255),
+   IncrementalRefreshDetails VARCHAR(255),
+   ExtractType VARCHAR(255),
+   RefreshStatus VARCHAR(255),
+   RefreshException VARCHAR(255))
 ;
 
-CREATE TABLE SyncDS_BackgroundJobs(
-	Id SERIAL primary key NOT NULL,
-	JobType int NOT NULL,
-	ItemId uuid NULL,
-	UserId int NULL,
-	JobDetails text NULL,
-	CreatedDate timestamp NOT NULL,
-	CompletedDate timestamp NOT NULL,
-	Status varchar(255) NOT NULL,
-	StatusMessage varchar(255) NULL,
-	ResourceInfo text NULL,
-	CanIncludeSensitiveInfo smallint NULL,
-	IsSampleData smallint NULL,
-	IsActive smallint NOT NULL)
+ALTER TABLE SyncDS_PublishedItem ADD COLUMN ExternalSiteId int not null DEFAULT 0
 ;

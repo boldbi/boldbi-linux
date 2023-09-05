@@ -39,7 +39,6 @@ common_idp_fresh=false
 common_idp_upgrade=false
 services_array=("bold-id-web" "bold-id-api" "bold-ums-web" "bold-bi-web" "bold-bi-api" "bold-bi-jobs" "bold-bi-designer")
 installation_type=""
-run_custom_widgets_utility=false
 is_bing_map_enabled=false
 bing_map_api_key=""
 app_data_location="$install_dir/application/app_data"
@@ -62,6 +61,8 @@ favicon=""
 footer_logo=""
 site_name=""
 site_identifier=""
+optional_libs=""
+current_dir=$(pwd)
 
 while [ $# -ne 0 ]
 do
@@ -171,6 +172,11 @@ do
 		  shift
 		  site_identifier="$1"
 		  ;;
+    
+    		-[Oo]ptionallibs)
+      		  shift
+	  	  optional_libs="$1"
+      		  ;;
 			
 		-h|--host|-[Hh]ost)
             shift
@@ -675,8 +681,7 @@ configure_apache () {
 
 install_client_libraries () {
 	eval $invocation
-	mkdir -p $install_dir/clientlibrary/temp
-	bash $install_dir/clientlibrary/install-optional.libs.sh install-optional-libs mongodb,influxdb,snowflake,mysql,oracle,google,clickhouse
+	bash $install_dir/clientlibrary/install-optional.libs.sh install-optional-libs "$optional_libs"
 }
 
 update_optional_lib() {
@@ -765,7 +770,30 @@ validate_host_url() {
 		return 1
 	fi
 }
+upgrade_log() {
+    source_dir="$app_data_location"
+    
+	exclude_folders=("logs" "upgradelogs")
 	
+	[ ! -d "$app_data_location/upgradelogs" ] && mkdir -p "$app_data_location/upgradelogs"
+	
+	json_file="$app_data_location/configuration/product.json"
+
+	# Read the JSON file into a variable
+	json_data=$(cat "$json_file")
+
+	# Search for the version key and extract the version value
+	version=$(echo "$json_data" | grep -o '"Version": "[^"]*' | sed 's/"Version": "//')
+	
+	
+	if [ -d "$app_data_location/upgradelogs/$version" ]; then
+    rm -r "$app_data_location/upgradelogs/$version"
+    fi
+	
+	mkdir -p "$app_data_location/upgradelogs/$version"
+	
+	find "$source_dir" -type d \( -name "${exclude_folders[0]}" -o -name "${exclude_folders[1]}" \) -prune -o -print > "$app_data_location/upgradelogs/$version/upgrade_logs.txt"
+}		
 validate_installation_type() {
 	eval $invocation
 	if  [[ $# -eq 0 ]]; then
@@ -790,16 +818,22 @@ validate_nginx_config() {
 }
 
 migrate_custom_widgets() {
-	# eval $invocation
+    # eval $invocation
 
-	custom_widget_source="$install_dir/application/bi/dataservice/CustomWidgets"
-	custom_widget_dest="$install_dir/application/app_data/bi/dataservice/"
-
-	if [ -d "$custom_widget_source" ]; then
-	    [ ! -d "$custom_widget_dest" ] && mkdir -p "$custom_widget_dest"
-		cp -a "$custom_widget_source" "$custom_widget_dest"
-		run_custom_widgets_utility=true
+    custom_widget_source="$install_dir/application/bi/dataservice/CustomWidgets"
+    custom_widget_dest="$install_dir/application/app_data/bi/dataservice/"
+    shapefiles_dir="$install_dir/application/app_data/bi/shapefiles"
+    if [ ! -d "$shapefiles_dir" ] || [ -d "$custom_widget_source" ]; then
+        if [ -d "$custom_widget_source" ]; then
+            [ ! -d "$custom_widget_dest" ] && mkdir -p "$custom_widget_dest"
+            cp -a "$custom_widget_source" "$custom_widget_dest"
+        fi
+	if [ ! -d "$install_dir/application/app_data/bi/shapefiles" ] || [ -d "$install_dir/application/app_data/bi/dataservice/CustomWidgets" ]; then
+		cd "$install_dir/application/utilities/customwidgetupgrader"
+		"$install_dir/dotnet/dotnet" CustomWidgetUpgrader.dll true
+		cd $current_dir
 	fi
+    fi
 }
 
 get_bing_map_config() {
@@ -935,7 +969,8 @@ common_idp_integration() {
 	eval $invocation
 
 	Extracted_Dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-	cp -a "$Extracted_Dir/application/utilities/installutils" "$install_dir/application/utilities/"	
+	cp -a "$Extracted_Dir/application/utilities/installutils" "$install_dir/application/utilities/"
+ 	cp -a "$Extracted_Dir/application/utilities/customwidgetupgrader" "$install_dir/application/utilities/"
         cp -a "$Extracted_Dir/dotnet/shared" "$install_dir/dotnet/"
         cp -a "$Extracted_Dir/dotnet/host" "$install_dir/dotnet/"
 	say "Modifying product.json"
@@ -1027,17 +1062,12 @@ common_idp_integration() {
 	
 	if $common_idp_upgrade; then bing_map_migration; fi
 	[ ! -d "$puppeteer_location/Linux-901912" ] && chrome_package_installation
+ 	migrate_custom_widgets
 	if $common_idp_fresh; then enable_boldbi_services; fi
 	start_boldbi_services
 	systemctl  restart bold-*
 	status_boldbi_services
 	
-	if $common_idp_upgrade; then
-		if [ -d "$install_dir/application/app_data/bi/dataservice/CustomWidgets" ]; then
-			cd "$install_dir/application/utilities/customwidgetupgrader"
-			"$install_dir/dotnet/dotnet" CustomWidgetUpgrader.dll true
-		fi
-	fi
 }
 
 install_boldbi() {
@@ -1056,7 +1086,7 @@ install_boldbi() {
 	if [[ "$?" != "0" ]]; then
 		return 1
 	fi
-
+    if [ -z "$user" ] && [ "$installation_type" = "upgrade" ]; then upgrade_log; fi
 	if [ -z "$user" ] && [ "$installation_type" = "upgrade" ]; then read_user; fi
 
 	validate_user $user
@@ -1086,7 +1116,6 @@ install_boldbi() {
 		check_boldbi_directory_structure "rename_installed_directory"
 	
 		if taking_backup; then
-			migrate_custom_widgets
 			get_bing_map_config
 			rm -r $install_dir/application/bi
 			common_idp_integration
@@ -1137,9 +1166,7 @@ install_boldbi() {
 				
 				check_boldbi_directory_structure "rename_installed_directory"
 				
-				migrate_custom_widgets
-				
-                get_bing_map_config
+                		get_bing_map_config
 
 				removing_old_files
 				
@@ -1155,6 +1182,8 @@ install_boldbi() {
 				
 				check_boldbi_directory_structure "remove_services"
 				
+    				migrate_custom_widgets
+				
 				bing_map_migration
 
 				[ ! -d "$puppeteer_location/Linux-901912" ] && chrome_package_installation
@@ -1165,12 +1194,7 @@ install_boldbi() {
 				
 				status_boldbi_services
 
-				check_boldbi_directory_structure "check_nginx_config"
-				
-				if [ -d "$install_dir/application/app_data/bi/dataservice/CustomWidgets" ]; then
-					cd "$install_dir/application/utilities/customwidgetupgrader"
-					"$install_dir/dotnet/dotnet" CustomWidgetUpgrader.dll true
-				fi
+				check_boldbi_directory_structure "check_nginx_config"				
 				
 				update_optional_lib
 				
@@ -1226,18 +1250,18 @@ install_boldbi() {
 				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_SITE_NAME/a Environment=BOLD_SERVICES_SITE_IDENTIFIER='$site_identifier''
 			fi
 			copy_service_files "$services_dir/." "$system_dir"
-			#install_client_libraries
+			if [ ! -z "$optional_libs" ]; then
+   			install_client_libraries
+			fi
 	
-			
-			chown -R "$user" "$install_dir"
-		
 			chmod +x "$dotnet_dir/dotnet"
 			
 			sleep 5
 			
 			chrome_package_installation
-
+			migrate_custom_widgets
 			enable_boldbi_services
+                        sudo chown -R "$user" "$install_dir"
 			start_boldbi_services
 			
 			sleep 5

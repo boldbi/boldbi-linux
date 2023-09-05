@@ -244,8 +244,9 @@ CREATE TABLE {database_name}.BOLDBI_ExportType(
 
 CREATE TABLE {database_name}.BOLDBI_ScheduleDetail(
 	Id int NOT NULL AUTO_INCREMENT,
-	ScheduleId Char(38) NOT NULL,
+	ScheduleId Char(38) NOT NULL UNIQUE,
 	ItemId Char(38) NOT NULL,
+	DashboardWidgetId Char(38) NULL,
 	Name varchar(150) NOT NULL,
 	RecurrenceTypeId int NULL,
 	RecurrenceInfo varchar(4000) NULL,
@@ -350,6 +351,18 @@ CREATE TABLE {database_name}.BOLDBI_ScheduleLog(
 	ModifiedDate datetime NOT NULL,
 	Message text NULL,
 	IsOnDemand tinyint NOT NULL DEFAULT 0,
+	IsActive tinyint NOT NULL,
+	RequestId Char(38) NULL,
+	LogExist tinyint NOT NULL DEFAULT 0,
+	PRIMARY KEY (Id))
+;
+
+CREATE TABLE {database_name}.BoldBI_ScheduleMissingLogs(
+	Id int NOT NULL AUTO_INCREMENT,
+	ScheduleId Char(38) NOT NULL,
+	MissingType int NOT NULL,
+	StartDate datetime NOT NULL,
+	EndDate datetime NOT NULL,
 	IsActive tinyint NOT NULL,
 	PRIMARY KEY (Id))
 ;
@@ -763,6 +776,7 @@ CREATE TABLE {database_name}.BOLDBI_PublishedItem(
 	CreatedDate datetime NOT NULL,
 	ModifiedDate datetime NOT NULL,
     IsActive tinyint NOT NULL,
+	ExternalSiteId int NOT NULL DEFAULT 0,
 	PRIMARY KEY (Id))
 ;
 
@@ -775,6 +789,14 @@ CREATE TABLE {database_name}.BOLDBI_PublishJobs(
     CompletedDate datetime NOT NULL,
     Status varchar(255) NOT NULL,
     IsActive tinyint NOT NULL,
+	Type int NOT NULL,
+	PRIMARY KEY (Id))
+;
+
+CREATE TABLE {database_name}.BOLDBI_PublishType(
+	Id int NOT NULL AUTO_INCREMENT,
+	Name varchar(100) NOT NULL,
+	IsActive tinyint NOT NULL,
 	PRIMARY KEY (Id))
 ;
 
@@ -992,8 +1014,57 @@ CREATE TABLE {database_name}.BOLDBI_BackgroundJobs(
     IsActive tinyint NOT NULL,
     PRIMARY KEY (Id))
 ;
+
+CREATE TABLE {database_name}.BOLDBI_UploadDataSourceMapping(
+	Id int NOT NULL AUTO_INCREMENT,
+	DownloadedTenantId char(38) NOT NULL,
+	DownloadedItemId varchar(255) NOT NULL,
+	UploadedItemId char(38) NOT NULL,
+	UploadedDate datetime  NULL,
+	IsActive tinyint(1) NOT NULL,
+	PRIMARY KEY (Id))
+;
+
+CREATE TABLE {database_name}.BOLDBI_ScheduleRunHistory(
+	Id int NOT NULL AUTO_INCREMENT,
+	ScheduleStatusId int NOT NULL,
+	ScheduleId Char(38) NOT NULL,
+	StartedDate datetime NOT NULL,
+	ModifiedDate datetime NOT NULL,
+	Message text NULL,
+	IsOnDemand tinyint NOT NULL DEFAULT 0,
+	IsActive tinyint NOT NULL,
+	PRIMARY KEY (Id))
+;
+
+CREATE TABLE {database_name}.BOLDBI_DSMetrics (
+   Id SERIAL PRIMARY KEY,
+   DataSourceID VARCHAR(255),
+   IsRefresh BOOLEAN,
+   RefreshStartTime VARCHAR(255),
+   RefreshEndTime VARCHAR(255),
+   IsIncremental VARCHAR(255),
+   TableDetails VARCHAR(255),
+   RowsUpdated INTEGER,
+   TotalRows INTEGER,
+   CustomQuery VARCHAR(700),
+   SourceConnectionDetails VARCHAR(255),
+   IncrementalRefreshDetails VARCHAR(255),
+   ExtractType VARCHAR(255),
+   RefreshStatus VARCHAR(255),
+   RefreshException VARCHAR(255))
+;
+
 -- -- PASTE INSERT Queries below this section --------
 
+INSERT into {database_name}.BOLDBI_PublishType (Name, IsActive) Values ('Publish',1)
+;
+
+INSERT into {database_name}.BOLDBI_PublishType (Name, IsActive) Values ('Lock',1)
+;
+
+INSERT into {database_name}.BOLDBI_PublishType (Name, IsActive) Values ('Unlock',1)
+;
 
 INSERT into {database_name}.BOLDBI_ItemType (Name,IsActive) VALUES ('Category',1)
 ;
@@ -1060,6 +1131,8 @@ INSERT into {database_name}.BOLDBI_SettingsType (Name,IsActive) VALUES ( 'CORS S
 ;
 INSERT into {database_name}.BOLDBI_SettingsType (Name,IsActive) VALUES ( 'Look and Feel',1)
 ;
+INSERT into {database_name}.BOLDBI_SettingsType (Name,IsActive) VALUES ('Site Credentials',1)
+;
 
 INSERT into {database_name}.BOLDBI_ItemLogType (Name,IsActive) VALUES ( 'Added',1)
 ;
@@ -1093,6 +1166,10 @@ INSERT into {database_name}.BOLDBI_ExportType (Name,IsActive) VALUES ('Word', 1)
 INSERT into {database_name}.BOLDBI_ExportType (Name,IsActive) VALUES ('Image', 1)
 ;
 INSERT into {database_name}.BOLDBI_ExportType (Name,IsActive) VALUES ('Refresh', 1)
+;
+INSERT into {database_name}.BOLDBI_ExportType (Name,IsActive) VALUES ('PPT', 1)
+;
+INSERT into {database_name}.BOLDBI_ExportType (Name,IsActive) VALUES ('CSV', 1)
 ;
 
 INSERT into {database_name}.BOLDBI_RecurrenceType (Name,IsActive) VALUES ('Daily', 1)
@@ -1177,6 +1254,8 @@ INSERT into {database_name}.BOLDBI_PermissionEntity (Name,EntityType,ItemTypeId,
 ;
 INSERT into {database_name}.BOLDBI_PermissionEntity (Name,EntityType,ItemTypeId, IsActive) VALUES ('All Groups',1,12,1)
 ;
+INSERT into {database_name}.BOLDBI_PermissionEntity (Name,EntityType,ItemTypeId, IsActive) VALUES ('All Users',1,12,1)
+;
 
 INSERT into {database_name}.BOLDBI_Group (Name,Description,Color,IsolationCode,ModifiedDate,DirectoryTypeId,IsActive) VALUES ('System Administrator','Has administrative rights for the dashboards','#ff0000',null,NOW(), 1, 1)
 ;
@@ -1230,12 +1309,8 @@ INSERT into {database_name}.BOLDBI_PermissionAccess (Name, AccessId, IsActive) V
 ;
 INSERT into {database_name}.BOLDBI_PermissionAccess (Name, AccessId, IsActive) VALUES ('Read, Write, Delete',14,1)
 ;
--- INSERT into {database_name}.[BOLDBI_PermissionAccess] (Name, AccessId, IsActive) VALUES ('Read, Download',18,1)
--- ;
--- INSERT into {database_name}.[BOLDBI_PermissionAccess] (Name, AccessId, IsActive) VALUES ('Read, Write, Download',22,1)
--- ;
--- INSERT into {database_name}.[BOLDBI_PermissionAccess] (Name, AccessId, IsActive) VALUES ('Read, Write, Delete, Download',30,1)
--- ;
+INSERT into {database_name}.BOLDBI_PermissionAccess (Name, AccessId, IsActive) VALUES ('Download',18,1)
+;
 
 INSERT into {database_name}.BOLDBI_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (4,1,1)
 ;																									  
@@ -1356,6 +1431,14 @@ INSERT into {database_name}.BOLDBI_PermissionAccEntity (PermissionEntityId, Perm
 INSERT into {database_name}.BOLDBI_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (21,4,1)
 ;
 INSERT into {database_name}.BOLDBI_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (22,4,1)
+;
+INSERT into {database_name}.BOLDBI_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (12,5,1)
+;
+INSERT into {database_name}.BOLDBI_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (13,5,1)
+;
+INSERT into {database_name}.BOLDBI_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (14,5,1)
+;
+INSERT into {database_name}.BOLDBI_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (30,3,1)
 ;
 
 INSERT into {database_name}.BOLDBI_PermissionLogType (Name,IsActive) VALUES ( 'PermissionAdded',1)
@@ -1905,6 +1988,15 @@ INSERT INTO {database_name}.BOLDBI_EventPayloadsMapping (EventType, PayloadType,
 ;
 
 -- -- PASTE ALTER Queries below this section --------
+
+ALTER TABLE {database_name}.BOLDBI_PublishJobs ADD Type int NOT NULL DEFAULT 1
+;
+
+ALTER TABLE  {database_name}.BOLDBI_PublishJobs  ADD FOREIGN KEY(Type) REFERENCES {database_name}.BOLDBI_PublishType (Id)
+;
+
+ALTER TABLE  {database_name}.BOLDBI_ScheduleMissingLogs  ADD FOREIGN KEY(ScheduleId) REFERENCES {database_name}.BOLDBI_ScheduleDetail (ScheduleId)
+;
 
 ALTER TABLE  {database_name}.BOLDBI_UserGroup  ADD FOREIGN KEY(GroupId) REFERENCES {database_name}.BOLDBI_Group (Id)
 ;

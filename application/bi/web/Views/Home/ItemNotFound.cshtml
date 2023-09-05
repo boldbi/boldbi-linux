@@ -28,6 +28,10 @@
     {
         ViewBag.Title = T["User Not Found"].Value;
     }
+    else if (ViewBag.Item == "importUsersJobs")
+    {
+        ViewBag.Title = T["Import users job Not Found"].Value;
+    }
     else if (ViewBag.Item == "group")
     {
         ViewBag.Title = T["Group Not Found"].Value;
@@ -35,6 +39,10 @@
     else if (ViewBag.Item == "pinboard")
     {
         ViewBag.Title = T["Pinboard Not Found"].Value;
+    }
+    else if (ViewBag.Item == "refreshlogs")
+    {
+        ViewBag.Title = T["Refresh Logs Not Found"].Value;
     }
     else if (ViewBag.ItemType == null)
     {
@@ -133,6 +141,16 @@
                             @T["Sorry! The user profile you’re looking for isn’t available. The user may have been deleted."]<br>@contactAdmin
                         </div>
                     }
+                    else if (ViewBag.Item == "importUsersJobs")
+                    {
+                        <div class="error-image-center-2">
+                            <img src="@themeBasedImageHelper.UserNotFoundImage()" class="error-image-2">
+                        </div>
+                        <div class="error-type">@T["Import users job details not found"]</div>
+                        <div class="error-text">
+                            @T["Sorry! The import users job detail you’re looking for isn’t available. The job detail may have been deleted or the job id is invalid. Please refresh the bulk import result page."]<br>@contactAdmin
+                        </div>
+                    }
                     else if (ViewBag.Item == "group")
                     {
                         <div class="error-image-center-2">
@@ -151,6 +169,16 @@
                         <div class="error-type">@T["Pinboard not found"]</div>
                         <div class="error-text">
                             @T["Sorry! The pinboard you’re looking for isn’t available. The pinboard may have been deleted."]<br>@contactAdmin
+                        </div>
+                    }
+                    else if (ViewBag.Item == "refreshlogs")
+                    {
+                        <div class="error-image-center-2">
+                            <img src="@themeBasedImageHelper.PinboardNotFoundImage()" class="error-image-2">
+                        </div>
+                        <div class="error-type">@T["Refresh logs not found"]</div>
+                        <div class="error-text">
+                            @T["Sorry! The logs you’re looking for isn’t available. The logs may have been deleted or haven't been logged."]<br>@contactAdmin
                         </div>
                     }
                 }

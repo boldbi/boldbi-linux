@@ -1,8 +1,7 @@
 ﻿@{
     var globalAppSettings = _globalAppSettings;
     var model = ViewBag.GranularPermissions as Dictionary<object, bool>;
-    var scopeList = ServerAppConfig.SettingsScopesList;
-    var canShowAdminMenu = _identityResponse.IsAdmin || model[SettingsScopes.All] || model.Select(x => x).Where(x => scopeList.Contains(x.Key.ToString()) && x.Value == true).Count() > 1 || (model.Select(x => x).Where(x => scopeList.Contains(x.Key.ToString()) && x.Value == true).Count() == 1 && (model[PermissionEntity.UsersandGroups] || model[PermissionEntity.SpecificGroup] || model[PermissionEntity.AllGroups])) || model[PermissionEntity.UsersandGroups];
+    var canShowAdminMenu = await ServerAppConfig.CanShowAdminMenu(model, _identityResponse.IsAdmin, _featureManager);
     ViewBag.Title = T["Look and Feel"].Value + " - " + globalAppSettings.SystemSettings.OrganizationName;
     var dashboardServerResourceUrl = globalAppSettings.SystemSettings.CDNLink.TrimEnd('/');
     var loginDisclaimerObject = string.Empty;
@@ -24,6 +23,9 @@
     ViewBag.HelpSiteUrl = GlobalAppSettings.GetHelpSiteUrl(HelpSiteUrlNames.LookAndFeelSettings);
     var url = new Uri(Context.Request.GetDisplayUrl());
     var dns = url.GetLeftPart(UriPartial.Authority);
+    var noMatchText = T["No results matched"].Value;
+    var isDefaultMainLogo = globalAppSettings.SystemSettings.MainScreenLogo.EndsWith(IconFileNames.MainLogo);
+    var isDefaultFooterLogo = globalAppSettings.SystemSettings.FooterLogo.EndsWith(IconFileNames.FooterLogo);
 }
 
 @section styles{
@@ -110,6 +112,8 @@
         var fontUms = @Html.Raw(Json.Serialize(fontUms));
         var defaultFont = @Html.Raw(Json.Serialize(ServerAppConfig.DefaultFont));
         var dns = @Html.Raw(Json.Serialize(dns));
+        var isDefaultMainLogo = @Json.Serialize(isDefaultMainLogo);
+        var isDefaultFooterLogo = @Json.Serialize(isDefaultFooterLogo);
     </script>
 }
 
@@ -119,14 +123,22 @@
     @await Html.PartialAsync("_UploadDashboardTheme")
     @await Html.PartialAsync("_UploadFont")
 
+    <div class="col-xs-12 no-padding no-margin @(canShowAdminMenu ? "width-alignment" : "admin-panel-full-width")">
+        @await Html.PartialAsync("../Shared/_TopHeaderSection", new ViewDataDictionary(ViewData) { { "PageHeader", @T["Look and Feel"] }, { "PageDescription", @T["Customize the look and feel of the application."] } })
+        <div class="col-xs-12 import-area bi-page-header top-nav-btn-secton">
+            <div class="col-xs-12 no-padding">
+                <div class="col-xs-6 no-padding button-section">
+                    <a href="@Url.Action("Index","Home")" class="secondary-button  app-btn-secondary pull-right" id="cancel-site-settings" title="">@T["Cancel"]</a>
+                    <button type="button" title="" id="update-look-and-feel-settings" name="update-look-and-feel" class="primary-button app-btn-primary pull-right">
+                        @T["Save"]
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="look-and-feel-container" class="bi-page-container col-xs-12 @(canShowAdminMenu ? string.Empty : "admin-panel-full-width")">
         <div id="organization-block" class="bi-page-content col-xs-12 no-padding">
-            <div class="col-md-12 import-area bi-page-header">
-                <hgroup class="bi-page-header-description">
-                    <h1 class="h2 page-title">@T["Look and Feel"]</h1>
-                    <h5 class="page-description">@T["Customize the look and feel of the application."]</h5>
-                </hgroup>
-            </div>
             <div class="col-md-12 form-horizontal bi-page-body" autocomplete="off">
                 <div class="general-sub-section look-and-feel-settings-page-section no-padding">
                     @if (ServerAppConfig.IsSelfHosted)
@@ -139,7 +151,7 @@
                                 </span>
                             </label>
                             <div class="info-message">
-                                @T["Enabling this setting will cause the look and feel to be inherited from the UMS settings."]
+                                @string.Format(T["Enabling this setting will cause the look and feel to be inherited from the {0} settings."].Value, "UMS")
                             </div>
                         </div>
                     }
@@ -152,7 +164,7 @@
                         </p>
                     }
                     <div id="app-font-customize" class="col-lg-12  no-padding app-font-customize">
-                        @Html.DropDownList("application-font", ViewBag.CustomFontList as IEnumerable<SelectListItem>, new { id = "application-font", @class = "selectpicker form-control", data_live_search = "true", data_size = "5" })
+                            @Html.DropDownList("application-font", ViewBag.CustomFontList as IEnumerable<SelectListItem>, new { id = "application-font", @class = "selectpicker form-control", data_live_search = "true", data_size = "5", data_none_results_text=@noMatchText })
                     </div>
                 </div>
                     <div class="form-group appearance-div">
@@ -177,7 +189,7 @@
                             </p>
                         }
                         <div class="col-lg-12 no-padding dropdown-look-and-feel">
-                            @Html.DropDownList("applicationTheme", ViewBag.ApplicationTheme as IEnumerable<SelectListItem>, new { id = "applicationTheme", @class = "selectpicker form-control", data_live_search = "true", data_size = "5" })
+                            @Html.DropDownList("applicationTheme", ViewBag.ApplicationTheme as IEnumerable<SelectListItem>, new { id = "applicationTheme", @class = "selectpicker form-control", data_live_search = "true", data_size = "5", data_none_results_text=@noMatchText })
                         </div>
                         <p class="app-theme-info">@T["A custom theme can only be created for either a dark or light mode. A single custom theme will not work for both. Please choose a custom theme based on your current application mode. To reset the custom theme, please select the default value."]</p>
                     </div>
@@ -195,17 +207,9 @@
                         }
 
                         <div class="col-lg-12 no-padding dropdown-look-and-feel-dashboard">
-                            @Html.DropDownList("dashboardTheme", ViewBag.DashboardTheme as IEnumerable<SelectListItem>, new { id = "dashboardTheme", @class = "selectpicker form-control", data_live_search = "true", data_size = "5" })
+                            @Html.DropDownList("dashboardTheme", ViewBag.DashboardTheme as IEnumerable<SelectListItem>, new { id = "dashboardTheme", @class = "selectpicker form-control", data_live_search = "true", data_size = "5", data_none_results_text=@noMatchText })
                         </div>
                     </div>
-                </div>
-            </div>
-            <div class="bi-page-footer col-xs-12">
-                <div class="bi-page-actions col-lg-12 col-md-12 no-margin">
-                    <a href="@Url.Action("Index","Home")" class="secondary-button  app-btn-secondary pull-right" id="cancel-site-settings" title="">@T["Cancel"]</a>
-                    <button type="button" title="" id="update-look-and-feel-settings" name="update-look-and-feel" class="primary-button app-btn-primary pull-right">
-                        @T["Save"]
-                    </button>
                 </div>
             </div>
         </div>

@@ -91,7 +91,7 @@
             <div id="weekly-days-validator"></div>
         </div>
     </div>
-    <div class="col-xs-12 cls-options no-padding top-margin" id="monthly-schedule-option">
+    <div class="col-xs-12 cls-options no-padding top-margin-montly-schedule" id="monthly-schedule-option">
         <div class="col-xs-12 no-padding">
             <div class="col-xs-12 no-padding">
                 @Html.Label("", T["Recurs"].Value, new { @class = "header-text-label" })
@@ -184,11 +184,5 @@
         <div class="col-xs-12 no-padding validation-message" id="start-date-error-container">
             <div class="col-xs-12 no-padding" id="start-date-validator"></div>
         </div>
-    </div>
-</div>
-<div class="bi-page-footer no-padding col-xs-12">
-    <div class="bi-page-actions col-xs-12 col-md-12 no-margin">
-        <a href="@Url.Action("UserDirectorySettings", "Administration")" class="secondary-button app-btn-secondary pull-right" id="cancel-schedule-synchronization" title="">@T["Cancel"]</a>
-        <input type="button" title="" id="update-schedule-synchronization-bottom" class="primary-button app-btn-primary pull-right" value="@T["Save"]" />
     </div>
 </div>

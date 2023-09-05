@@ -224,8 +224,9 @@ CREATE TABLE SyncDS_ExportType(
 
 CREATE TABLE SyncDS_ScheduleDetail(
 	Id SERIAL PRIMARY KEY NOT NULL,
-	ScheduleId uuid NOT NULL,
+	ScheduleId uuid NOT NULL UNIQUE,
 	ItemId uuid NOT NULL,
+	DashboardWidgetId uuid NULL,
 	Name varchar(150) NOT NULL,
 	RecurrenceTypeId int NULL,
 	RecurrenceInfo varchar(4000) NULL,
@@ -322,6 +323,17 @@ CREATE TABLE SyncDS_ScheduleLog(
 	ModifiedDate timestamp NOT NULL,
 	Message text NULL,
 	IsOnDemand smallint NOT NULL DEFAULT (0),
+	IsActive smallint NOT NULL,
+	RequestId uuid NULL,
+	LogExist smallint NOT NULL DEFAULT (0))
+;
+
+CREATE TABLE SyncDS_ScheduleMissingLogs(
+	Id SERIAL PRIMARY KEY NOT NULL,
+	ScheduleId uuid NOT NULL,
+	MissingType int NOT NULL,
+	StartDate timestamp NOT NULL,
+	EndDate timestamp NOT NULL,
 	IsActive smallint NOT NULL)
 ;
 
@@ -696,7 +708,8 @@ CREATE TABLE SyncDS_PublishedItem(
 	CreatedById int NOT NULL,
 	CreatedDate timestamp NOT NULL,
 	ModifiedDate timestamp NOT NULL,
-	IsActive smallint NOT NULL)
+	IsActive smallint NOT NULL,
+	ExternalSiteId int not null DEFAULT 0)
 ;
 
 CREATE TABLE SyncDS_PublishJobs(
@@ -707,6 +720,13 @@ CREATE TABLE SyncDS_PublishJobs(
 	CreatedDate timestamp NOT NULL,
 	CompletedDate timestamp NOT NULL,
 	Status varchar(255) NOT NULL,
+	IsActive smallint NOT NULL,
+	Type int NOT NULL)
+;
+
+CREATE TABLE SyncDS_PublishType(
+	Id SERIAL primary key NOT NULL,
+	Name varchar(100) NOT NULL UNIQUE,
 	IsActive smallint NOT NULL)
 ;
 
@@ -909,7 +929,54 @@ CREATE TABLE SyncDS_BackgroundJobs (
 	IsActive smallint NOT NULL)
 ;
 
+CREATE TABLE SyncDS_UploadDataSourceMapping (
+	Id SERIAL primary key NOT NULL,
+	DownloadedTenantId uuid NOT NULL,
+	DownloadedItemId varchar(255) NOT NULL,
+	UploadedItemId uuid NOT NULL,
+	UploadedDate timestamp  NULL,
+	IsActive smallint NOT NULL)
+;
+
+CREATE TABLE SyncDS_ScheduleRunHistory(
+	Id SERIAL PRIMARY KEY NOT NULL,
+	ScheduleStatusId int NOT NULL,
+	ScheduleId uuid NOT NULL,
+	StartedDate timestamp NOT NULL,
+	ModifiedDate timestamp NOT NULL,
+	Message text NULL,
+	IsOnDemand smallint NOT NULL DEFAULT (0),
+	IsActive smallint NOT NULL)
+;
+
+CREATE TABLE SyncDS_DSMetrics (
+   Id SERIAL PRIMARY KEY,
+   DataSourceID VARCHAR(255),
+   IsRefresh BOOLEAN,
+   RefreshStartTime VARCHAR(255),
+   RefreshEndTime VARCHAR(255),
+   IsIncremental VARCHAR(255),
+   TableDetails VARCHAR(255),
+   RowsUpdated INTEGER,
+   TotalRows INTEGER,
+   CustomQuery VARCHAR(700),
+   SourceConnectionDetails VARCHAR(255),
+   IncrementalRefreshDetails VARCHAR(255),
+   ExtractType VARCHAR(255),
+   RefreshStatus VARCHAR(255),
+   RefreshException VARCHAR(255))
+;
+
 ---- PASTE INSERT Queries below this section --------
+
+INSERT INTO SyncDS_PublishType (Name, IsActive) Values (N'Publish',1)
+;
+
+INSERT INTO SyncDS_PublishType (Name, IsActive) Values (N'Lock',1)
+;
+
+INSERT INTO SyncDS_PublishType (Name, IsActive) Values (N'Unlock',1)
+;
 
 INSERT into SyncDS_ItemType (Name,IsActive) VALUES (N'Category',1)
 ;
@@ -976,6 +1043,8 @@ INSERT into SyncDS_SettingsType (Name, IsActive) Values (N'CORS Settings',1)
 ;
 INSERT into SyncDS_SettingsType (Name,IsActive) Values (N'Look and Feel',1)
 ;
+INSERT into SyncDS_SettingsType (Name, IsActive) VALUES (N'Site Credentials',1)
+;
 
 INSERT into SyncDS_ItemLogType (Name,IsActive) VALUES ( N'Added',1)
 ;
@@ -1009,6 +1078,10 @@ INSERT into SyncDS_ExportType (Name,IsActive) VALUES (N'Word', 1)
 INSERT into SyncDS_ExportType (Name,IsActive) VALUES (N'Image', 1)
 ;
 INSERT into SyncDS_ExportType (Name,IsActive) VALUES (N'Refresh', 1)
+;
+INSERT into SyncDS_ExportType (Name,IsActive) VALUES (N'PPT', 1)
+;
+INSERT into SyncDS_ExportType (Name,IsActive) VALUES (N'CSV', 1)
 ;
 
 INSERT into SyncDS_RecurrenceType (Name,IsActive) VALUES (N'Daily', 1)
@@ -1093,6 +1166,8 @@ INSERT INTO SyncDS_PermissionEntity (Name,EntityType,ItemTypeId, IsActive) VALUE
 ;
 INSERT INTO SyncDS_PermissionEntity (Name,EntityType,ItemTypeId, IsActive) VALUES (N'All Groups',1,12,1)
 ;
+INSERT INTO SyncDS_PermissionEntity (Name,EntityType,ItemTypeId, IsActive) VALUES (N'All Users',1,12,1)
+;
 
 INSERT into SyncDS_Group (Name,Description,Color,IsolationCode,ModifiedDate,DirectoryTypeId,IsActive) VALUES (N'System Administrator','Has administrative rights for the dashboards','#ff0000',null,now() at time zone 'utc', 1, 1)
 ;
@@ -1145,12 +1220,8 @@ INSERT INTO SyncDS_PermissionAccess (Name, AccessId, IsActive) VALUES (N'Read, W
 ;
 INSERT INTO SyncDS_PermissionAccess (Name, AccessId, IsActive) VALUES (N'Read, Write, Delete',14,1)
 ;
---INSERT INTO SyncDS_PermissionAccess (Name, AccessId, IsActive) VALUES (N'Read, Download',18,1)
---;
---INSERT INTO SyncDS_PermissionAccess (Name, AccessId, IsActive) VALUES (N'Read, Write, Download',22,1)
---;
---INSERT INTO SyncDS_PermissionAccess (Name, AccessId, IsActive) VALUES (N'Read, Write, Delete, Download',30,1)
---;
+INSERT INTO SyncDS_PermissionAccess (Name, AccessId, IsActive) VALUES (N'Download',18,1)
+;
 
 INSERT INTO SyncDS_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (4,1,1)
 ;																									  
@@ -1271,6 +1342,14 @@ INSERT INTO SyncDS_PermissionAccEntity (PermissionEntityId, PermissionAccessId, 
 INSERT INTO SyncDS_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (21,4,1)
 ;
 INSERT INTO SyncDS_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (22,4,1)
+;
+INSERT INTO SyncDS_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (12,5,1)
+;
+INSERT INTO SyncDS_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (13,5,1)
+;
+INSERT INTO SyncDS_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (14,5,1)
+;
+INSERT INTO SyncDS_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (30,3,1)
 ;
 
 INSERT into SyncDS_PermissionLogType (Name,IsActive) VALUES ( N'PermissionAdded',1)
@@ -1820,6 +1899,14 @@ INSERT INTO SyncDS_EventPayloadsMapping (EventType, PayloadType, IsActive) VALUE
 ;
 
 ---- PASTE ALTER Queries below this section --------
+ALTER TABLE SyncDS_ScheduleMissingLogs  ADD FOREIGN KEY(ScheduleId) REFERENCES SyncDS_ScheduleDetail (ScheduleId)
+;
+
+ALTER TABLE SyncDS_PublishJobs ADD COLUMN Type int not null DEFAULT 1
+;
+
+ALTER TABLE SyncDS_PublishJobs  ADD FOREIGN KEY(Type) REFERENCES SyncDS_PublishType (Id)
+;
 
 ALTER TABLE SyncDS_UserGroup  ADD FOREIGN KEY(GroupId) REFERENCES SyncDS_Group (Id)
 ;

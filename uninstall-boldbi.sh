@@ -9,6 +9,22 @@ uninstall_boldbi() {
                 rm -rf /etc/systemd/system/bold-*
                 echo "Removing Bold BI Installed Files"
                 rm -rf /var/www/bold-*
+		nginx_config="/etc/nginx/sites-enabled/boldbi-nginx-config"
+                apache_config="/etc/apache2/sites-enabled/boldbi-apache-config.conf"
+
+                # Check if boldbi-nginx-config exists and remove it if it does
+                if [ -f "$nginx_config" ]; then
+                echo "Removing boldbi-nginx-config..."
+                rm "$nginx_config"
+                echo "boldbi-nginx-config removed."
+                fi
+
+                # Check if boldbi-apache-config exists and remove it if it does
+                if [ -f "$apache_config" ]; then
+                echo "Removing boldbi-apache-config..."
+                rm "$apache_config"
+                echo "boldbi-apache-config removed."
+                fi
                 echo "Bold BI Uninstalled Successfully.."
                    }
 stop_boldbi_services() {

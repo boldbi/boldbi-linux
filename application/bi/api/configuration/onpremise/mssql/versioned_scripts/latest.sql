@@ -1,30 +1,23 @@
-CREATE TABLE [BOLDBI_UserSession](
-	[Id] [uniqueidentifier] PRIMARY KEY NOT NULL,
-	[IdpReferenceId]  [uniqueidentifier] NOT NULL,
-	[SessionId]  [uniqueidentifier] NOT NULL,
-	[DirectoryTypeId] [int] NOT NULL,
-	[IpAddress] [nvarchar](255) NOT NULL,
-	[Browser] [nvarchar](255) NOT NULL,
-	[LoggedInTime] [datetime] NOT NULL,
-	[LastActive] [datetime] NULL,
-	[IsActive] [bit] NOT NULL)
+ALTER TABLE [BOLDBI_ScheduleDetail] ADD [DashboardWidgetId] uniqueidentifier Null
 ;
 
-ALTER TABLE [BOLDBI_Item] ADD [IsUploadDraft] Bit Not Null default '0'
+CREATE TABLE [BoldBI_DSMetrics]  (
+   Id INT IDENTITY(1,1) PRIMARY KEY,
+   DataSourceID VARCHAR(255),
+   IsRefresh bit,
+   RefreshStartTime VARCHAR(255),
+   RefreshEndTime VARCHAR(255),
+   IsIncremental VARCHAR(255),
+   TableDetails VARCHAR(255),
+   RowsUpdated INTEGER,
+   TotalRows INTEGER,
+   CustomQuery VARCHAR(700),
+   SourceConnectionDetails VARCHAR(255),
+   IncrementalRefreshDetails VARCHAR(255),
+   ExtractType VARCHAR(255),
+   RefreshStatus VARCHAR(255),
+   RefreshException VARCHAR(255))
 ;
 
-CREATE TABLE [BOLDBI_BackgroundJobs](
-    [Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
-    [JobType] int NOT NULL,
-    [ItemId] [uniqueidentifier] NULL,
-    [UserId] [int] NULL,
-    [JobDetails] [nvarchar](max) NOT NULL,
-    [CreatedDate] [datetime] NOT NULL,
-    [CompletedDate] [datetime] NOT NULL,
-    [Status] [nvarchar](255) NOT NULL,
-	[StatusMessage] [nvarchar](255) NULL,
-	[ResourceInfo] [nvarchar](max) NULL,
-	[CanIncludeSensitiveInfo] [bit] NULL,
-	[IsSampleData] [bit] NULL,
-    [IsActive] [bit] NOT NULL)
+ALTER TABLE [BOLDBI_PublishedItem] ADD [ExternalSiteId] [int] NOT NULL DEFAULT 0
 ;
