@@ -61,6 +61,6 @@ This section explains how to deploy the Bold BI application for both fresh insta
 
 ### Next steps for Fresh Installation
 
-1. If you want configure SSL. Follow [this](https://help.boldbi.com/embedded-bi/setup/deploying-in-linux/installation-and-deployment/bold-bi-on-ubuntu/#configure-ssl) document.
-2. [Install Optional Libraries](https://help.boldbi.com/embedded-bi/setup/deploying-in-linux/install-optional-libraries/)
-3. [Application Startup](https://help.boldbi.com/embedded-bi/application-startup/)
+1. If you want configure SSL. Follow [this](https://help.boldbi.com/embedded-bi/setup/deploying-in-linux/installation-and-deployment/bold-bi-on-ubuntu/#configure-ssl?utm_source=github&utm_medium=backlinks) document.
+2. [Install Optional Libraries](https://help.boldbi.com/embedded-bi/setup/deploying-in-linux/install-optional-libraries/?utm_source=github&utm_medium=backlinks)
+3. [Application Startup](https://help.boldbi.com/embedded-bi/application-startup/?utm_source=github&utm_medium=backlinks)
