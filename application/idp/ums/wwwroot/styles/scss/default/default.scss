@@ -34,6 +34,7 @@ $validation-text-color: $danger;
 $success-text-color: $success;
 $sub-text-color: $grey-500;
 $selected-color: $blue-lighter;
+$resource-page-bg-normal-color: var(--resource-page-bg-normal-color);
 
 //ej2 spinner
 $spinner-bg-color: #383838;
@@ -195,6 +196,7 @@ $tab-text-hover-color: var(--tab-text-hover-color);
 $tab-text-active-color: var(--tab-text-active-color);
 $tab-border-normal-color: var(--tab-border-normal-color);
 $tab-border-active-color: var(--tab-border-active-color);
+$multi-tab-badge: var(--multi-tab-badge);
 
 //Dialog Box
 $dialog-header-bg-normal-color: var(--dialog-header-bg-normal-color);

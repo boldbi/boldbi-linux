@@ -9,15 +9,16 @@
 }
 
 @section styles{
-    <link rel="stylesheet" href="~/bundles/css/accounts-forget-password.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/bundles/css/accounts-forget-password.css" integrity="@IntegrityTagHelper.GetIntegrity("bundles/css/accounts-forget-password.css")" crossorigin="anonymous" asp-append-version="true" />
 }
 
 @section scripts{
-    <script src="~/bundles/js/accounts-forget-password.js" asp-append-version="true"></script>
+    <script nonce="@Context.Items["ScriptNonce"]" src="~/bundles/js/accounts-forget-password.js" integrity="@IntegrityTagHelper.GetIntegrity("bundles/js/accounts-forget-password.js")" crossorigin="anonymous" asp-append-version="true"></script>
 }
 
 @section MainSection{
-    <form name="forgotPasswordForm" class="forgot-password-container" action="@Url.Action("RecoverAccount","Accounts")" onsubmit="return ForgotValidate();" id="forgot-password-form" method="post" autocomplete="off">
+    <form name="forgotPasswordForm" class="forgot-password-container" action="@Url.Action("RecoverAccount","Accounts")" id="forgot-password-form" method="post" autocomplete="off">
+        @Html.AntiForgeryToken()
         @if (!ViewBag.IsEmailSettingsConfigured)
         {
             <div class="icon-container"><span class="su su-warning-alt"></span></div>
@@ -27,14 +28,25 @@
                 @if (appBranding == AppBranding.Bold.Identifier)
                 {
                     <div class="user-validation text-body">
+                        @{
+#pragma warning disable SCS0029
+                        }
                         @Html.Raw(string.Format(T["As the email settings are not configured, we will not be able to send an email to reset your password. If you are the administrator, please follow the {0} steps {1} to reset your password."].Value, $"<a href='{await HelpSiteManager.GetHelpSiteUrl(HelpSiteUrlNames.ResetPassword, TenantType.BoldBIOnPremise)}'>", "</a>"))
+                        @{
+#pragma warning restore SCS0029
+                        }
                     </div>
                 }
                 else
                 {
                     <div class="user-validation text-body">
+                        @{
+#pragma warning disable SCS0029
+                        }
                         @Html.Raw(string.Format(T["As the email settings are not configured, we will not be able to send an email to reset your password. If you are the administrator, please follow the {0} steps {1} to reset your password."].Value, $"<a href='{await HelpSiteManager.GetHelpSiteUrl(HelpSiteUrlNames.ResetPassword, TenantType.BoldReportsOnPremise)}'>", "</a>"))
-
+                        @{
+#pragma warning restore SCS0029
+                        }
                     </div>
                 }
             }
@@ -91,6 +103,6 @@
             }
         }
 
-        <div class="back-button text-body"> <a href="@(Url.Action("login","accounts") + (string.IsNullOrWhiteSpace(returnUrl) ? string.Empty : "?returnUrl=" + returnUrl))"><span>@T["Return to login"]</span></a></div>
+        <div class="back-button text-body"> <a href="@(Url.Action("login","accounts") + (string.IsNullOrWhiteSpace(returnUrl) ? string.Empty : "?returnUrl=" + returnUrl))" class="text-decoration-none"><span>@T["Return to login"]</span></a></div>
     </form>  
 }

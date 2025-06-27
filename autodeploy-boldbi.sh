@@ -14,7 +14,7 @@ ubuntu_prerequisites() {
 sudo apt-get update
 
 # Install packages
-sudo apt-get install -y zip nginx libgdiplus pv
+sudo apt-get install -y zip nginx libgdiplus pv python3 python3-pip
 
 export OPENSSL_CONF=/etc/ssl/
 return 0
@@ -29,6 +29,8 @@ sudo yum install -y epel-release
 sudo yum install -y libgdiplus
 sudo yum install -y nginx
 sudo yum install -y pv
+sudo yum -y install python3-pip
+
 export OPENSSL_CONF=/etc/ssl/
 return 0
 }

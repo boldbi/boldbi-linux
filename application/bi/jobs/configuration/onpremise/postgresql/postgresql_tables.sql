@@ -120,9 +120,10 @@ CREATE TABLE SyncDS_ItemView(
 	ItemId uuid NOT NULL,
 	UserId int NOT NULL,
 	ItemViewId uuid NOT NULL,
-	QueryString varchar(4000) NOT NULL,
+	QueryString text NOT NULL,
 	ModifiedDate timestamp NOT NULL,
-	IsActive smallint NOT NULL)
+	IsActive smallint NOT NULL,
+	IsWidgetLinking smallint NOT NULL)
 ;
 
 CREATE TABLE SyncDS_ItemLogType(
@@ -175,6 +176,7 @@ CREATE TABLE SyncDS_ItemLog(
 	ToCategoryId uuid NULL,
 	UpdatedUserId int NOT NULL,	
 	ModifiedDate timestamp NOT NULL,
+    AnonymousUsername varchar(255) NULL,
 	IsActive smallint NOT NULL)
 ;
 
@@ -224,9 +226,12 @@ CREATE TABLE SyncDS_ExportType(
 
 CREATE TABLE SyncDS_ScheduleDetail(
 	Id SERIAL PRIMARY KEY NOT NULL,
-	ScheduleId uuid NOT NULL,
+	ScheduleId uuid NOT NULL UNIQUE,
 	ItemId uuid NOT NULL,
+	DashboardWidgetId uuid NULL,
+	DashboardViewId uuid NULL,
 	Name varchar(150) NOT NULL,
+    Parameter text NULL,
 	RecurrenceTypeId int NULL,
 	RecurrenceInfo varchar(4000) NULL,
 	Subject varchar(4000) NULL,
@@ -237,13 +242,15 @@ CREATE TABLE SyncDS_ScheduleDetail(
 	EndDate timestamp NULL,
 	EndAfter int NULL DEFAULT 0,
 	NextSchedule timestamp NULL,
-	ExportTypeId int NOT NULL,
+	ExportTypeId int NULL,
+    MultiExportType text NULL,
 	IsEnabled smallint NOT NULL,
 	CreatedById int NOT NULL,
 	ModifiedById int NOT NULL,
 	CreatedDate timestamp NOT NULL,
 	ModifiedDate timestamp NOT NULL,
 	ScheduleExportInfo text NULL,
+    DashboardWidgetIds text NULL,
 	IsActive smallint NOT NULL)
 ;
 
@@ -322,6 +329,17 @@ CREATE TABLE SyncDS_ScheduleLog(
 	ModifiedDate timestamp NOT NULL,
 	Message text NULL,
 	IsOnDemand smallint NOT NULL DEFAULT (0),
+	IsActive smallint NOT NULL,
+	RequestId uuid NULL,
+	LogExist smallint NOT NULL DEFAULT (0))
+;
+
+CREATE TABLE SyncDS_ScheduleMissingLogs(
+	Id SERIAL PRIMARY KEY NOT NULL,
+	ScheduleId uuid NOT NULL,
+	MissingType int NOT NULL,
+	StartDate timestamp NOT NULL,
+	EndDate timestamp NOT NULL,
 	IsActive smallint NOT NULL)
 ;
 
@@ -696,7 +714,8 @@ CREATE TABLE SyncDS_PublishedItem(
 	CreatedById int NOT NULL,
 	CreatedDate timestamp NOT NULL,
 	ModifiedDate timestamp NOT NULL,
-	IsActive smallint NOT NULL)
+	IsActive smallint NOT NULL,
+	ExternalSiteId int not null DEFAULT 0)
 ;
 
 CREATE TABLE SyncDS_PublishJobs(
@@ -707,6 +726,13 @@ CREATE TABLE SyncDS_PublishJobs(
 	CreatedDate timestamp NOT NULL,
 	CompletedDate timestamp NOT NULL,
 	Status varchar(255) NOT NULL,
+	IsActive smallint NOT NULL,
+	Type int NOT NULL)
+;
+
+CREATE TABLE SyncDS_PublishType(
+	Id SERIAL primary key NOT NULL,
+	Name varchar(100) NOT NULL UNIQUE,
 	IsActive smallint NOT NULL)
 ;
 
@@ -906,10 +932,189 @@ CREATE TABLE SyncDS_BackgroundJobs (
 	ResourceInfo text NULL,
 	CanIncludeSensitiveInfo smallint NULL,
 	IsSampleData smallint NULL,
+	IsActive smallint NOT NULL,
+	ParentJobId int NULL)
+;
+
+CREATE TABLE SyncDS_UploadDataSourceMapping (
+	Id SERIAL primary key NOT NULL,
+	DownloadedTenantId uuid NOT NULL,
+	DownloadedItemId varchar(255) NOT NULL,
+	UploadedItemId uuid NOT NULL,
+	UploadedDate timestamp  NULL,
 	IsActive smallint NOT NULL)
 ;
 
+CREATE TABLE SyncDS_ScheduleRunHistory(
+	Id SERIAL PRIMARY KEY NOT NULL,
+	ScheduleStatusId int NOT NULL,
+	ScheduleId uuid NOT NULL,
+	StartedDate timestamp NOT NULL,
+	ModifiedDate timestamp NOT NULL,
+	Message text NULL,
+	IsOnDemand smallint NOT NULL DEFAULT (0),
+	IsActive smallint NOT NULL,
+	LogExist smallint NOT NULL DEFAULT (0))
+;
+
+CREATE TABLE SyncDS_DSMetrics (
+   Id SERIAL PRIMARY KEY,
+   DataSourceID VARCHAR(255),
+   IsRefresh BOOLEAN,
+   RefreshStartTime VARCHAR(255),
+   RefreshEndTime VARCHAR(255),
+   IsIncremental VARCHAR(255),
+   TableDetails VARCHAR(255),
+   RowsUpdated INTEGER,
+   TotalRows INTEGER,
+   CustomQuery Text,
+   SourceConnectionDetails VARCHAR(255),
+   IncrementalRefreshDetails VARCHAR(255),
+   ExtractType VARCHAR(255),
+   RefreshStatus VARCHAR(255),
+   RefreshException VARCHAR(255))
+;
+
+CREATE TABLE SyncDS_ai_qnawidgethistory (
+   searchid VARCHAR(255) PRIMARY KEY,
+   question TEXT,
+   tableinfo TEXT,
+   fieldinfo TEXT,
+   message TEXT,
+   haserror BOOLEAN,
+   chartType TEXT,
+   uservote TEXT,
+   isreported BOOLEAN,
+   search_date timestamp without time zone,
+   widgetid TEXT)
+;
+
+CREATE TABLE SyncDS_AICredentials(
+	Id uuid NOT NULL,
+	AIModel INTEGER NOT NULL,
+	AIConfiguration varchar(4000) NULL,
+	CreatedById uuid NULL,
+	ModifiedById uuid NULL,
+	CreatedDate timestamp NOT NULL,
+	ModifiedDate timestamp NOT NULL,
+	IsActive smallint NOT NULL,
+	IsAIModel smallint NOT NULL default 0,
+	EnableAIFeature smallint NOT NULL default 0,
+	IsAISummariesEnabledGlobally smallint NOT NULL default 0)
+;
+
+CREATE TABLE SyncDS_Notification (
+    Id SERIAL primary key NOT NULL,
+    CurrentUserId int NOT NULL,
+    ClubId varchar(100) NOT NULL,
+    CommentId int NULL,
+    ItemId uuid NULL,
+    NotificationSource varchar(100) NULL,
+    NotifictionDetails varchar(4000) NULL,
+    NotificationTo int NULL,    
+    ModifiedDate timestamp NOT NULL,
+    IsRead smallint NOT NULL,
+    IsActive smallint NOT NULL)
+;
+
+CREATE TABLE SyncDS_CustomEmailTemplate (
+    Id SERIAL PRIMARY KEY,
+    IsEnabled smallint,
+    DisclaimerContent VARCHAR(255) NOT NULL,
+    HeaderContent VARCHAR(255) NULL,
+    Subject VARCHAR(255),
+    TemplateName VARCHAR(255),
+    Language VARCHAR(255) NOT NULL,
+    MailBody TEXT NOT NULL,
+    CreatedDate TIMESTAMP NOT NULL,
+    ModifiedDate TIMESTAMP,
+    SendEmailAsHTML smallint NOT NULL,
+    CustomVisibilityOptions TEXT NOT NULL,
+    IsActive smallint NOT NULL,
+    TemplateId INTEGER NOT NULL,
+    IsDefaultTemplate smallint NOT NULL,
+    IsSystemDefault smallint NOT NULL,
+    Description VARCHAR(255) NULL,
+    ModifiedBy int NULL,
+    TemplateLocalizationKey VARCHAR(255) NULL
+);
+
+CREATE TABLE SyncDS_ApiKeyDetails (
+    Id uuid primary key NOT NULL,
+    Name varchar(255) NOT NULL,
+    ModifiedDate timestamp NOT NULL,
+    CreatedDate timestamp NOT NULL,
+    LastUsedDate timestamp NULL,
+    ModifiedBy int NOT NULL,
+    ApiKey varchar(100) NULL,
+    CreatedBy int NOT NULL,
+    TokenValidity timestamp NULL,
+    IsActive smallint NOT NULL)
+;
+
+CREATE TABLE SyncDS_AI_CHAT (
+    SearchID TEXT,
+    SessionID TEXT,
+    SearchDateTime TIMESTAMP WITH TIME ZONE,
+    InputToken INTEGER,
+    OutputToken INTEGER,
+    TotalToken INTEGER,
+    InputTokenCost DOUBLE PRECISION,
+    OutputTokenCost DOUBLE PRECISION,
+    TotalTokensCost DOUBLE PRECISION,
+    UserInfo TEXT,
+    TenantID TEXT,
+    RequestType TEXT,
+    Environment TEXT
+);
+
+
+CREATE TABLE SyncDS_AI_SESSIONS (
+    SessionID TEXT Primary key,
+    SessionStartTime TIMESTAMP WITH TIME ZONE,
+    SessionEndTime TIMESTAMP WITH TIME ZONE,
+    InputToken INTEGER,
+    OutputToken INTEGER,
+    TotalToken INTEGER,
+    InputTokenCost DOUBLE PRECISION,
+    OutputTokenCost DOUBLE PRECISION,
+    TotalTokensCost DOUBLE PRECISION,
+    UserInfo TEXT,
+    TenantID TEXT,
+    Environment TEXT
+);
+
+CREATE TABLE SyncDS_AI_REQUESTS (
+    MessageId TEXT PRIMARY KEY NOT NULL,
+    SearchDate TIMESTAMP WITH TIME ZONE,
+    Message TEXT,
+    DatasourceId TEXT,
+    SessionId TEXT,
+    HasError BOOLEAN,
+    Response TEXT,
+    StatusMessage TEXT,
+    AiModel TEXT,
+    TenantId TEXT,
+    UserEmail TEXT,
+    Feedback TEXT,
+    UserInfo TEXT,
+    RequestType TEXT,
+    Environment TEXT,
+    IsValidResponse BOOLEAN,
+    IsWidgetRendered BOOLEAN
+);
+
+
 ---- PASTE INSERT Queries below this section --------
+
+INSERT INTO SyncDS_PublishType (Name, IsActive) Values (N'Publish',1)
+;
+
+INSERT INTO SyncDS_PublishType (Name, IsActive) Values (N'Lock',1)
+;
+
+INSERT INTO SyncDS_PublishType (Name, IsActive) Values (N'Unlock',1)
+;
 
 INSERT into SyncDS_ItemType (Name,IsActive) VALUES (N'Category',1)
 ;
@@ -976,6 +1181,10 @@ INSERT into SyncDS_SettingsType (Name, IsActive) Values (N'CORS Settings',1)
 ;
 INSERT into SyncDS_SettingsType (Name,IsActive) Values (N'Look and Feel',1)
 ;
+INSERT into SyncDS_SettingsType (Name, IsActive) VALUES (N'Site Credentials',1)
+;
+INSERT into SyncDS_SettingsType (Name, IsActive) VALUES (N'API Key',1)
+;
 
 INSERT into SyncDS_ItemLogType (Name,IsActive) VALUES ( N'Added',1)
 ;
@@ -1009,6 +1218,12 @@ INSERT into SyncDS_ExportType (Name,IsActive) VALUES (N'Word', 1)
 INSERT into SyncDS_ExportType (Name,IsActive) VALUES (N'Image', 1)
 ;
 INSERT into SyncDS_ExportType (Name,IsActive) VALUES (N'Refresh', 1)
+;
+INSERT into SyncDS_ExportType (Name,IsActive) VALUES (N'PPT', 1)
+;
+INSERT into SyncDS_ExportType (Name,IsActive) VALUES (N'CSV', 1)
+;
+INSERT INTO SyncDS_ExportType (Name,  IsActive) VALUES (N'DashboardCache',1)
 ;
 
 INSERT into SyncDS_RecurrenceType (Name,IsActive) VALUES (N'Daily', 1)
@@ -1093,6 +1308,8 @@ INSERT INTO SyncDS_PermissionEntity (Name,EntityType,ItemTypeId, IsActive) VALUE
 ;
 INSERT INTO SyncDS_PermissionEntity (Name,EntityType,ItemTypeId, IsActive) VALUES (N'All Groups',1,12,1)
 ;
+INSERT INTO SyncDS_PermissionEntity (Name,EntityType,ItemTypeId, IsActive) VALUES (N'All Users',1,12,1)
+;
 
 INSERT into SyncDS_Group (Name,Description,Color,IsolationCode,ModifiedDate,DirectoryTypeId,IsActive) VALUES (N'System Administrator','Has administrative rights for the dashboards','#ff0000',null,now() at time zone 'utc', 1, 1)
 ;
@@ -1145,12 +1362,8 @@ INSERT INTO SyncDS_PermissionAccess (Name, AccessId, IsActive) VALUES (N'Read, W
 ;
 INSERT INTO SyncDS_PermissionAccess (Name, AccessId, IsActive) VALUES (N'Read, Write, Delete',14,1)
 ;
---INSERT INTO SyncDS_PermissionAccess (Name, AccessId, IsActive) VALUES (N'Read, Download',18,1)
---;
---INSERT INTO SyncDS_PermissionAccess (Name, AccessId, IsActive) VALUES (N'Read, Write, Download',22,1)
---;
---INSERT INTO SyncDS_PermissionAccess (Name, AccessId, IsActive) VALUES (N'Read, Write, Delete, Download',30,1)
---;
+INSERT INTO SyncDS_PermissionAccess (Name, AccessId, IsActive) VALUES (N'Download',18,1)
+;
 
 INSERT INTO SyncDS_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (4,1,1)
 ;																									  
@@ -1272,6 +1485,14 @@ INSERT INTO SyncDS_PermissionAccEntity (PermissionEntityId, PermissionAccessId, 
 ;
 INSERT INTO SyncDS_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (22,4,1)
 ;
+INSERT INTO SyncDS_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (12,5,1)
+;
+INSERT INTO SyncDS_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (13,5,1)
+;
+INSERT INTO SyncDS_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (14,5,1)
+;
+INSERT INTO SyncDS_PermissionAccEntity (PermissionEntityId, PermissionAccessId, IsActive) VALUES (30,3,1)
+;
 
 INSERT into SyncDS_PermissionLogType (Name,IsActive) VALUES ( N'PermissionAdded',1)
 ;
@@ -1283,6 +1504,8 @@ INSERT into SyncDS_Source (Name,IsActive) VALUES ( N'Web',1)
 INSERT into SyncDS_Source (Name,IsActive) VALUES ( N'API',1)
 ;
 INSERT into SyncDS_Source (Name,IsActive) VALUES ( N'Schedule',1)
+;
+INSERT into SyncDS_Source (Name,IsActive) VALUES ( N'Embed',1)
 ;
 
 INSERT into SyncDS_LogStatus (Name,IsActive) VALUES ( N'Start',1)
@@ -1400,8 +1623,14 @@ INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) V
 ;
 INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (1,N'CopyrightInformation',N'SiteSettings.CopyrightInformation',now() at time zone 'utc',1)
 ;
+INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (1,N'ResourceType',N'SiteSettings.ResourceType',now() at time zone 'utc',1)
+;
+INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (1,N'ResourceOrder',N'SiteSettings.ResourceOrder',now() at time zone 'utc',1)
+;
 
 INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableNotificationForDashboardOwner',N'UserNotificationSettings.UserSystemNotificationSettings.EnableNotificationForDashboardOwner',now() at time zone 'utc',1)
+;
+INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableNotificationForApiKeyExpiration',N'UserNotificationSettings.UserSystemNotificationSettings.EnableNotificationForApiKeyExpiration',now() at time zone 'utc',1)
 ;
 INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableNotificationForAccessibleUser',N'UserNotificationSettings.UserSystemNotificationSettings.EnableNotificationForAccessibleUser',now() at time zone 'utc',1)
 ;
@@ -1410,6 +1639,8 @@ INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) V
 INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableNotificationWhenWatchEnabled',N'UserNotificationSettings.UserSystemNotificationSettings.EnableNotificationWhenWatchEnabled',now() at time zone 'utc',1)
 ;
 INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableNotificationForDashboardOwner',N'UserNotificationSettings.UserMailNotificationSettings.EnableNotificationForDashboardOwner',now() at time zone 'utc',1)
+;
+INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableNotificationForApiKeyExpiration',N'UserNotificationSettings.UserMailNotificationSettings.EnableNotificationForApiKeyExpiration',now() at time zone 'utc',1)
 ;
 INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableNotificationForAccessibleUser',N'UserNotificationSettings.UserMailNotificationSettings.EnableNotificationForAccessibleUser',now() at time zone 'utc',1)
 ;
@@ -1428,6 +1659,8 @@ INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) V
 
 INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableNotificationForDashboardOwner',N'NotificationSettings.SystemNotificationSettings.EnableNotificationForDashboardOwner',now() at time zone 'utc',1)
 ;
+INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableNotificationForApiKeyExpiration',N'NotificationSettings.SystemNotificationSettings.EnableNotificationForApiKeyExpiration',now() at time zone 'utc',1)
+;
 INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableNotificationForAccessibleUser',N'NotificationSettings.SystemNotificationSettings.EnableNotificationForAccessibleUser',now() at time zone 'utc',1)
 ;
 INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableNotificationOnUserMention',N'NotificationSettings.SystemNotificationSettings.EnableNotificationOnUserMention',now() at time zone 'utc',1)
@@ -1435,6 +1668,8 @@ INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) V
 INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableNotificationWhenWatchEnabled',N'NotificationSettings.SystemNotificationSettings.EnableNotificationWhenWatchEnabled',now() at time zone 'utc',1)
 ;
 INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableNotificationForDashboardOwner',N'NotificationSettings.MailNotificationSettings.EnableNotificationForDashboardOwner',now() at time zone 'utc',1)
+;
+INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableNotificationForApiKeyExpiration',N'NotificationSettings.MailNotificationSettings.EnableNotificationForApiKeyExpiration',now() at time zone 'utc',1)
 ;
 INSERT into SyncDS_LogField (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableNotificationForAccessibleUser',N'NotificationSettings.MailNotificationSettings.EnableNotificationForAccessibleUser',now() at time zone 'utc',1)
 ;
@@ -1820,6 +2055,11 @@ INSERT INTO SyncDS_EventPayloadsMapping (EventType, PayloadType, IsActive) VALUE
 ;
 
 ---- PASTE ALTER Queries below this section --------
+ALTER TABLE SyncDS_ScheduleMissingLogs  ADD FOREIGN KEY(ScheduleId) REFERENCES SyncDS_ScheduleDetail (ScheduleId)
+;
+
+ALTER TABLE SyncDS_PublishJobs  ADD FOREIGN KEY(Type) REFERENCES SyncDS_PublishType (Id)
+;
 
 ALTER TABLE SyncDS_UserGroup  ADD FOREIGN KEY(GroupId) REFERENCES SyncDS_Group (Id)
 ;

@@ -25,7 +25,7 @@
 <body onload="load()">
     <div class="col-lg-12 no-padding dialog" id="PopupContainer">
         <input type="hidden" id="remove-public" data-item-id="@ViewData["ItemId"]" data-item-type="@itemTypeName"/>
-        <div class="dialog-body col-xs-12 no-padding" style="height:auto;">
+        <div class="dialog-body col-12 no-padding" style="height:auto;">
 
                 <div class="deleteItem" id="removepublicitem" style="font-size:14px !important">
                     <span style="white-space:normal;float:left;width:100%" class="text">
@@ -38,7 +38,9 @@
                         @T["If made private, the dashboard will only be visible to users with the appropriate permissions."]
                     </span>
                 </div>
-
+                @{
+#pragma warning disable SCS0029
+                }
                 <div id="error-msg" class="error-msg deleteItem text" style="display:none">
                     @Html.Raw("<span style='white-space:nowrap; float:left'>" + String.Format(T["Unable to Remove this Dashboard — {0} from Public access. Internal server error. Please try again."].Value, "</span><span id='item_name' class='delete-item-body highlight-name'>" + @ViewData["ItemName"] + "</span>"))
                 </div>
@@ -46,6 +48,9 @@
                 <div id="success-msg" class="error-msg deleteItem text" style="display:none;font-size:14px !important">
                     @Html.Raw("<span style='white-space:nowrap;float:left'>" + String.Format(T["Dashboard— {0} is now private."].Value, "</span><span id = 'item_name' class='delete-item-body highlight-name'>" + @ViewData["ItemName"] + "</span>"))
                 </div>
+                @{
+#pragma warning restore SCS0029
+                }
         </div>
         <div class="col-xs-8 no-padding centerAlign validationArea" id="remove-close" style="display:none">
         </div>

@@ -54,7 +54,10 @@ $(document).ready(function () {
 
     $("form").attr("autocomplete", "off");
     $("input[type=text], input[type=password]").attr("autocomplete", "off");
-    $('[data-toggle="tooltip"]').tooltip();
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
     $(".dropdown-menu #notify_header").on("click", function (e) {
         e.stopPropagation();
     });
@@ -83,6 +86,7 @@ $(document).ready(function () {
 
         $.ajaxSetup({
             beforeSend: function (jqXHR) {
+                jqXHR.setRequestHeader("CSRF-TOKEN", extractXSRFTokenFromCookie())
                 $.xhrPool.push(jqXHR);
             },
             complete: function (jqXHR) {
@@ -100,19 +104,49 @@ $(document).ready(function () {
             $.xhrPool.length = 0;
         };
         if (typeof ej != "undefined" && typeof ej.UrlAdaptor != "undefined") {
+
             ej.UrlAdaptor.prototype.beforeSend = function (dm, request) {
+                request.setRequestHeader("CSRF-TOKEN", extractXSRFTokenFromCookie());
                 $.xhrPool.push(request);
-            }
+            };
+            
             $.ajaxSetup({
                 complete: function (jqXHR) {
                     var i = $.xhrPool.indexOf(jqXHR);
                     if (i > -1) $.xhrPool.splice(i, 1);
                 }
             });
+
+            
+        }
+        else if (typeof ejs != "undefined" && typeof ejs.data.UrlAdaptor != "undefined") {
+            // Overriding the beforeSend method for UrlAdaptor globally
+            ejs.data.UrlAdaptor.prototype.beforeSend = function (dm, request) {
+                // Set the CSRF token in the request headers
+                request.setRequestHeader("CSRF-TOKEN", extractXSRFTokenFromCookie());
+
+                // Optional: Add request to the pool if you want to manage active AJAX requests
+                if (typeof $.xhrPool !== "undefined") {
+                    $.xhrPool.push(request);
+                }
+            };
+
+            $.ajaxSetup({
+                beforeSend: function (jqXHR) {
+                    jqXHR.setRequestHeader("CSRF-TOKEN", extractXSRFTokenFromCookie())
+                    $.xhrPool.push(jqXHR);
+                }
+            });
+        }
+        else {
+            $.ajaxSetup({
+                beforeSend: function (jqXHR) {
+                    jqXHR.setRequestHeader("CSRF-TOKEN", extractXSRFTokenFromCookie())
+                    $.xhrPool.push(jqXHR);
+                }
+            });
         }
     }
-
-    setClientLocaleCookie("boldservice.client.locale", 365);
 });
 
 $(document).on("click", ".dropdown-backdrop", function () {
@@ -134,6 +168,12 @@ $(document).on("click", "#account-profile, #upload-item-section", function () {
 
 $(document).on("click", "#account-profile .dropdown-menu", function (e) {
     e.stopPropagation();
+});
+
+$(document).on("click", ".mobile-menu-icon", function () {
+    $(".mobile-menu-icon").removeClass("collapsed");
+    $("#menu-area").removeClass("collapse");
+    $("#menu-area").toggleClass("d-block");
 });
 
 $(document).on("keyup", "textarea", function (event) {
@@ -159,13 +199,13 @@ $(document).on("keyup", "textarea", function (event) {
 
 $(document).on("focus", "input[type=text],input[type=password],textarea", function () {
     if (regexIe8.test(userAgent)) {
-        $(this).next(".placeholder").removeClass("show").addClass("hide");
+        $(this).next(".placeholder").removeClass("d-block").addClass("d-none");
     }
 });
 
 $(document).on("focusout", "input[type=text],input[type=password],textarea", function () {
     if (regexIe8.test(userAgent) && $(this).val() === "") {
-        $(this).next(".placeholder").removeClass("hide").addClass("show");
+        $(this).next(".placeholder").removeClass("d-none").addClass("d-block");
     }
 });
 
@@ -227,12 +267,12 @@ $(document).on("click", "#clear-search,.clear-search,#add-user-clear-search,#gro
             $(".search-area").removeClass("add-background");
             $(".placeholder, #clear-search").hide();
             if ($(".all-items").hasClass("active") && !$("#category-list").is(":visible")) {
-                setTimeout(function () { $(".search-area").prevAll().show().parent().removeClass("pull-right"); $("#category-section-name").show(); }, 300);
+                setTimeout(function () { $(".search-area").prevAll().show().parent().removeClass("float-end"); $("#category-section-name").show(); }, 300);
             }
             else {
-                setTimeout(function () { $(".search-area").prevAll(":not(#back-icon)").show().parent().removeClass("pull-right"); $("#category-section-name").show(); }, 300);
+                setTimeout(function () { $(".search-area").prevAll(":not(#back-icon)").show().parent().removeClass("float-end"); $("#category-section-name").show(); }, 300);
             }
-            setTimeout(function () { $(".search-home-section:visible").removeClass("show"); }, 300);
+            setTimeout(function () { $(".search-home-section:visible").removeClass("d-block"); }, 300);
         }
         else {
             $("#clear-search").siblings("span.su-search").css("display", "block");
@@ -275,15 +315,12 @@ $(document).on("keydown", "#search-groups, #search-group-users, #searchItems, #s
     }
 });
 
-function setClientLocaleCookie(name, exdays) {
-    var value = {
-        Locale: navigator.language,
-        TimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-    };
-    var exdate = new Date();
-    exdate.setDate(exdate.getDate() + exdays++);
-    var cookie_value = escape(JSON.stringify(value)) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
-    document.cookie = name + "=" + cookie_value + ";path=/";
+function SetHttpOnlyCookie(cookieName, cookieValue, expires, isCookiePathRequired) {
+    $.ajax({
+        type: "POST",
+        url: setCookieHttpOnlyUrl,
+        data: { cookieName: cookieName, cookieValue: cookieValue, expires: expires, isCookiePathRequired: isCookiePathRequired }
+    });
 }
 
 function isEmptyOrWhitespace(value) {
@@ -529,7 +566,7 @@ function getMaxZIndex() {
 }
 
 function IsEmail(email) {
-    var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    var filter = /^([+\wÀ-ÖØ-öø-ÿŒœŸ€ß.-]+'?[\wÀ-ÖØ-öø-ÿŒœŸÿ€ß.-]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\wÀ-ÖØ-öø-ÿŒœŸÿ€ß-]+\.)+))([a-zA-Z]{2,63}|[0-9]{1,3})(\]?)$/u;
     if (filter.test(email)) {
         return true;
     }
@@ -539,8 +576,8 @@ function IsEmail(email) {
 }
 
 function IsValidContactNumber(contactNumber) {
-    var regex = /^(?:|[0-9\-\+]{9,15})$/;
-    if (regex.test(contactNumber)) {
+    var regex = /^(\+\d{1,3}\s?)?\d{9,15}$/;
+    if (regex.test(contactNumber) || contactNumber === "") {
         return true;
     }
     else {
@@ -562,24 +599,24 @@ function messageBox(messageIcon, messageHeader, messageText, type, successCallba
     $("#messageBox").find(".message-content").text("");
     $(".e-footer-content").html("");
     $(".message-box-close").html("");
-    $("#messageBox").find(".e-dlg-header").html("<span class='su " + messageIcon + "'></span> <span class='modal-title' data-toggle='tooltip' data-placement='bottom' data-container='body' title='" + messageHeader + "'  >" + messageHeader + "</h2>");
+    $("#messageBox").find(".e-dlg-header").html("<span class='su " + messageIcon + "'></span> <span class='modal-title' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-container='body' title='" + messageHeader + "'  >" + messageHeader + "</h2>");
     $("#messageBox").find(".message-content").html(messageText);
     if (type == "error") {
         var successButton;
         var closeIcon;
         var errorButton;
         if (successCallback != undefined) {
-            successButton = $("<input type='button' class='critical-action-button pull-right' value='" + window.Server.App.LocalizationContent.YesButton + "'></input>");
+            successButton = $("<input type='button' class='critical-action-button float-end' value='" + window.Server.App.LocalizationContent.YesButton + "'></input>");
             successButton.bind("click", $.proxy(getFnObj(successCallback), window));
         }
         if (errorCallback != undefined) {
-            errorButton = $("<input type='button' class='secondary-button pull-right' value='" + window.Server.App.LocalizationContent.NoButton + "'></input>");
+            errorButton = $("<input type='button' class='secondary-button float-end' value='" + window.Server.App.LocalizationContent.NoButton + "'></input>");
             errorButton.bind("click", $.proxy(getFnObj(errorCallback), window));
             closeIcon = $('<span class="su su-close"></span>');
             closeIcon.bind("click", $.proxy(getFnObj(errorCallback), window));
         }
         else {
-            errorButton = $("<input type='button' class='secondary-button pull-right' value='" + window.Server.App.LocalizationContent.NoButton + "'></input>");
+            errorButton = $("<input type='button' class='secondary-button float-end' value='" + window.Server.App.LocalizationContent.NoButton + "'></input>");
             closeIcon = $('<span class="su su-close"></span>');
             errorButton.click(function () {
                 onCloseMessageBox();
@@ -622,7 +659,11 @@ function messageBox(messageIcon, messageHeader, messageText, type, successCallba
         });
     }
 
-    $('[data-toggle="tooltip"]').tooltip();
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+
     document.getElementById("messageBox").ej2_instances[0].show();
     $("#messageBox").focus();
     var sizeobj = document.getElementById("messageBox").ej2_instances[0];
@@ -642,16 +683,16 @@ function messageBox(messageIcon, messageHeader, messageText, type, successCallba
 function IsValidName(validationType, inputString) {
     var regex;
     if (validationType.toLowerCase() === "username") {
-        regex = new RegExp(/[*\[\\\]\|\/\:\<\>\%\+\#\&\?\'\"\@\;\,]/);
+        regex = new RegExp(/[*\[\\\]\|\/\:\<\>\%\+\#\&\?\"\@\;\,]/);
     }
     else {
-        regex = new RegExp(/[*\[\\\]\|\/\:\<\>\%\+\#\?\'\"\;\,]/);
+        regex = new RegExp(/[*\[\\\]\|\/\:\<\>\%\+\#\?\"\;\,]/);
     }
     return !regex.test(inputString);
 }
 
 function UsernameValidation(username) {
-    var filter = /^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){1,252}[a-zA-Z0-9]$/;
+    var filter = /^(?:(?!\.{2}|_{2}|-{2})[+\p{L}\p{N}0-9_À-ÖØ-öø-ÿŒœŸÿ€ß'.`-]+@[\p{L}\p{N}\-]+(\.[\p{L}\-]+)*|[+\p{L}\p{N}0-9_À-ÖØ-öø-ÿŒœŸÿ€ß'.`-]+)$/u;
     if (filter.test(username)) {
         return true;
     }
@@ -665,7 +706,7 @@ function IsValidUsername(username) {
 }
 
 function IsValidUsernameLength(username) {
-    var filter = /^.{3,254}$/;
+    var filter = /^.{2,254}$/;
     if (filter.test(username)) {
         return true;
     }
@@ -836,6 +877,14 @@ function WarningAlert(header, content, error, duration) {
     });
 }
 
+function extractXSRFTokenFromCookie() {
+    var xsrfToken = document.cookie.split("; ").find(row => row.startsWith("BOLD-UMS-XSRF-TOKEN="));
+    if (xsrfToken) {
+        return xsrfToken.split("=")[1];
+    }
+    return null;
+}
+
 function isApplicationUrlValid(url) {
     var regexExpression = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
     if (!regexExpression.test(url)) {
@@ -920,6 +969,10 @@ function createLoader(element) {
     return returnId;
 }
 
+function addHeaders(args) {
+    args.currentRequest.setRequestHeader('CSRF-TOKEN', extractXSRFTokenFromCookie());
+}
+
 function blurServerAppContainer(size) {
     if (size == undefined || size == "") {
         size = "5px";
@@ -951,11 +1004,20 @@ function unblurServerAppContainer() {
         $("#view").html(window.Server.App.LocalizationContent.ViewMore);
     });
 
-    $('[data-toggle="tooltip"]').tooltip();
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
     $(document).on("click", "#copy-error-area", function (e) {
         $("#text-error-area").select();
         document.execCommand('copy');
-        $("#copy-error-area").attr("data-original-title", window.Server.App.LocalizationContent.Copied);
-        $("#copy-error-area").tooltip("hide").attr("data-original-title", window.Server.App.LocalizationContent.Copied).tooltip("fixTitle").tooltip("show");
-        setTimeout(function () { $("#copy-error-area").attr("data-original-title", window.Server.App.LocalizationContent.LinkCopy); $("#copy-error-area").tooltip(); }, 3000);
+        $("#copy-error-area").attr("data-bs-original-title", window.Server.App.LocalizationContent.Copied);
+        var oldTooltip = bootstrap.Tooltip.getInstance($("#copy-error-area"));
+        oldTooltip.dispose();
+        var tooltip = new bootstrap.Tooltip($("#copy-error-area"));
+        setTimeout(function () {
+            $("#copy-error-area").attr("data-bs-original-title", window.Server.App.LocalizationContent.LinkCopy);
+            tooltip.dispose();
+            var newTooltip = new bootstrap.Tooltip($("#copy-error-area"));
+        }, 3000);
     });

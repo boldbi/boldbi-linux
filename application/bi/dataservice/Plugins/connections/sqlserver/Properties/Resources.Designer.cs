@@ -212,7 +212,22 @@ namespace Syncfusion.Dashboard.Connection.SQLServer.Model.Properties {
                 return ResourceManager.GetString("SqlAndNot", resourceCulture);
             }
         }
-        
+
+        internal static string SqlAndGroup
+        {
+            get
+            {
+                return ResourceManager.GetString("SqlAndGroup", resourceCulture);
+            }
+        }
+        internal static string SqlOrGroup
+        {
+            get
+            {
+                return ResourceManager.GetString("SqlOrGroup", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to AS.
         /// </summary>
@@ -989,7 +1004,18 @@ namespace Syncfusion.Dashboard.Connection.SQLServer.Model.Properties {
                 return ResourceManager.GetString("SqlLeft", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to CROSS JOIN.
+        /// </summary>
+        internal static string SqlCross
+        {
+            get
+            {
+                return ResourceManager.GetString("SqlCross", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to LEFT JOIN.
         /// </summary>
@@ -1169,7 +1195,7 @@ namespace Syncfusion.Dashboard.Connection.SQLServer.Model.Properties {
                 return ResourceManager.GetString("SqlOn", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to OR.
         /// </summary>
@@ -1665,6 +1691,94 @@ namespace Syncfusion.Dashboard.Connection.SQLServer.Model.Properties {
         internal static string YearFormatCount {
             get {
                 return ResourceManager.GetString("YearFormatCount", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to restrict Order By clause in query string unless TOP, OFFSET, or FOR XML is also specified.
+        /// </summary>
+        internal static string RestrictOrderByErrorMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("RestrictOrderByErrorMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to FETCH NEXT {0} ROWS ONLY.
+        /// </summary>
+        internal static string SqlFetch
+        {
+            get
+            {
+                return ResourceManager.GetString("SqlFetch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  OFFSET {0} ROWS .
+        /// </summary>
+        internal static string SqlOffset
+        {
+            get
+            {
+                return ResourceManager.GetString("SqlOffset", resourceCulture);
+            }
+        }
+        
+        // <summary>
+        ///   Looks up a localized string similar to TOTALPERCENTAGE.
+        /// </summary>
+        internal static string SqlTotalPercentage
+        {
+            get
+            {
+                return ResourceManager.GetString("SqlTotalPercentage", resourceCulture);
+            }
+        }
+        
+        // <summary>
+        ///   Looks up a localized string similar to  STRING_AGG.
+        /// </summary>
+        internal static string SqlStringAgg
+        {
+            get
+            {
+                return ResourceManager.GetString("SqlStringAgg", resourceCulture);
+            }
+        }
+        
+        // <summary>
+        ///   Looks up a localized string similar to SqlFiscalQuarter
+        /// </summary>
+        internal static string SqlFiscalQuarter
+        {
+            get
+            {
+                return ResourceManager.GetString("SqlFiscalQuarter", resourceCulture);
+            }
+        }
+
+        // <summary>
+        ///   Looks up a localized string similar to SqlFiscalQuarter
+        /// </summary>
+        internal static string SqlFiscalQuarterYear
+        {
+            get
+            {
+                return ResourceManager.GetString("SqlFiscalQuarterYear", resourceCulture);
+            }
+        }
+
+        // <summary>
+        ///   Looks up a localized string similar to SqlFiscalQuarter
+        /// </summary>
+        internal static string SqlFiscalMonthYear
+        {
+            get
+            {
+                return ResourceManager.GetString("SqlFiscalMonthYear", resourceCulture);
             }
         }
     }

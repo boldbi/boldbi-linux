@@ -1,30 +1,21 @@
-CREATE TABLE [BOLDBI_UserSession](
-	[Id] [uniqueidentifier] PRIMARY KEY NOT NULL,
-	[IdpReferenceId]  [uniqueidentifier] NOT NULL,
-	[SessionId]  [uniqueidentifier] NOT NULL,
-	[DirectoryTypeId] [int] NOT NULL,
-	[IpAddress] [nvarchar](255) NOT NULL,
-	[Browser] [nvarchar](255) NOT NULL,
-	[LoggedInTime] [datetime] NOT NULL,
-	[LastActive] [datetime] NULL,
-	[IsActive] [bit] NOT NULL)
-;
+CREATE TABLE [BOLDBI_AI_REQUESTS] (
+    [MessageId] NVARCHAR(255) NOT NULL PRIMARY KEY,
+    [SearchDate] DATETIMEOFFSET,
+    [Message] NVARCHAR(MAX),
+    [DatasourceId] NVARCHAR(MAX),
+    [SessionId] NVARCHAR(MAX),
+    [HasError] BIT,
+    [Response] NVARCHAR(MAX),
+    [StatusMessage] NVARCHAR(MAX),
+    [AiModel] NVARCHAR(MAX),
+    [TenantId] NVARCHAR(MAX),
+    [UserEmail] NVARCHAR(MAX),
+    [Feedback] NVARCHAR(MAX),
+    [UserInfo] NVARCHAR(MAX),
+    [RequestType] NVARCHAR(MAX),
+    [Environment] NVARCHAR(MAX),
+    [IsValidResponse] BIT,
+    [IsWidgetRendered] BIT
+);
 
-ALTER TABLE [BOLDBI_Item] ADD [IsUploadDraft] Bit Not Null default '0'
-;
-
-CREATE TABLE [BOLDBI_BackgroundJobs](
-    [Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
-    [JobType] int NOT NULL,
-    [ItemId] [uniqueidentifier] NULL,
-    [UserId] [int] NULL,
-    [JobDetails] [nvarchar](max) NOT NULL,
-    [CreatedDate] [datetime] NOT NULL,
-    [CompletedDate] [datetime] NOT NULL,
-    [Status] [nvarchar](255) NOT NULL,
-	[StatusMessage] [nvarchar](255) NULL,
-	[ResourceInfo] [nvarchar](max) NULL,
-	[CanIncludeSensitiveInfo] [bit] NULL,
-	[IsSampleData] [bit] NULL,
-    [IsActive] [bit] NOT NULL)
-;
+ALTER TABLE [BOLDBI_CustomEmailTemplate] ADD [CustomVisibilityOptions] NVARCHAR(MAX) NOT NULL CONSTRAINT DF_CustomVisibilityOptions DEFAULT '{}';

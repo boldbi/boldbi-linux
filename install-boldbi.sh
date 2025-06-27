@@ -27,6 +27,7 @@ backup_folder="/var/www"
 dotnet_dir="$install_dir/dotnet"
 services_dir="$install_dir/services"
 system_dir="/etc/systemd/system"
+configuration_dir="$install_dir/application/app_data/configuration"
 boldbi_product_json_location="$install_dir/application/app_data/configuration/product.json"
 boldbi_config_xml_location="$install_dir/application/app_data/configuration/config.xml"
 user=""
@@ -37,9 +38,8 @@ VER=""
 move_idp=false
 common_idp_fresh=false
 common_idp_upgrade=false
-services_array=("bold-id-web" "bold-id-api" "bold-ums-web" "bold-bi-web" "bold-bi-api" "bold-bi-jobs" "bold-bi-designer")
+services_array=("bold-id-web" "bold-id-api" "bold-ums-web" "bold-bi-web" "bold-bi-api" "bold-bi-jobs" "bold-bi-designer" "bold-etl" "boldbi-ai")
 installation_type=""
-run_custom_widgets_utility=false
 is_bing_map_enabled=false
 bing_map_api_key=""
 app_data_location="$install_dir/application/app_data"
@@ -62,6 +62,34 @@ favicon=""
 footer_logo=""
 site_name=""
 site_identifier=""
+optional_libs=""
+use_siteidentifier=""
+current_dir=$(pwd)
+azure_insight=""
+installDataHub=""
+etl_service_status="false"  # Initialize the variable as false
+# Setup some colors to use. These need to work in fairly limited shells, like the Ubuntu Docker container where there are only 8 colors.
+# See if stdout is a terminal
+if [ -t 1 ] && command -v tput > /dev/null; then
+    # see if it supports colors
+    ncolors=$(tput colors)
+    if [ -n "$ncolors" ] && [ $ncolors -ge 8 ]; then
+        bold="$(tput bold       || echo)"
+        normal="$(tput sgr0     || echo)"
+        black="$(tput setaf 0   || echo)"
+        red="$(tput setaf 1     || echo)"
+        green="$(tput setaf 2   || echo)"
+        yellow="$(tput setaf 3  || echo)"
+        blue="$(tput setaf 4    || echo)"
+        magenta="$(tput setaf 5 || echo)"
+        cyan="$(tput setaf 6    || echo)"
+        white="$(tput setaf 7   || echo)"
+    fi
+fi
+
+say_err() {
+    printf "%b\n" "${red:-}boldbi_install: Error: $1${normal:-}" >&2
+}
 
 while [ $# -ne 0 ]
 do
@@ -127,6 +155,11 @@ do
 		  add_parameters="$1"
 		  ;;
 
+    		-[Uu]sesiteidentifier)
+      		  shift
+	          use_siteidentifier="$1"
+	          ;;
+
 		-[Ee]mail)
 		  shift
 		  email="$1"
@@ -171,7 +204,17 @@ do
 		  shift
 		  site_identifier="$1"
 		  ;;
-			
+    
+    		-[Oo]ptionallibs)
+      		  shift
+	  	  optional_libs="$1"
+      		  ;;
+	  
+   		-[Aa]zureinsight)
+    		  shift
+		  azure_insight="$1"
+		  ;;
+    
 		-h|--host|-[Hh]ost)
             shift
             host_url="$1"
@@ -193,7 +236,10 @@ do
             shift
 			distribution="$1"	
             ;;
-        
+        -[Ii]nstalldatahub)
+            shift
+			installDataHub="$1"	
+            ;;        
         -?|--?|--help|-[Hh]elp)
             script_name="$(basename "$0")"
             echo "Bold BI Installer"
@@ -211,31 +257,8 @@ do
     shift
 done
 
-# Setup some colors to use. These need to work in fairly limited shells, like the Ubuntu Docker container where there are only 8 colors.
-# See if stdout is a terminal
-if [ -t 1 ] && command -v tput > /dev/null; then
-    # see if it supports colors
-    ncolors=$(tput colors)
-    if [ -n "$ncolors" ] && [ $ncolors -ge 8 ]; then
-        bold="$(tput bold       || echo)"
-        normal="$(tput sgr0     || echo)"
-        black="$(tput setaf 0   || echo)"
-        red="$(tput setaf 1     || echo)"
-        green="$(tput setaf 2   || echo)"
-        yellow="$(tput setaf 3  || echo)"
-        blue="$(tput setaf 4    || echo)"
-        magenta="$(tput setaf 5 || echo)"
-        cyan="$(tput setaf 6    || echo)"
-        white="$(tput setaf 7   || echo)"
-    fi
-fi
-
 say_warning() {
     printf "%b\n" "${yellow:-}boldbi_install: Warning: $1${normal:-}" >&3
-}
-
-say_err() {
-    printf "%b\n" "${red:-}boldbi_install: Error: $1${normal:-}" >&2
 }
 
 say() {
@@ -284,8 +307,10 @@ check_distribution() {
 	
 	OS=$(to_lowercase $OS)
 	
-	if [[ $OS = "centos" || $OS = "rhel" ]]; then
+	if [[ $OS = "centos" || $OS = "rhel" || $OS = "ol" ]]; then
 		distribution="centos"
+	elif [ $OS = "sles" ]; then
+		distribution="sles"
 	else
 		distribution="ubuntu"
 	fi	
@@ -293,12 +318,57 @@ check_distribution() {
 	say "Distribution: $distribution"
 	say "Distribution Version: $VER"
 }
+without_etl_service() {
+        installDataHub=false   
+        services_array=("bold-id-web" "bold-id-api" "bold-ums-web" "bold-bi-web" "bold-bi-api" "bold-bi-jobs" "bold-bi-designer" "boldbi-ai")
+}
+etl_confirmation_and_skipping() {
+    if [ -z "$installDataHub" ]; then
+        confirm_etl_installation
+    elif [ "$installDataHub" = "false" ]; then
+		without_etl_service
+        say "Skipping Bold ETL service installation."
+	else
+	    say "Please provide 'true' or 'false' for the -installdatahub option."
+        exit 1
+    fi
+}
+confirm_etl_installation() {
+                while true; do
+                    read -p "Do you wish to install Bold ETL service with Bold BI? [yes / no]:  " yn
+                    case $yn in
+                        [Yy]* )
+                            installDataHub=true
+							if ! hash "python3" > /dev/null 2>&1; then
+								say_err "python3 is required for installing Bold BI. Install the missing prerequisite to proceed."
+								return 1
+							fi
+  
+							if ! hash "pip" > /dev/null 2>&1 && ! hash "pip3" > /dev/null 2>&1; then
+								say_err "python3-pip is required for installing Bold BI. Install the missing prerequisite to proceed."
+								return 1
+							fi
+                            break;;
+                        [Nn]* )
+                            installDataHub=false
+                            without_etl_service
+                            say "Skipping Bold ETL service installation."
+                            break;;
+                        * )
+                            echo "Please answer yes or no.";;
+                    esac
+                done    
+}
 install-chromium-dependencies() {
     eval $invocation
 	
     if [ $distribution == "centos" ]; then
-            yum update && yum -y install pango.x86_64 libXcomposite.x86_64 libXcursor.x86_64 libXdamage.x86_64 libXext.x86_64 libXi.x86_64 libXtst.x86_64 cups-libs.x86_64 libXScrnSaver.x86_64 libXrandr.x86_64 alsa-lib.x86_64 atk.x86_64 gtk3.x86_64 xorg-x11-fonts-100dpi xorg-x11-fonts-75dpi xorg-x11-utils xorg-x11-fonts-cyrillic xorg-x11-fonts-Type1 xorg-x11-fonts-misc
-    else
+            yum update && yum -y install nss.x86_64 libdrm mesa-libgbm libxshmfence pango.x86_64 libXcomposite.x86_64 libXcursor.x86_64 libXdamage.x86_64 libXext.x86_64 libXi.x86_64 libXtst.x86_64 cups-libs.x86_64 libXScrnSaver.x86_64 libXrandr.x86_64 alsa-lib.x86_64 atk.x86_64 gtk3.x86_64 xorg-x11-fonts-100dpi xorg-x11-fonts-75dpi xorg-x11-utils xorg-x11-fonts-cyrillic xorg-x11-fonts-Type1 xorg-x11-fonts-misc
+    elif [[ $distribution == "ubuntu" && $VER == "24.04" ]]; then
+            apt-get update && apt-get -y install xvfb libasound2t64 libatk1.0-0t64 libc6 libcairo2 libcups2t64 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc-s1 libgdk-pixbuf2.0-0 libglib2.0-0t64 libgtk-3-0t64 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libnss3 lsb-release xdg-utils wget && rm -rf /var/lib/apt/lists/*
+    elif [ $distribution == "sles" ]; then
+            zypper refresh && zypper install -y libasound2 libatk-1_0-0 glibc libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc_s1 libgdk_pixbuf-2_0-0 glib2-tools libgtk-3-0 libpango-1_0-0 libstdc++6 libX11-6 libX11-xcb1 libxcb1 libXcomposite1 libXcursor1 libXdamage1 libXext6 libXfixes3 libXi6 libXrandr2 libXrender1 libXtst6 ca-certificates mozilla-nss liberation-fonts xdg-utils wget && rm -rf /var/cache/zypp/*
+	else
             apt-get update && apt-get -y install xvfb gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget && rm -rf /var/lib/apt/lists/*
     fi
 }
@@ -317,52 +387,34 @@ check_min_reqs() {
     # fi	
 	
 	if [ "$installation_type" = "upgrade" ]; then
-		local haspv=false
-		if machine_has "pv"; then
-			haspv=true
+		if ! hash "pv" > /dev/null 2>&1; then
+		    say_err "pv (Pipe Viewer) package is required for installing Bold BI. Install the missing prerequisite to proceed."
+		    return 1
 		fi
-
-		if [ "$haspv" = "false" ]; then
-			say_err "pv (Pipe Viewer) package is required for installing Bold BI. Install missing prerequisite to proceed."
-			return 1
-		fi	
-	
 	fi
 	
-	local hasZip=false
-	if machine_has "zip"; then
-        hasZip=true
-    fi
-	
-	if [ "$hasZip" = "false" ]; then
-        say_err "Zip is required to extract the Bold BI Linux package. Install missing prerequisite to proceed."
-        return 1
-    fi
-	
+	if ! hash "zip" > /dev/null 2>&1; then
+	    say_err "Zip is required to extract the Bold BI Linux package. Install the missing prerequisite to proceed."
+	    return 1
+	fi
+
 	if [ "$server" = "nginx" ]; then
-		local hasNginx=false		
-		if machine_has "nginx"; then
-			hasNginx=true
-		fi			
-		if [ "$hasNginx" = "false" ]; then
-			say_err "Nginx is required to host the Bold BI application. Install missing prerequisite to proceed."
-			return 1
+		if ! hash "nginx" > /dev/null 2>&1; then
+		    say_err "Nginx is required to host the Bold BI application. Install the missing prerequisite to proceed."
+		    return 1
 		fi		
-	    return 0
+		    return 0
 	elif [ "$server" = "apache" ]; then
-		local hasApache=false
-		if [ "$distribution" = "ubuntu" ]; then	
-			if machine_has "apache2"; then
-				hasApache=true
-			fi
+		if [ "$distribution" = "ubuntu" ]; then
+		    if ! hash "apache2" > /dev/null 2>&1; then
+		        say_err "Apache is required to host the Bold BI application. Install the missing prerequisite to proceed."
+		        return 1
+		    fi
 		else
-			if machine_has "httpd"; then
-				hasApache=true
-			fi
-		fi			
-		if [ "$hasApache" = "false" ]; then
-			say_err "apache is required to host the Bold BI application. Install missing prerequisite to proceed."
-			return 1
+		    if ! hash "httpd" > /dev/null 2>&1; then
+		        say_err "Apache is required to host the Bold BI application. Install the missing prerequisite to proceed."
+		        return 1
+		    fi
 		fi		
 		return 0
 	fi
@@ -434,8 +486,12 @@ enable_boldbi_services() {
 				continue
 			fi
 		fi
-		say "Enabling service - $t"
-		systemctl enable $t
+		if systemctl is-enabled "$t" > /dev/null 2>&1; then
+	            echo "$t-service already enabled"
+	        else
+	            echo "Enabling service - $t"
+	            systemctl enable "$t"
+	        fi
 	done
 }
 
@@ -448,6 +504,10 @@ copy_files_to_installation_folder() {
 	cp -a dotnet/. $install_dir/dotnet/
 	cp -a services/. $install_dir/services/
 	cp -a Infrastructure/. $install_dir/Infrastructure/
+    if [ "$installDataHub" = "false" ]; then
+        rm -r "$install_dir/application/etl"
+        rm -r "$install_dir/services/bold-etl.service"
+    fi 
 }
 
 start_boldbi_services() {
@@ -477,14 +537,22 @@ status_boldbi_services() {
 	systemctl --type=service | grep bold-id-*
 	systemctl --type=service | grep bold-ums-web
 	systemctl --type=service | grep bold-bi-*
+	systemctl --type=service | grep boldbi-ai*
+	if [ "$installDataHub" = "true" ]; then
+        systemctl --type=service | grep bold-etl-*
+	fi
 }
 
 stop_boldbi_services() {
-	eval $invocation
-	for t in ${services_array[@]}; do
-		say "Stoping service - $t"
-		systemctl stop $t
-	done
+    eval $invocation
+    for t in "${services_array[@]}"; do
+        if systemctl is-enabled "$t" >/dev/null 2>&1; then
+            say "Stopping service - $t"
+            systemctl stop "$t"  # Stop the service
+        else
+            say "Unable to stop $t service as it is not enabled"
+        fi
+    done
 }
 
 restart_boldbi_services() {
@@ -537,22 +605,72 @@ update_url_in_product_json() {
 	
 	bi_designer_url="$new_url/bi/designer"
 	say "BI Designer URL - $bi_designer_url"
+
+	ai_url="$new_url/aiservice"
+	say "AI URL - $ai_url"
 	
-	sed -i $boldbi_product_json_location -e "s|\"Idp\":.*\",|\"Idp\":\"$idp_url\",|g" -e "s|\"Bi\":.*\",|\"Bi\":\"$bi_url\",|g" -e "s|\"BiDesigner\":.*\",|\"BiDesigner\":\"$bi_designer_url\",|g"
+	sed -i $boldbi_product_json_location -e "s|\"Idp\":.*\",|\"Idp\":\"$idp_url\",|g" -e "s|\"Bi\":.*\",|\"Bi\":\"$bi_url\",|g" -e "s|\"BiDesigner\":.*\",|\"BiDesigner\":\"$bi_designer_url\",|g"  -e "s|\"AiService\":.*\",|\"AiService\":\"$ai_url\",|g"
 	
 	say "Product.json file URLs updated."
 }
-	
-copy_service_files () {
+
+update_local_service_url() {
 	eval $invocation
-	
-	cp -a "$1" "$2"
+
+	local_service_json_file="$configuration_dir/local_service_url.json"
+
+	json_content='{
+	  "Idp": "http://localhost:6500",
+	  "IdpApi": "http://localhost:6501/api",
+	  "Ums": "http://localhost:6502/ums",
+	  "Bi": "http://localhost:6504/bi",
+	  "BiApi": "http://localhost:6505/bi/api",
+	  "BiJob": "http://localhost:6506/bi/jobs",
+	  "BiDesigner": "http://localhost:6507/bi/designer",
+	  "BiDesignerHelper": "http://localhost:6507/bi/designer/helper",
+	  "Etl": "http://localhost:6509",
+	  "EtlBlazor": "http://localhost:6509/framework/blazor.server.js",
+	  "Ai": "http://localhost:6510/aiservice",
+	  "Reports": "",
+	  "ReportsApi": "",
+	  "ReportsJob": "",
+	  "ReportsService": "",
+	  "ReportsViewer": ""
+	}'
+
+	# Check if the JSON file exists
+	if [ ! -f "$local_service_json_file" ]; then
+	mkdir -p "$configuration_dir"
+	echo "$json_content" > "$local_service_json_file"
+	say "Local service Json file Created and URL updated"
+	fi
 }
+
+copy_service_files () {
+    eval $invocation
+    for t in "${services_array[@]}"; do
+        if [ -f "$system_dir/$t.service" ] && [ "$t.service" == "bold-etl.service" ]; then
+            # Check if "BOLDELT.dll" is in the file
+            if grep -q "BOLDELT.dll" "$system_dir/$t.service"; then
+                rm -rf "$system_dir/$t.service"
+                say "Removed ETL service file because it is outdated..."
+            else
+                say "ETL service file is up to date..."
+            fi
+        fi
+        # Copy the service file if it doesn't exist
+        if [ ! -f "$system_dir/$t.service" ]; then
+            cp -a "$services_dir/$t.service" "$system_dir/"
+            say "Copying required $t.service file"
+        fi
+    done
+}
+
 
 configure_nginx () {
 	eval $invocation
 
-	if [ "$distribution" = "centos" ]; then
+	if [[ "$distribution" = "centos" || "$distribution" = "sles" ]]; then
 		centos_nginx_dir="/etc/nginx/conf.d"
 		[ ! -d "$centos_nginx_dir" ] && mkdir -p "$centos_nginx_dir"
 		say "Copying Bold BI Nginx config file"
@@ -589,8 +707,11 @@ configure_nginx () {
 	if [ ! -e /var/run/nginx.pid ]; then
 		systemctl start nginx
 	fi
-	
-	validate_nginx_config
+	if [ "$installDataHub" = "true" ]; then
+		update_nginx_configuration
+	else
+		validate_nginx_config
+	fi
 }
 
 configure_apache () {
@@ -671,12 +792,14 @@ configure_apache () {
 	$apachectl_path configtest
 	say "Restarting the apache to apply the changes"
 	$apachectl_path restart
+	if [ "$installDataHub" = "true" ]; then
+		update_apache_configuration
+	fi	
 }
 
 install_client_libraries () {
 	eval $invocation
-	mkdir -p $install_dir/clientlibrary/temp
-	bash $install_dir/clientlibrary/install-optional.libs.sh install-optional-libs mongodb,influxdb,snowflake,mysql,oracle,google,clickhouse
+	bash $install_dir/clientlibrary/install-optional.libs.sh install-optional-libs "$optional_libs"
 }
 
 update_optional_lib() {
@@ -709,24 +832,24 @@ taking_backup(){
 	rm -rf $backup_folder/boldbi-embedded_backup_*.zip
 	rm -rf $backup_folder/bold_services_backup_*.zip
 		backup_file_location=$backup_folder/boldbi-embedded_backup_$timestamp.zip
-	    zip -r $backup_file_location $old_install_dir 2>&1 | pv -lep -s $(ls -Rl1 $old_install_dir | egrep -c '^[-/]') > /dev/null
+	    zip -1 -r $backup_file_location $old_install_dir 2>&1 | pv -lep -s $(ls -Rl1 $old_install_dir | egrep -c '^[-/]') > /dev/null
 	else
 		rm -rf $backup_folder/boldbi-embedded_backup_*.zip
 		rm -rf $backup_folder/bold_services_backup_*.zip
 	    backup_file_location=$backup_folder/bold_services_backup_$timestamp.zip
-	    zip -r $backup_file_location $install_dir 2>&1 | pv -lep -s $(ls -Rl1 $install_dir | egrep -c '^[-/]') > /dev/null
+	    zip -1 -r $backup_file_location $install_dir 2>&1 | pv -lep -s $(ls -Rl1 $install_dir | egrep -c '^[-/]') > /dev/null
 	fi
 	
 	say "Backup file name:$backup_file_location"
 	say "Backup process completed . . ."
-	return $?
-	
+	return $?	
 }
 
 removing_old_files(){
 	eval $invocation
 	rm -rf $install_dir/application/bi
 	rm -rf $install_dir/application/idp
+	rm -rf $install_dir/application/etl
 	rm -rf $install_dir/clientlibrary
 	rm -rf $install_dir/dotnet
 	rm -rf $install_dir/services
@@ -765,7 +888,40 @@ validate_host_url() {
 		return 1
 	fi
 }
+check_etl_service () {
+    eval $invocation
+    # Check if the ETL service file is present
+    if [[ -f "$system_dir/bold-etl.service" ]]; then
+        say "Bold ETL file is present"
+        etl_service_status="true"  # Set the variable to true if the file exists
+    else
+        say "Bold ETL file is not present"
+    fi
+}
+upgrade_log() {
+    source_dir="$app_data_location"
+    
+	exclude_folders=("logs" "upgradelogs")
 	
+	[ ! -d "$app_data_location/upgradelogs" ] && mkdir -p "$app_data_location/upgradelogs"
+	
+	json_file="$app_data_location/configuration/product.json"
+
+	# Read the JSON file into a variable
+	json_data=$(cat "$json_file")
+
+	# Search for the version key and extract the version value
+	version=$(echo "$json_data" | grep -o '"Version": "[^"]*' | sed 's/"Version": "//')
+	
+	
+	if [ -d "$app_data_location/upgradelogs/$version" ]; then
+    rm -r "$app_data_location/upgradelogs/$version"
+    fi
+	
+	mkdir -p "$app_data_location/upgradelogs/$version"
+	
+	find "$source_dir" -type d \( -name "${exclude_folders[0]}" -o -name "${exclude_folders[1]}" \) -prune -o -print > "$app_data_location/upgradelogs/$version/upgrade_logs.txt"
+}		
 validate_installation_type() {
 	eval $invocation
 	if  [[ $# -eq 0 ]]; then
@@ -789,17 +945,263 @@ validate_nginx_config() {
 	systemctl restart nginx
 }
 
+update_nginx_configuration() {
+    if [[ "$distribution" = "centos" || "$distribution" = "sles" ]]; then
+        config_file="/etc/nginx/conf.d/boldbi-nginx-config.conf"
+    else
+        config_file="/etc/nginx/sites-available/boldbi-nginx-config"
+    fi
+    if [[ $common_idp_fresh == true || $common_idp_upgrade == true ]] && [[ $installDataHub == true ]]; then
+        if [[ "$distribution" = "centos" || "$distribution" = "sles" ]]; then
+            config_file="/etc/nginx/boldbi/boldbi-nginx-config"
+		fi
+    fi
+    # Check if the configuration file exists
+    if [ -f "$config_file" ]; then
+
+        # Unique identifier to check if the content already exists
+        identifier="location /etlservice/"
+
+        # Check if the identifier already exists in the configuration file
+        if ! grep -q "$identifier" "$config_file"; then
+            # Lines to add
+            new_lines=$(cat <<EOL
+	    
+    location /etlservice/ {
+	root               /var/www/bold-services/application/etl/etlservice/wwwroot;
+	proxy_pass http://localhost:6509/;
+	proxy_http_version 1.1;
+	proxy_set_header   Upgrade \$http_upgrade;
+	proxy_set_header   Connection "upgrade";
+	proxy_set_header   Host \$http_host;
+	proxy_cache_bypass \$http_upgrade;
+	proxy_set_header   X-Forwarded-For \$proxy_add_x_forwarded_for;
+	proxy_set_header   X-Forwarded-Proto \$scheme;
+    }
+    location /etlservice/_framework/blazor.server.js {
+	root               /var/www/bold-services/application/etl/etlservice/wwwroot;
+	proxy_pass http://localhost:6509/_framework/blazor.server.js;
+	proxy_http_version 1.1;
+	proxy_set_header   Upgrade \$http_upgrade;
+	proxy_set_header   Connection "upgrade";
+	proxy_set_header   Host \$http_host;
+	proxy_cache_bypass \$http_upgrade;
+	proxy_set_header   X-Forwarded-For \$proxy_add_x_forwarded_for;
+	proxy_set_header   X-Forwarded-Proto \$scheme;
+    }
+EOL
+            )
+
+    if [[ $common_idp_fresh == true || $common_idp_upgrade == true ]] && [[ $installDataHub == true ]]; then
+	  # Use awk to insert new lines in the EOL
+      awk -v new_lines="$new_lines" '1; END { print new_lines }' "$config_file" > temp_file && mv temp_file "$config_file"
+	  say "Redirection code block has been inserted for ETL service(s) in the Nginx configuration file."
+	else 
+	  # Use awk to insert new lines above the last curly brace
+	  awk -v new_lines="$new_lines" '/^}/ { print new_lines; } 1' "$config_file" > temp_file && mv temp_file "$config_file"
+      say "Redirection code block has been inserted for ETL service(s) in the Nginx configuration file."
+    fi
+            systemctl restart nginx
+        fi
+    else
+        echo "Error: Nginx Configuration file not found in the default location. Please insert the redirection code block by referring to the documentation manually."
+    fi
+}
+
+update_apache_configuration() {
+    if [ "$distribution" = "centos" ]; then
+        config_file="/etc/httpd/sites-available/boldbi-apache-config.conf"
+    else
+        config_file="/etc/apache2/sites-available/boldbi-apache-config.conf"
+    fi
+    if [[ $common_idp_fresh == true || $common_idp_upgrade == true ]] && [[ $installDataHub == true ]]; then
+        if [ "$distribution" = "centos" ]; then
+            config_file="/etc/httpd/boldbi/boldbi-apache-config.conf"
+		fi
+    fi
+    # Check if the configuration file exists
+    if [ -f "$config_file" ]; then
+
+        # Unique identifier to check if the content already exists
+        identifier="<Location /etlservice/>"
+		identifier_without_slash="<Location /etlservice>"
+
+        # Check if the identifier already exists in the configuration file
+        if ! grep -q "$identifier" "$config_file"; then
+		    if grep -q "$identifier_without_slash" "$config_file"; then
+                # Modify the etlservice line to include a trailing slash.
+                sed -i 's|<Location /etlservice>|<Location /etlservice/>|' "$config_file"
+                echo "Trailing slash is added for etlservice in $config_file."
+            else
+                # Lines to add
+				new_lines=$(cat <<EOL
+	    
+    <Location /etlservice/>
+	ProxyPass http://localhost:6509/ Keepalive=On
+	ProxyPassReverse http://localhost:6509/
+	RewriteEngine on
+	RewriteCond %{HTTP:UPGRADE} ^WebSocket$ [NC]
+	RewriteRule /etlservice/(.*) ws://localhost:6509/etlservice/\$1 [P]
+	RequestHeader set "X-Forwarded-Proto" expr=%{REQUEST_SCHEME}
+    </Location>
+
+    <Location /etlservice/_framework/blazor.server.js>
+	ProxyPass http://localhost:6509/_framework/blazor.server.js Keepalive=On
+	ProxyPassReverse http://localhost:6509/_framework/blazor.server.js
+	RewriteEngine on
+	RewriteCond %{HTTP:UPGRADE} ^WebSocket$ [NC]
+	RewriteRule /etlservice/_framework/blazor.server.js(.*) ws://localhost:6509/etlservice/_framework/blazor.server.js\$1 [P]
+	RequestHeader set "X-Forwarded-Proto" expr=%{REQUEST_SCHEME}
+    </Location>
+
+
+EOL
+            )
+
+			if [[ $common_idp_fresh == true || $common_idp_upgrade == true ]] && [[ $installDataHub == true ]]; then
+			# Use awk to insert new lines in the EOL
+			awk -v new_lines="$new_lines" '1; END { print new_lines }' "$config_file" > temp_file && mv temp_file "$config_file"
+			say "Redirection code block has been inserted for ETL service(s) in the Nginx configuration file."
+			else 
+					# Use awk to insert new lines above the last curly brace
+					awk -v new_lines="$new_lines" '/^<\/VirtualHost>/ { print new_lines; } 1' "$config_file" > temp_file && mv temp_file "$config_file"
+
+					say "Redirection code block has been inserted for ETL service(s) in the Apache configuration file."
+			fi
+			fi
+            # Apache specific reload command
+            if [ "$distribution" = "centos" ]; then
+                service httpd reload
+            else
+                service apache2 reload
+            fi
+        fi
+    else
+        echo "Error: Apache Configuration file not found in the default location. Please insert the redirection code block by referring to the documentation manually."
+    fi
+}
+
+update_ai_nginx_configuration() {
+    if [[ "$distribution" = "centos" || "$distribution" = "sles" ]]; then
+        config_file="/etc/nginx/conf.d/boldbi-nginx-config.conf"
+    else
+        config_file="/etc/nginx/sites-available/boldbi-nginx-config"
+    fi
+    if [[ $common_idp_fresh == true || $common_idp_upgrade == true ]]; then
+        if [[ "$distribution" = "centos" || "$distribution" = "sles" ]]; then
+            config_file="/etc/nginx/boldbi/boldbi-nginx-config"
+		fi
+    fi
+    # Check if the configuration file exists
+    if [ -f "$config_file" ]; then
+
+        # Unique identifier to check if the content already exists
+        ai_identifier="location /aiservice"
+
+        # Check if the identifier already exists in the configuration file
+        if ! grep -q "$ai_identifier" "$config_file"; then
+            # Lines to add
+            new_lines=$(cat <<EOL
+	    
+        location /aiservice {
+        proxy_pass http://localhost:6510/aiservice;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host \$http_host;
+        proxy_cache_bypass \$http_upgrade;
+        proxy_set_header   X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto \$scheme;
+    }
+EOL
+            )
+
+    if [[ $common_idp_fresh == true || $common_idp_upgrade == true ]]; then
+	  # Use awk to insert new lines in the EOL
+      awk -v new_lines="$new_lines" '1; END { print new_lines }' "$config_file" > temp_file && mv temp_file "$config_file"
+	  say "Redirection code block has been inserted for AI service(s) in the Nginx configuration file."
+	else 
+	  # Use awk to insert new lines above the last curly brace
+	  awk -v new_lines="$new_lines" '/^}/ { print new_lines; } 1' "$config_file" > temp_file && mv temp_file "$config_file"
+      say "Redirection code block has been inserted for AI service(s) in the Nginx configuration file."
+    fi
+            systemctl restart nginx
+        fi
+    else
+        echo "Error: Nginx Configuration file not found in the default location. Please insert the AI redirection code block by referring to the documentation manually."
+    fi
+}
+
+update_ai_apache_configuration() {
+    if [ "$distribution" = "centos" ]; then
+        config_file="/etc/httpd/sites-available/boldbi-apache-config.conf"
+    else
+        config_file="/etc/apache2/sites-available/boldbi-apache-config.conf"
+    fi
+    if [[ $common_idp_fresh == true || $common_idp_upgrade == true ]]; then
+        if [ "$distribution" = "centos" ]; then
+            config_file="/etc/httpd/boldbi/boldbi-apache-config.conf"
+		fi
+    fi
+    # Check if the configuration file exists
+    if [ -f "$config_file" ]; then
+
+        # Unique identifier to check if the content already exists
+        ai_identifier="<Location /aiservice>"
+
+        # Check if the identifier already exists in the configuration file
+        if ! grep -q "$ai_identifier" "$config_file"; then
+            # Lines to add
+            new_lines=$(cat <<EOL
+	    
+	<Location /aiservice>
+	ProxyPass http://localhost:6510/aiservice Keepalive=On
+	ProxyPassReverse http://localhost:6510/aiservice
+	RewriteEngine on
+	RewriteCond %{HTTP:UPGRADE} ^WebSocket$ [NC]
+	RewriteCond %{HTTP:CONNECTION} Upgrade$ [NC]
+	RewriteRule /bi/designer/helper(.*) ws://localhost:6510/aiservice\$1 [P]
+	RequestHeader set "X-Forwarded-Proto" expr=%{REQUEST_SCHEME}
+	</Location>
+
+EOL
+            )
+
+			if [[ $common_idp_fresh == true || $common_idp_upgrade == true ]]; then
+			# Use awk to insert new lines in the EOL
+			awk -v new_lines="$new_lines" '1; END { print new_lines }' "$config_file" > temp_file && mv temp_file "$config_file"
+			say "Redirection code block has been inserted for AI service(s) in the Nginx configuration file."
+			else 
+					# Use awk to insert new lines above the last curly brace
+					awk -v new_lines="$new_lines" '/^<\/VirtualHost>/ { print new_lines; } 1' "$config_file" > temp_file && mv temp_file "$config_file"
+
+					say "Redirection code block has been inserted for AI service(s) in the Apache configuration file."
+			fi
+            # Apache specific reload command
+            if [ "$distribution" = "centos" ]; then
+                service httpd reload
+            else
+                service apache2 reload
+            fi
+        fi
+    else
+        echo "Error: Apache Configuration file not found in the default location. Please insert the AI redirection code block by referring to the documentation manually."
+    fi
+}
+
 migrate_custom_widgets() {
-	# eval $invocation
+    # eval $invocation
 
-	custom_widget_source="$install_dir/application/bi/dataservice/CustomWidgets"
-	custom_widget_dest="$install_dir/application/app_data/bi/dataservice/"
-
-	if [ -d "$custom_widget_source" ]; then
-	    [ ! -d "$custom_widget_dest" ] && mkdir -p "$custom_widget_dest"
-		cp -a "$custom_widget_source" "$custom_widget_dest"
-		run_custom_widgets_utility=true
-	fi
+    custom_widget_source="$install_dir/application/bi/dataservice/CustomWidgets"
+    custom_widget_dest="$install_dir/application/app_data/bi/dataservice/"
+    shapefiles_dir="$install_dir/application/app_data/bi/shapefiles"
+        if [ -d "$custom_widget_source" ]; then
+            [ ! -d "$custom_widget_dest" ] && mkdir -p "$custom_widget_dest"
+            cp -a "$custom_widget_source" "$custom_widget_dest"
+        fi
+	cd "$install_dir/application/utilities/customwidgetupgrader"
+	"$install_dir/dotnet/dotnet" CustomWidgetUpgrader.dll true
+	cd $current_dir
 }
 
 get_bing_map_config() {
@@ -850,7 +1252,7 @@ update_oauth_fix() {
 
 	if [ "$distribution" = "ubuntu" ]; then
 		nginx_conf_path="$nginx_path/sites-available/$nginx_conf_name"
-	elif [ "$distribution" = "centos" ]; then
+	elif [[ "$distribution" = "centos" || "$distribution" = "sles" ]]; then
 		nginx_conf_path="$nginx_path/conf.d/$nginx_conf_name.conf"
 	fi
 	
@@ -881,6 +1283,9 @@ check_boldbi_directory_structure() {
 			if [ "$distribution" = "centos" ]; then
 			find "$services_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=LD_LIBRARY_PATH=/usr/local/lib'			
 			fi
+	   		if [ ! -z "$azure_insight" ]; then
+				find "$services_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=APPLICATIONINSIGHTS_CONNECTION_STRING='$azure_insight''
+			fi
 			if [ ! -z "$lic_key" ]; then
 				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=BOLD_SERVICES_UNLOCK_KEY='$lic_key''
 				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_UNLOCK_KEY/a Environment=BOLD_SERVICES_HOSTING_ENVIRONMENT=k8s'
@@ -901,8 +1306,9 @@ check_boldbi_directory_structure() {
 				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_FAVICON/a Environment=BOLD_SERVICES_BRANDING_FOOTER_LOGO='$footer_logo''
 				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_FOOTER_LOGO/a Environment=BOLD_SERVICES_SITE_NAME='$site_name''
 				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_SITE_NAME/a Environment=BOLD_SERVICES_SITE_IDENTIFIER='$site_identifier''
+    				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_SITE_IDENTIFIER/a Environment=BOLD_SERVICES_USE_SITE_IDENTIFIER='$use_siteidentifier''
 			fi
-			copy_service_files "$services_dir/." "$system_dir"		
+			copy_service_files		
 			enable_boldbi_services
 		fi
 	elif [ "$1" = "check_nginx_config" ]; then
@@ -911,7 +1317,7 @@ check_boldbi_directory_structure() {
 		if [ "$distribution" = "ubuntu" ]; then
 			nginx_dir="/etc/nginx/sites-available"
 			nginx_config_path="/etc/nginx/sites-available/boldbi-nginx-config"
-		elif [ "$distribution" = "centos" ]; then
+		elif [[ "$distribution" = "centos" || "$distribution" = "sles" ]]; then
 			nginx_dir="/etc/nginx/conf.d"
 			nginx_config_path="/etc/nginx/conf.d/boldbi-nginx-config.conf"
 		fi
@@ -935,22 +1341,63 @@ common_idp_integration() {
 	eval $invocation
 
 	Extracted_Dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-	cp -a "$Extracted_Dir/application/utilities/installutils" "$install_dir/application/utilities/"	
+	cp -a "$Extracted_Dir/application/utilities/installutils" "$install_dir/application/utilities/"
+ 	cp -a "$Extracted_Dir/application/utilities/customwidgetupgrader" "$install_dir/application/utilities/"
+	cp -a "$Extracted_Dir/application/utilities/adminutils" "$install_dir/application/utilities/"
+	# cp -a "$Extracted_Dir/application/utilities/openaitrainer" "$install_dir/application/utilities/"
         cp -a "$Extracted_Dir/dotnet/shared" "$install_dir/dotnet/"
         cp -a "$Extracted_Dir/dotnet/host" "$install_dir/dotnet/"
+
 	say "Modifying product.json"
 	"$install_dir/dotnet/dotnet" "$install_dir/application/utilities/installutils/installutils.dll" common_idp_setup $Extracted_Dir
-	
+	update_local_service_url
 	if [ -f "$Extracted_Dir/idp-Version-check.txt" ]; then
 		move_idp=($(cat "$Extracted_Dir/idp-Version-check.txt"))
 	fi
-	
-	say "Moving Bold BI files to Bold Reports installed directory."
+	if [ -d "$install_dir/application/etl" ]; then
+		installDataHub=true
+		rm -r "$install_dir/application/etl"
+	elif [ ! "$installDataHub" = "true" ]; then
+	    etl_confirmation_and_skipping
+	fi
+
+	say "Moving Bold BI and AI files to Bold Reports installed directory."
+	if [ -d "$install_dir/application/ai" ]; then
+    	rm -rf "$install_dir/application/ai"
+	fi
+
+	if [ -d "$install_dir/application/bi" ]; then
+    	rm -rf "$install_dir/application/bi"
+	fi
+
+	cp -a "$Extracted_Dir/application/ai" "$install_dir/application/"
 	cp -a "$Extracted_Dir/application/bi" "$install_dir/application/"
 	chown -R "$user" "$install_dir/application/bi"
 	chmod +rwx "$install_dir/application/bi"
+	chown -R "$user" "$install_dir/application/ai"
+	chmod +rwx "$install_dir/application/ai"
 	cp -a "$Extracted_Dir/Infrastructure/License Agreement/BoldBI_License.pdf" "$install_dir/Infrastructure/License Agreement/"
-
+    if [ "$installDataHub" = "true" ]; then 
+	    say "Moving Bold ETL files to Bold Reports installed directory."
+		cp -a "$Extracted_Dir/application/etl" "$install_dir/application/"
+		chown -R "$user" "$install_dir/application/etl"
+		chmod +rwx "$install_dir/application/etl"
+		if [ -f "$system_dir/bold-etl.service" ]; then
+			# Check if "BOLDELT.dll" is in the file
+			if grep -q "BOLDELT.dll" "$system_dir/bold-etl.service"; then
+				rm -rf "$system_dir/bold-etl.service"
+				say "Removed ETL service file because it is outdated..."
+			else
+				say "ETL service file is up to date..."
+			fi
+		fi
+		# Copy the new ETL service file if it's not present (after deletion or if not present initially)
+		if [ ! -f "$system_dir/bold-etl.service" ]; then
+			cp -a services/bold-etl* "$services_dir"
+			cp -a services/bold-etl* "$system_dir"
+			say "Copied bold-etl service file"
+		fi
+	fi
 	if $move_idp; then
 		say "Moving Bold ID files to Bold Reports installed directory."
 		rm -r $install_dir/application/idp
@@ -961,7 +1408,7 @@ common_idp_integration() {
 		chmod +rwx "$install_dir/application/idp"
 	fi
 	
-	rm -r $install_dir/application/utilities/installutils
+
 	if [ -f "$Extracted_Dir/idp-Version-check.txt" ]; then
 		rm -r "$Extracted_Dir/idp-Version-check.txt"
 	fi
@@ -971,7 +1418,10 @@ common_idp_integration() {
 		if [ "$distribution" = "centos" ]; then
 			find "$services_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=LD_LIBRARY_PATH=/usr/local/lib'
 		fi
-		if [ ! -z "$lic_key" ]; then
+		if [ ! -z "$azure_insight" ]; then
+			find "$services_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=APPLICATIONINSIGHTS_CONNECTION_STRING='$azure_insight''
+		fi
+  		if [ ! -z "$lic_key" ]; then
 			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=BOLD_SERVICES_UNLOCK_KEY='$lic_key''
 			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_UNLOCK_KEY/a Environment=BOLD_SERVICES_HOSTING_ENVIRONMENT=k8s'
 			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_HOSTING_ENVIRONMENT/a Environment=BOLD_SERVICES_DB_TYPE='$db_type''
@@ -991,53 +1441,105 @@ common_idp_integration() {
 			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_FAVICON/a Environment=BOLD_SERVICES_BRANDING_FOOTER_LOGO='$footer_logo''
 			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_FOOTER_LOGO/a Environment=BOLD_SERVICES_SITE_NAME='$site_name''
 			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_SITE_NAME/a Environment=BOLD_SERVICES_SITE_IDENTIFIER='$site_identifier''
+   			find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_SITE_IDENTIFIER/a Environment=BOLD_SERVICES_USE_SITE_IDENTIFIER='$use_siteidentifier''
 		fi
 		say "Moving BoldBI service files"
 		cp -a services/bold-bi-* "$services_dir"
 		cp -a services/bold-bi-* "$system_dir"
 
-		reports_nginx_conf_path="";
-		nginx_path="/etc/nginx"
+		say "Moving Ai service files"
+		cp -a services/boldbi-ai.service "$services_dir"
+		cp -a services/boldbi-ai.service "$system_dir"
 
-		if [ "$distribution" = "ubuntu" ]; then
-			reports_nginx_conf_path="/etc/nginx/sites-available"
-			reports_sites_enabled_path="/etc/nginx/sites-enabled"
-		elif [ "$distribution" = "centos" ]; then
-			reports_nginx_conf_path="/etc/nginx/conf.d"
-		fi
+	if [ "$server" = "nginx" ]; then
+			reports_nginx_conf_path="";
+			nginx_path="/etc/nginx"
+			if [ "$distribution" = "ubuntu" ]; then
+				reports_nginx_conf_path="/etc/nginx/sites-available"
+				reports_sites_enabled_path="/etc/nginx/sites-enabled"
+			elif [[ "$distribution" = "centos" || "$distribution" = "sles" ]]; then
+				reports_nginx_conf_path="/etc/nginx/conf.d"
+			fi
 
-		if [ "$server" = "nginx" ]; then
 			if [ ! -f "$reports_nginx_conf_path/boldbi-nginx-config" ] ; then
 				say "Modifying Nginx config"
 					
 				if [ "$distribution" = "ubuntu" ]; then
 					sed -n '/# Start of bi locations/,/# End of bi locations/p' boldbi-nginx-config > "$reports_nginx_conf_path/boldbi-nginx-config"
 					sed -i '$i'"$(echo 'include /etc/nginx/sites-available/boldbi-nginx-config;')" "$reports_nginx_conf_path/boldreports-nginx-config"
-				elif [ "$distribution" = "centos" ]; then
+				elif [[ "$distribution" = "centos" || "$distribution" = "sles" ]]; then
 					[ ! -d "$nginx_path/boldbi" ] && mkdir -p "$nginx_path/boldbi"
 					sed -n '/# Start of bi locations/,/# End of bi locations/p' boldbi-nginx-config > "$nginx_path/boldbi/boldbi-nginx-config"
 					sed -i '$i'"$(echo 'include /etc/nginx/boldbi/boldbi-nginx-config;')" "$reports_nginx_conf_path/boldreports-nginx-config.conf"
 				fi
 			fi
+			update_oauth_fix
+			if [ "$installDataHub" = "true" ] && [ "$etl_service_status" = "false" ]; then
+				update_nginx_configuration
+			else
+				validate_nginx_config
+			fi
+		elif [ "$server" = "apache" ]; then
+					apachectl_path=$(which apachectl)
+					reports_apache_conf_path="";
+				if [ "$distribution" = "centos" ]; then
+					reports_apache_conf_path="/etc/httpd/sites-available"
+					reports_apache_enabled_path="/etc/httpd/sites-enabled"
+					apache_path="/etc/httpd"
+				else
+					reports_apache_conf_path="/etc/apache2/sites-available"
+					reports_apache_enabled_path="/etc/apache2/sites-enabled"
+					apache_path="/etc/apache2"
+				fi
+				if [ ! -f "$reports_apache_conf_path/boldbi-apache-config.conf" ] ; then
+					say "Modifying Apache server config"
+						
+					if [ "$distribution" = "ubuntu" ]; then
+						sed -n '/# Start of bi locations/,/# End of bi locations/p' boldbi-apache-config.conf > "$reports_apache_conf_path/boldbi-apache-config.conf"
+						sed -i '$i'"$(echo 'Include /etc/apache2/sites-available/boldbi-apache-config.conf')" "$reports_apache_conf_path/boldreports-apache-config.conf"
+					elif [ "$distribution" = "centos" ]; then
+						[ ! -d "$apache_path/boldbi" ] && mkdir -p "$apache_path/boldbi"
+						sed -n '/# Start of bi locations/,/# End of bi locations/p' boldbi-apache-config.conf  > "$apache_path/boldbi/boldbi-apache-config.conf"
+						sed -i '$i'"$(echo 'Include /etc/httpd/boldbi/boldbi-apache-config.conf')" "$reports_apache_conf_path/boldreports-apache-config.conf"
+					fi
+				fi	
+
+			$apachectl_path restart
+			say "Validating the apache configuration"
+			$apachectl_path configtest
+			say "Restarting the apache to apply the changes"
+			$apachectl_path restart
+			if [ "$installDataHub" = "true" ] && [ "$etl_service_status" = "false" ]; then
+				update_apache_configuration
+			fi
 		fi
 	fi
+    if [ "$common_idp_upgrade" = "true" ] && [ ! -f "$system_dir/boldbi-ai.service" ]; then
+    echo "AI service not found in $system_dir. Adding AI service files."
 
-	update_oauth_fix
-	validate_nginx_config
-	
+    # Copy the AI service files to the required locations
+    say "Moving AI service files"
+    cp -a services/boldbi-ai.service "$services_dir"
+    cp -a services/boldbi-ai.service "$system_dir"
+
+    echo "AI service files added successfully."
+    fi
 	if $common_idp_upgrade; then bing_map_migration; fi
 	[ ! -d "$puppeteer_location/Linux-901912" ] && chrome_package_installation
-	if $common_idp_fresh; then enable_boldbi_services; fi
+ 	migrate_custom_widgets
+	#if $common_idp_fresh; then enable_boldbi_services; fi
+	enable_boldbi_services
 	start_boldbi_services
-	systemctl  restart bold-*
-	status_boldbi_services
+	systemctl daemon-reload
+	systemctl restart bold-*
+	status_boldbi_services	
+
+	if [ "$server" = "nginx" ]; then
+		update_ai_nginx_configuration
+	elif [ "$server" = "apache" ]; then
+		update_ai_apache_configuration
+	fi	
 	
-	if $common_idp_upgrade; then
-		if [ -d "$install_dir/application/app_data/bi/dataservice/CustomWidgets" ]; then
-			cd "$install_dir/application/utilities/customwidgetupgrader"
-			"$install_dir/dotnet/dotnet" CustomWidgetUpgrader.dll true
-		fi
-	fi
 }
 
 install_boldbi() {
@@ -1056,7 +1558,7 @@ install_boldbi() {
 	if [[ "$?" != "0" ]]; then
 		return 1
 	fi
-
+    if [ -z "$user" ] && [ "$installation_type" = "upgrade" ]; then upgrade_log; fi
 	if [ -z "$user" ] && [ "$installation_type" = "upgrade" ]; then read_user; fi
 
 	validate_user $user
@@ -1070,6 +1572,8 @@ install_boldbi() {
 	if [[ "$?" != "0" ]]; then
 		return 1
 	fi
+	
+	check_etl_service 
 
 	if is_boldreports_already_installed && is_boldbi_already_installed ; then
 		####### Combination build already exists. Need to update Bold BI ######
@@ -1086,10 +1590,39 @@ install_boldbi() {
 		check_boldbi_directory_structure "rename_installed_directory"
 	
 		if taking_backup; then
-			migrate_custom_widgets
 			get_bing_map_config
 			rm -r $install_dir/application/bi
 			common_idp_integration
+			if [ -d "$install_dir/application/etl" ]; then
+		    installDataHub=true
+	        fi
+			if [ "$distribution" = "centos" ]; then
+				if [ -f "/etc/httpd/boldbi/boldbi-apache-config.conf" ]; then
+					server="apache"
+				elif [ -f "/etc/nginx/boldbi/boldbi-nginx-config" ]; then
+					server="nginx"
+				fi
+			elif [ "$distribution" = "sles" ]; then
+				if [ -f "/etc/nginx/conf.d/boldbi-nginx-config.conf" ]; then
+					server="nginx"
+				fi
+			else
+				if [ -f "/etc/apache2/sites-available/boldbi-apache-config.conf" ]; then
+					server="apache"
+				elif [ -f "/etc/nginx/sites-available/boldbi-nginx-config" ]; then
+					server="nginx"
+				fi
+			fi
+			if [ "$server" = "nginx" ] && [ "$installDataHub" = "true" ] && [ "$etl_service_status" = "false" ]; then
+				update_nginx_configuration
+			elif [ "$server" = "apache" ] && [ "$installDataHub" = "true" ] && [ "$etl_service_status" = "false" ]; then
+				update_apache_configuration
+			fi	
+			if [ "$server" = "nginx" ]; then
+				update_ai_nginx_configuration
+			elif [ "$server" = "apache" ]; then
+				update_ai_apache_configuration
+			fi
 			say "Bold BI upgraded successfully!!!"
 			return 0
 		else
@@ -1128,36 +1661,48 @@ install_boldbi() {
 			fi
 		
 			say "Bold BI already present in this machine."
-			
+			if [ ! -d "$install_dir/application/etl" ]; then
+               etl_confirmation_and_skipping
+			else
+			   installDataHub=true 
+            fi			
 			if taking_backup; then
 			
-                stop_boldbi_services
+                	stop_boldbi_services
 			
 			    sleep 5
 				
 				check_boldbi_directory_structure "rename_installed_directory"
 				
-				migrate_custom_widgets
-				
-                get_bing_map_config
+                		get_bing_map_config
 
 				removing_old_files
 				
 				copy_files_to_installation_folder
+    
+    				find "$services_dir" -type f -name "*.service" -print0 | xargs -0 sed -i "s|www-data|$user|g"
+
+    				copy_service_files
 				
 				chown -R "$user" "$install_dir"
-			
+
 				chmod +rwx "$dotnet_dir/dotnet"
 				
 				"$install_dir/dotnet/dotnet" "$install_dir/application/utilities/installutils/installutils.dll" upgrade_version linux
 				
 				update_url_in_product_json
+
+				update_local_service_url
 				
 				check_boldbi_directory_structure "remove_services"
+				
+    				migrate_custom_widgets
 				
 				bing_map_migration
 
 				[ ! -d "$puppeteer_location/Linux-901912" ] && chrome_package_installation
+    
+    				enable_boldbi_services
 				
 				start_boldbi_services
 				
@@ -1165,17 +1710,42 @@ install_boldbi() {
 				
 				status_boldbi_services
 
-				check_boldbi_directory_structure "check_nginx_config"
-				
-				if [ -d "$install_dir/application/app_data/bi/dataservice/CustomWidgets" ]; then
-					cd "$install_dir/application/utilities/customwidgetupgrader"
-					"$install_dir/dotnet/dotnet" CustomWidgetUpgrader.dll true
+				if [ "$distribution" = "centos" ]; then
+				    if [ -f "/etc/httpd/sites-available/boldbi-apache-config.conf" ]; then
+				        server="apache"
+				    elif [ -f "/etc/nginx/conf.d/boldbi-nginx-config.conf" ]; then
+				        server="nginx"
+				    fi
+				elif [ "$distribution" = "sles" ]; then
+					if [ -f "/etc/nginx/conf.d/boldbi-nginx-config.conf" ]; then
+                        server="nginx"
+                    fi
+				else
+				    if [ -f "/etc/apache2/sites-available/boldbi-apache-config.conf" ]; then
+				        server="apache"
+				    elif [ -f "/etc/nginx/sites-available/boldbi-nginx-config" ]; then
+				        server="nginx"
+				    fi
 				fi
+
+				if [ "$server" = "nginx" ]; then check_boldbi_directory_structure "check_nginx_config"; fi				
 				
 				update_optional_lib
-				
+    
+				if [ "$server" = "nginx" ] && [ "$installDataHub" = "true" ]; then
+					update_nginx_configuration
+				elif [ "$server" = "apache" ] && [ "$installDataHub" = "true" ]; then
+					update_apache_configuration
+				fi
+
+				if [ "$server" = "nginx" ]; then
+					update_ai_nginx_configuration
+				elif [ "$server" = "apache" ]; then
+					update_ai_apache_configuration
+				fi
+
 				say "Bold BI upgraded successfully!!!"
-				
+    
 				return 0
 			else
 				return 1
@@ -1188,7 +1758,9 @@ install_boldbi() {
 				say_err "Please do a fresh install."
 				return 1
 			fi
-		
+            if [ ! "$installDataHub" = "true" ]; then
+                etl_confirmation_and_skipping
+            fi 		
 			mkdir -p "$install_dir"
 			
 			if [ ! -d "$backup_folder/.dotnet" ]; then
@@ -1200,9 +1772,13 @@ install_boldbi() {
 			
 			copy_files_to_installation_folder
 			update_url_in_product_json
+			update_local_service_url
 			find "$services_dir" -type f -name "*.service" -print0 | xargs -0 sed -i "s|www-data|$user|g"
 			if [ "$distribution" = "centos" ]; then
 			find "$services_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=LD_LIBRARY_PATH=/usr/local/lib'
+			fi
+	   		if [ ! -z "$azure_insight" ]; then
+				find "$services_dir" -type f -name "bold-*" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=APPLICATIONINSIGHTS_CONNECTION_STRING='$azure_insight''
 			fi
 			if [ ! -z "$lic_key" ]; then
 				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/DOTNET_PRINT_TELEMETRY_MESSAGE/a Environment=BOLD_SERVICES_UNLOCK_KEY='$lic_key''
@@ -1224,20 +1800,21 @@ install_boldbi() {
 				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_FAVICON/a Environment=BOLD_SERVICES_BRANDING_FOOTER_LOGO='$footer_logo''
 				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_BRANDING_FOOTER_LOGO/a Environment=BOLD_SERVICES_SITE_NAME='$site_name''
 				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_SITE_NAME/a Environment=BOLD_SERVICES_SITE_IDENTIFIER='$site_identifier''
+    				find "$services_dir" -type f -name "bold-ums-web.service" -print0 | xargs -0 sed -i '/BOLD_SERVICES_SITE_IDENTIFIER/a Environment=BOLD_SERVICES_USE_SITE_IDENTIFIER='$use_siteidentifier''
 			fi
-			copy_service_files "$services_dir/." "$system_dir"
-			#install_client_libraries
+			copy_service_files
+			if [ ! -z "$optional_libs" ]; then
+   			install_client_libraries
+			fi
 	
-			
-			chown -R "$user" "$install_dir"
-		
 			chmod +x "$dotnet_dir/dotnet"
 			
 			sleep 5
 			
 			chrome_package_installation
-
+			migrate_custom_widgets
 			enable_boldbi_services
+                        sudo chown -R "$user" "$install_dir"
 			start_boldbi_services
 			
 			sleep 5
@@ -1250,7 +1827,6 @@ install_boldbi() {
 			elif [ "$server" = "apache" ]; then
 				configure_apache
 			fi
-
 			say "Bold BI installation completed!!!"
 			return 0
 		fi

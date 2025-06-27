@@ -7,6 +7,7 @@
     var dashboardBIUrl = new DashboardServerEndPoints(globalAppSettings).DashboardServerBIUrl();
     var cdnLink = globalAppSettings.SystemSettings.CDNLink;
     var dashboardServerApiUrl = new DashboardServerApiEndPoints(globalAppSettings).DashboardServerApiUrl();
+    var siteUrl = globalAppSettings.SystemSettings.BaseUrl;
     var isAdmin = Context.Session.GetString("IsAdmin") != null && Convert.ToBoolean(Context.Session.GetString("IsAdmin"));
     var dashboardServerResourceUrl = globalAppSettings.SystemSettings.CDNLink.TrimEnd('/');
     var dashboardDesignerResourceUrl = globalAppSettings.SystemSettings.DesignerCdnLink.TrimEnd('/');
@@ -14,6 +15,8 @@
     var granularPermissions = ViewBag.GranularPermissions as Dictionary<object, bool>;
     var isEmbed = ViewBag.IsEmbed == null ? "false" : ViewBag.IsEmbed;
     var hasSettingsPagePermissionFlag = (isAdmin || granularPermissions[SettingsScopes.All]);
+    var etlEndpointPrefix = ServerAppConfig.IsSelfHosted ? ServerAppConfig.InternalAppIdpUrl : ServerAppConfig.AppSettings.EndPoints.ETLSiteURL;
+    var navigateETLUrl = etlEndpointPrefix + (ServerAppConfig.IsSelfHosted ? $"/etlservice/{globalAppSettings.SystemSettings.TenantId.ToString()}" : $"/{globalAppSettings.SystemSettings.TenantId.ToString()}");
     if (ServerAppConfig.IsSelfHosted)
     {
         hasSettingsPagePermissionFlag = hasSettingsPagePermissionFlag || granularPermissions[SettingsScopes.Connectors];
@@ -24,6 +27,7 @@
     var dashboardCutomTheme = string.Empty;
     var isEmbedSignature = url.Query.ToLower().Contains("embed_signature") && globalAppSettings.GetLicenseSettings().EnterpriseFeatures.Embed;
     var isEmbedTrue = ((Context.Request.Query["isembed"].ToString() != null && Context.Request.Query["isembed"].ToString().ToLower() == "true") || isEmbedSignature) && !string.IsNullOrWhiteSpace(Context.Request.Query["embed_theme"]);
+    var isConnectorsToolTipEnable = globalAppSettings.SystemSettings.IsConnectorsToolTipEnable;
     if (isEmbedTrue)
     {
         dashboardCutomTheme = Context.Request.Query["embed_theme"];
@@ -32,6 +36,7 @@
     {
         dashboardCutomTheme = ServerAppConfig.IsSelfHosted && globalAppSettings.SystemSettings.IsInheritFromGlobalLookAndFeelSettings ? ServerAppConfig.Theme.DashboardTheme : globalAppSettings.SystemSettings.CustomDashboardTheme;
     }
+    var isSandBox = GlobalAppSettings.IsUrlInDnsList(globalAppSettings.DisplayUri);
 }
 <!DOCTYPE html>
 
@@ -41,6 +46,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width" />
     <meta name="dashboard_server:url" content="@dashboardServerApiUrl" />
+    <meta name="site_identifier:url" content="@siteUrl" />
+    <meta name="etl_service:url" content="@navigateETLUrl" />
     <meta name="dashboard_service:url" content="@globalAppSettings.SystemSettings.InternalAppDataServiceUrl" />
     <meta name="designer_service:url" content="@designerServiceUrl" />
     <meta name="designer_service:access_token" content="@ViewBag.AccessToken" />
@@ -93,6 +100,7 @@
         var isSelfHosted = @Json.Serialize(isSelfHosted);
         var dataStoreSettingUrl = "@Url.Action("DataStoreSettings", "Administration")";
         var modelLanguage = "@ViewBag.ModelLanguage";
+        var firstDayOfWeek = "@ViewBag.FirstDayOfWeek"
         var isHideHelpLink = @Json.Serialize(ServerAppConfig.IsHideHelpLink);
         var customHelpLinkDomain = "@(ServerAppConfig.AllowCustomHelpLink ? ServerAppConfig.AppSettings.Documentation.BaseUri : string.Empty)";
         var custombrandName = "@ServerAppConfig.CustomBrandName";
@@ -100,7 +108,10 @@
         var isEmbed = "@isEmbed";
         var dashboardCustomThemename = "@dashboardCutomTheme";
         var customThemeAppearance = "@(ServerAppConfig.IsSelfHosted && globalAppSettings.SystemSettings.IsInheritFromGlobalLookAndFeelSettings ? ServerAppConfig.Theme.Appearance : globalAppSettings.SystemSettings.ThemeAppearance)";
+        var isConnectorsToolTipEnable = @Json.Serialize(isConnectorsToolTipEnable);
         var applicationTheme = "@(ServerAppConfig.IsSelfHosted && globalAppSettings.SystemSettings.IsInheritFromGlobalLookAndFeelSettings ? ServerAppConfig.Theme.ApplicationTheme : globalAppSettings.SystemSettings.CustomApplicationTheme)";
+        var appVersion = "@ServerAppConfig.ProductVersion";
+        var isSandBox = "@isSandBox";
     </script>
     @if (isEmbed == "true")
     {
@@ -132,23 +143,23 @@
     <script asp-append-version="true" src="@dashboardDesignerResourceUrl/cdn/scripts/designer/ej2.web.all.min.js"></script>
 
     <environment include="Development,CloudDevelopment">
+        <script asp-append-version="true" src="@dashboardDesignerResourceUrl/cdn/scripts/designer/bbi-core.js"></script>
         <script asp-append-version="true" src="@dashboardDesignerResourceUrl/cdn/scripts/designer/bbi-connection.js"></script>
     </environment>
     <environment exclude="Development,CloudDevelopment">
+        <script asp-append-version="true" src="@dashboardDesignerResourceUrl/cdn/scripts/designer/bbi-core.min.js"></script>
         <script asp-append-version="true" src="@dashboardDesignerResourceUrl/cdn/scripts/designer/bbi-connection.min.js"></script>
     </environment>
 
     @await Html.PartialAsync("~/Views/Shared/_BaseFontStyleSheet.cshtml")
 
     <div id="connectionDesigner"></div>
-
+    <script asp-append-version="true" src="~/js/localizationcontent.js?v=@ServerAppConfig.ProductVersion&c=@System.Globalization.CultureInfo.CurrentCulture"></script>
     <environment include="Development,CloudDevelopment">
         <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/designer/connection-designer.js"></script>
-        <script asp-append-version="true" src="~/js/localizationcontent.js?v=@ServerAppConfig.ProductVersion&c=@System.Globalization.CultureInfo.CurrentCulture"></script>
     </environment>
     <environment exclude="Development,CloudDevelopment">
         <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/designer/connection-designer.min.js"></script>
-        <script asp-append-version="true" src="~/js/localizationcontent.js?v=@ServerAppConfig.ProductVersion&c=@System.Globalization.CultureInfo.CurrentCulture"></script>
     </environment>
 </body>
 </html>

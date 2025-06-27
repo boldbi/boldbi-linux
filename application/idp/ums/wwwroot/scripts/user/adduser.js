@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+$(document).ready(function () {
     addPlacehoder("#user-add-dialog");
     createWaitingPopup('user-add-dialog');
     var addUserDialog = new ej.popups.Dialog({
@@ -44,7 +44,7 @@
     }, window.Server.App.LocalizationContent.AvoidSpecailCharacters);
 
     $.validator.addMethod("additionalSpecialCharValidation", function (value, element) {
-        if (/^[a-zA-Z_0-9`~!\$\^()=\-\.\{\} ]+$/.test(value) || value === "") {
+        if (/^[a-zA-Z_0-9`'~!\$\^()=\-\.\{\}À-ÖØ-öø-ÿŒœŸÿ€ß ]+$/.test(value) || value === "") {
             return true;
         }
     }, window.Server.App.LocalizationContent.AvoidSpecailCharacters);
@@ -64,10 +64,15 @@
         rules: {
             "user-name": {
                 isRequired: true,
-                isValidUsernameLength: true,
-                isValidUsername: true
+                isValidUsername: true,
+                isValidUsernameLength: true
             },
             "email-address": {
+                isRequired: {
+                    depends: function () {
+                        return (isEmailRequired === true);
+                    }
+                },
                 isValidName: true,
                 isValidEmail: true
             },
@@ -81,7 +86,7 @@
                 additionalSpecialCharValidation: true
             },
             "user-password": {
-                required: true,
+                isRequired: true,
                 isUserPasswordValid: true
             },
         },
@@ -102,14 +107,14 @@
 			"email-address": {
                 isRequired: window.Server.App.LocalizationContent.EmailValidator
             },
-            "username": {
+            "user-name": {
                 isRequired: window.Server.App.LocalizationContent.UserNameValidator
             },
             "first-name": {
                 isRequired: window.Server.App.LocalizationContent.FirstNameValidator
             },
             "user-password": {
-                isValidPassword: window.Server.App.LocalizationContent.PasswordValidator
+                isRequired: window.Server.App.LocalizationContent.PasswordValidator
             },
         }
     });
@@ -152,6 +157,26 @@
         $("#new-password").valid();
     });
 
+    $(document).on("click", "#new-password", function () {
+        passwordPolicyPopover("#new-password", $("#new-password").val());
+    });
+
+    $('.show-hide-password').on("mouseenter", function () {
+        var tooltip = bootstrap.Tooltip.getInstance(this);
+        if (tooltip) {
+            tooltip.dispose();
+        }
+        tooltip = new bootstrap.Tooltip(this, {
+            container: '#show-hide-password'
+        });
+        tooltip.show();
+    });
+
+    $('.show-hide-password').on("mouseleave", function () {
+        var tooltip = bootstrap.Tooltip.getInstance(this);
+        tooltip.hide();
+    });
+
     function hasWhiteSpace(value) {
         if (/\s/g.test(value)) {
             return false;
@@ -164,7 +189,9 @@
 
 function onUserAddDialogClose() {
     document.getElementById("user-add-dialog").ej2_instances[0].hide();
+    $(".form input[type='text']").val('');
     $("#password_policy_rules").remove();
+    $("#dialog-container").find("div").removeClass("e-error");
 }
 
 function onUserAddDialogOpen() {
@@ -176,5 +203,13 @@ function onUserAddDialogOpen() {
     $(".e-dialog-icon").attr("title", "Close");
     $(".validation").closest("div").removeClass("has-error");
     $(".useradd-validation-messages").css("display", "none");
+    $("#dialog-container").find("div").removeClass("e-error");
     CheckMailSettingsAndNotify(window.Server.App.LocalizationContent.ToSendAccountActivation, $(".validation-message"), "");
 }
+
+$(document).on("click", "#create-user,#new-user-dropdown", function () {
+    onUserAddDialogOpen();
+});
+$(document).on("click", "#cancel-user", function () {
+    onUserAddDialogClose();
+});

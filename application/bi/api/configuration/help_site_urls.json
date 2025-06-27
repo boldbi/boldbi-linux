@@ -378,6 +378,12 @@
     "RedirectCloudId": ""
   },
   {
+    "UrlName": "OracleConnectionParameters",
+    "BoldBiUrl": "https://docs.microsoft.com/en-us/dotnet/api/system.data.oracleclient.oracleconnection.connectionstring",
+    "RedirectOnPremiseId": 1005,
+    "RedirectCloudId": ""
+  },
+  {
     "UrlName": "UnlistedDashboards",
     "BoldBiUrl": "/embedded-bi/managing-resources/manage-dashboards/unlisted-dashboards/",
     "RedirectOnPremiseId": "79",
@@ -496,5 +502,89 @@
     "BoldBiUrl": "/cloud-bi/",
     "RedirectOnPremiseId": null,
     "RedirectCloudId": 2055
+  },
+  {
+    "UrlName": "SiteCredentials",
+    "BoldBiUrl": "/site-administration/site-credentials/",
+    "RedirectOnPremiseId": 2063,
+    "RedirectCloudId": 2063
+  },
+  {
+    "UrlName": "DataCache",
+    "BoldBiUrl": "/site-administration/data-process-settings/data-cache-settings/",
+    "RedirectOnPremiseId": 2064,
+    "RedirectCloudId": 2064
+  },
+  {
+    "UrlName": "BulkImportResult",
+    "BoldBiUrl": "/managing-resources/manage-users/bulk-import-result/",
+    "RedirectOnPremiseId": 2065,
+    "RedirectCloudId": 2065
+  },
+  {
+    "UrlName": "ImportOAuthGroups",
+    "BoldBiUrl": "/managing-resources/manage-groups/import-oauth-groups/",
+    "RedirectOnPremiseId": 2066,
+    "RedirectCloudId": 2066
+  },
+  {
+    "UrlName": "ImportOpenIDGroups",
+    "BoldBiUrl": "/managing-resources/manage-groups/import-openid-groups/",
+    "RedirectOnPremiseId": 2067,
+    "RedirectCloudId": 2067
+  },
+  {
+    "UrlName": "OAuthAuthenticationSettings",
+    "BoldBiUrl": "/security-configuration/single-sign-on/oauth-2.0-support/",
+    "RedirectOnPremiseId": 2068,
+    "RedirectCloudId": 2068
+  },
+  {
+    "UrlName": "OpenIDAuthenticationSettings",
+    "BoldBiUrl": "/security-configuration/single-sign-on/openid-support/",
+    "RedirectOnPremiseId": 2069,
+    "RedirectCloudId": 2069
+  },
+  {
+    "UrlName": "UsageAnalyticsDashboard",
+    "BoldBiUrl": "/site-administration/usage-analytics-dashboard/",
+    "RedirectOnPremiseId": 2070,
+    "RedirectCloudId": 2070
+  },
+  {
+    "UrlName": "OfflinePage",
+    "BoldBiUrl": "/resource-migration/migrate-dashboards-offline/download-dashboards/#download-the-dashboard-file-from-offline-page/",
+    "RedirectOnPremiseId": 2071,
+    "RedirectCloudId": 2071
+  },
+  {
+    "UrlName": "ETL",
+    "BoldBiUrl": "/working-with-data-sources/working-with-bold-etl/",
+    "RedirectOnPremiseId": 108,
+    "RedirectCloudId": null
+  },
+  {
+    "UrlName": "AiModel",
+    "BoldBiUrl": "/legal/privacy/",
+    "RedirectOnPremiseId": 21005,
+    "RedirectCloudId": null
+  },
+  {
+    "UrlName": "SetupHelp",
+    "BoldBiUrl": "/application-startup/",
+    "RedirectOnPremiseId": 109,
+    "RedirectCloudId": null
+  },
+  {
+    "UrlName": "Downloads",
+    "BoldBiUrl": "/account/downloads/embedded/",
+    "RedirectOnPremiseId": 110,
+    "RedirectCloudId": null
+  },
+  {
+    "UrlName": "Pricing",
+    "BoldBiUrl": "/pricing/",
+    "RedirectOnPremiseId": 111,
+    "RedirectCloudId": null
   }
 ] 

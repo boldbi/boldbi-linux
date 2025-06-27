@@ -238,6 +238,7 @@ CREATE TABLE [BOLDTC_TenantUser] (
 	Id uniqueidentifier NOT NULL,
 	UserId uniqueidentifier NOT NULL,
 	TenantInfoId uniqueidentifier NOT NULL,
+	IsFavorite bit NOT NULL,
 	IsActive bit NOT NULL,
   CONSTRAINT [PK_BOLDTC_TENANTUSER] PRIMARY KEY 
   ([Id]))
@@ -758,6 +759,7 @@ CREATE TABLE [BOLDTC_AuthSettings] (
     TenantInfoId uniqueidentifier NULL,
     AuthProviderId int NOT NULL,
     Settings nvarchar(max),
+    EncryptionValues nvarchar(max),
     IsEnabled bit NOT NULL,
     CreatedBy uniqueidentifier NOT NULL,
     ModifiedBy uniqueidentifier NOT NULL,

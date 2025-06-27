@@ -2,6 +2,7 @@
 var getLicenseUrl;
 var licenseToken;
 var offlineLicenseToken;
+
 $(document).ready(function () {
     String.prototype.format = function () {
         a = this;
@@ -15,7 +16,7 @@ $(document).ready(function () {
         header: window.Server.App.LocalizationContent.UploadLicense,
         showCloseIcon: true,
         width: '472px',
-        close: "uploadLicenseDialogClose",
+        close: uploadLicenseDialogClose,
         buttons: [
             {
                 'click': function () {
@@ -51,7 +52,10 @@ $(document).ready(function () {
         $("#getFile").click();
     });
 
-    $('[data-toggle="popover"]').popover();
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    });
 
     $(document).on("change", "#getFile", function (event) {
         $(".validation-error-message").html('');
@@ -170,8 +174,6 @@ function sendData(data, url) {
                             }
                         }
 
-                        document.getElementById("offline-license-update-dialog").ej2_instances[0].position.X = (window.innerWidth - 422) / 2;
-                        document.getElementById("offline-license-update-dialog").ej2_instances[0].position.Y = (window.innerHeight - 494) / 2;
                         $("#license-details").slideDown("slow");
                         $("#confirm-license").prop('disabled', false);
                         $(".upload-license-button").attr("disabled", false);
@@ -184,6 +186,7 @@ function sendData(data, url) {
                         $(".validation-error-message").html(data.Message);
                         $(".validation-error-message").removeClass("display-none");
                         $("#confirm-license").prop('disabled', true);
+                        $(".upload-license-button").attr("disabled", true);
                     }
 
                     hideWaitingPopup('offline-license-update-dialog');
@@ -208,7 +211,6 @@ function uploadLicenseDialogClose() {
     licenseKey = "";
     licenseToken = "";
     $("#tenant-type").val("");
-    document.getElementById("offline-license-update-dialog").ej2_instances[0].refresh();
     document.getElementById("offline-license-update-dialog").ej2_instances[0].hide();
 }
 
@@ -225,7 +227,7 @@ function confirmLicenseUpdate() {
                         $("#image-parent-container .startup-image").hide().attr("src", serverSetupImageUrl).fadeIn();
                         $(".startup-content").fadeIn();
                         $("#license-selection-container").hide();
-                        $('#auth-type-dropdown').removeClass("hide").addClass("show");
+                        $('#auth-type-dropdown').removeClass("d-none").addClass("d-block");
                         $("#system-settings-db-selection-container").slideDown("slow");
                         uploadLicenseDialogClose();
                     }

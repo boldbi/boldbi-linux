@@ -11,17 +11,28 @@ var userAccessName = "";
 var role = "";
 
 $(document).ready(function () {
+    $("#grant-user-button").on("click", onAddTenantsDialogOpen);
+    $("#assign-user-role-button").on("click", onMakeMultipleAdminDialogOpen);
     var isFirstRequest = false;
     addPlacehoder("#search-area");
     createWaitingPopup('user_grid');
     createWaitingPopup('user-add-dialog');
-    createWaitingPopup('movable-dialog');
+    createWaitingPopup('movable-dialog'); 
     createWaitingPopup('user-delete-confirmation');
     createWaitingPopup('grant-access-dialog');
     createWaitingPopup('make-admin-confirmation');
     createWaitingPopup('multiple-admin-confirmation');
     createWaitingPopup('remove-admin-confirmation');
     createWaitingPopup('singleuser-delete-confirmation');
+
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        if (tooltipTriggerEl.matches('i.su.su-show.view-green.show-hide-password')) {
+            return true;
+        } else {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        }
+    });
 
     var singleUserDeleteDialog = new ej.popups.Dialog({
         header: window.Server.App.LocalizationContent.DeleteUser,
@@ -137,6 +148,22 @@ $(document).ready(function () {
         }
     });
 
+    $('.show-hide-password').on("mouseenter", function () {
+        var tooltip = bootstrap.Tooltip.getInstance(this);
+        if (tooltip) {
+            tooltip.dispose();
+        }
+        tooltip = new bootstrap.Tooltip(this, {
+            container: '#show-hide-password'
+        });
+        tooltip.show();
+    });
+
+    $('.show-hide-password').on("mouseleave", function () {
+        var tooltip = bootstrap.Tooltip.getInstance(this);
+        tooltip.hide();
+    });
+
     $(".user-delete-button").on("click", function () {
         $("#user-delete-confirmation").ejDialog("open");
     });
@@ -156,7 +183,7 @@ $(document).ready(function () {
             showWaitingPopup('user-add-dialog');
 
             var lastName = $('#lastname').val().trim();
-            var values = "&userName=" + userName + "&emailid=" + emailid.toLowerCase() + "&firstname=" + firstName + "&lastname=" + lastName + "&password=" + password;
+            var values = { UserName: userName, Email: emailid.toLowerCase(), FirstName: firstName, LastName: lastName, Password: password }
 
             $.ajax({
                 type: "POST", url: isPresentUserNameAndEmailId, data: { userName: userName, emailId: emailid.toLowerCase() },
@@ -184,7 +211,7 @@ $(document).ready(function () {
                                     if (data.Data.result == "success") {
                                         hideWaitingPopup('user-add-dialog');
                                         $("#add-user").attr("disabled", "disabled");
-                                        $("#create-user").removeClass("hide").addClass("show");
+                                        $("#create-user").removeClass("d-none").addClass("d-block");
                                         $(".form input[type='text']").val('');
                                         var count = parent.$("#user-count-text").val();
                                         var currentVal = parseInt(count) + 1;
@@ -199,11 +226,11 @@ $(document).ready(function () {
                                                 if (result.activation == 0) {
                                                     SuccessAlert(window.Server.App.LocalizationContent.AddUser, window.Server.App.LocalizationContent.UserAddedActivated, 7000);
                                                 }
-                                                else if (result.result == "success" && result.activation == 1) {
+                                                else if (result.result  && result.activation == 1) {
                                                     SuccessAlert(window.Server.App.LocalizationContent.AddUser, window.Server.App.LocalizationContent.UserAdded, 7000);
                                                 }
-                                                else if (result.result == "failure" && result.isAdmin == true && result.activation == 1) {
-                                                    WarningAlert(window.Server.App.LocalizationContent.AddUser, window.Server.App.LocalizationContent.UserActivationEmailCannotSent, 7000);
+                                                else if (!result.result  && result.isAdmin == true && result.activation == 1) {
+                                                    WarningAlert(window.Server.App.LocalizationContent.AddUser, window.Server.App.LocalizationContent.UserActivationEmailCannotSent, null, 7000);
                                                 }
                                                 userGrid.refresh();
                                             }
@@ -271,13 +298,13 @@ $(document).ready(function () {
     });
 
     $(document).on("click", "#role-filter-option", function () {
-        $(".role-filter").removeClass("hide");
-        $(".role-filter").addClass("show");
+        $(".role-filter").removeClass("d-none");
+        $(".role-filter").addClass("d-block");
     });
 
     $(document).on("click", "div.e-filterset", function () {
-        $(".role-filter").removeClass("show");
-        $(".role-filter").addClass("hide");
+        $(".role-filter").removeClass("d-block");
+        $(".role-filter").addClass("d-none");
     });
 
     $(document).on("click", ".make-admin-button", function () {
@@ -329,7 +356,7 @@ function fnOnUserGridLoad(args) {
 }
 
 function fnbeforeDataBound(args) {
-    if (args.count == 0) {
+    if (args.count == 0 && !(args.actual.status)) {
         WarningAlert(window.Server.App.LocalizationContent.Users, window.Server.App.LocalizationContent.FailedToGetUsers, args.result, 7000);
     }
 }
@@ -365,7 +392,7 @@ function fnUserRowSelected(args) {
             }
             else {
                 $(".user-delete-button").css("display", "block");
-                $("#grant-user-").css("disabled", true);
+                $("#grant-user-button").css("disabled", true);
             }
         });
     }
@@ -399,7 +426,6 @@ function fnOnUserGridActionBegin(args) {
 }
 
 function fnOnUserGridActionComplete(args) {
-    $('[data-toggle="tooltip"]').tooltip();
     if (args.currentViewData.length == 0) {
         rowBound();
     }
@@ -446,15 +472,7 @@ function MakeFlyDeleteUsers() {
                 var currentVal = parseInt(count) - deleteUserCount;
                 parent.$("#user-count").html(currentVal);
                 parent.$("#user-count-text").val(currentVal);
-                if (data.AdUserCount == 0) {
-                    $("#ad-indication").html("");
-                }
-                if (data.AzureADUserCount == 0) {
-                    $("#azure-ad-indication").html("");
-                }
-                if (data.DatabaseUserCount == 0) {
-                    $("#database-indication").html("");
-                }
+                hideExternalUserIndication(data.ExternalUser);
                 parent.onCloseMessageBox();
             });
             $("#user-delete-confirmation").ejDialog("close");
@@ -530,10 +548,12 @@ function onAddTenantsDialogOpen() {
                 }
             },
             dataBound: function (args) {
-                $('[data-toggle="tooltip"]').tooltip(
-                    {
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl, {
                         container: '#grant-access-dialog'
                     });
+                });
             },
             columns: [
                 {
@@ -675,7 +695,6 @@ function fnOnApplicationGridActionComplete(args) {
     }
 
     enableAccessButton();
-    $('[data-toggle="tooltip"]').tooltip();
 }
 
 $(document).on("change", ".checkbox-row", function () {
@@ -712,7 +731,8 @@ $(document).on("change", ".checkbox-row", function () {
 });
 
 function enableAccessButton() {
-    $(".provide-access-button").attr("disabled", selectedTenants.length === 0);}
+    $(".provide-access-button").attr("disabled", selectedTenants.length === 0);
+}
 
 function onAddTenantsDialogClose() {
     var gridObj = document.getElementById('add_tenants_grid').ej2_instances[0];
@@ -721,6 +741,9 @@ function onAddTenantsDialogClose() {
     gridObj.clearSelection();
     gridObj.refresh();
     document.getElementById("grant-access-dialog").ej2_instances[0].hide();
+    $("#add-tenant-search").val("");
+    $("#add-user-search-area").find("span.su.su-inner-close.close-icon").css("display", "none");
+    $("#add-user-search-area").find("span.su.su-search.search-icon").css("display", "block");
 }
 
 function provideAccesstoTenants() {
@@ -811,7 +834,7 @@ function onSingleDeleteDialogClose() {
 
 function checkUserImported(t) {
     var ejGrid = $("#user_import_grid").data("ejGrid");
-    if (typeof ejGrid != 'undefined'  && ejGrid.getRows().length > 0) {
+    if (typeof ejGrid != 'undefined' && ejGrid.getRows().length > 0) {
         $("#messageBox_wrapper, .e-dialog-scroller, #messageBox").removeClass("failed-msg-box-height").addClass("msg-box-height"); //Message box height adjustment 
         $(".message-content").removeClass("text-center");
         messageBox("su-single-user", window.Server.App.LocalizationContent.ImportFromCSV, window.Server.App.LocalizationContent.UserImportIncomplete, "error", function () {
@@ -870,7 +893,6 @@ function SaveUserListFromCSV() {
                             obj.html("<ol>" + result.Data[i].DisplayMessage + "</ol>");
                         }
                     }
-                    $('[data-toggle="tooltip"]').tooltip();
                     hideWaitingPopup('content-area');
                     $("#messageBox_wrapper, .e-dialog-scroller, #messageBox").removeClass("failed-msg-box-height").addClass("msg-box-height");//Message box height adjustment
                     $(".message-content").addClass("text-center");
@@ -924,12 +946,7 @@ function deleteSingleUser() {
             var currentVal = parseInt(count) - 1;
             parent.$("#user-count").html(currentVal);
             parent.$("#user-count-text").val(currentVal);
-            if (data.AdUserCount == 0) {
-                $("#ad-indication").html("");
-            }
-            if (data.AzureADUserCount == 0) {
-                $("#azure-ad-indication").html("");
-            }
+            hideExternalUserIndication(data.ExternalUser);
             SuccessAlert(window.Server.App.LocalizationContent.DeleteUser, window.Server.App.LocalizationContent.UserHasDeleted, 7000);
             onConfirmDeleteUser("1");
             hideWaitingPopup('singleuser-delete-confirmation');
@@ -941,6 +958,29 @@ function deleteSingleUser() {
     });
 }
 
+function hideExternalUserIndication(externalUsers) {
+    if (!externalUsers.HasAdUsers) {
+        $("#ad-indication").html("");
+    }
+    if (!externalUsers.HasAzureAdUsers) {
+        $("#azure-ad-indication").html("");
+    }
+    if (!externalUsers.HasDatabaseUsers) {
+        $("#database-indication").html("");
+    }
+    if (!externalUsers.HasOAuthUsers) {
+        $("#oauth-indication").html("");
+    }
+    if (!externalUsers.HasOpenIdUsers) {
+        $("#openid-indication").html("");
+    }
+    if (!externalUsers.HasJwtSsoUsers) {
+        $("#jwt-indication").html("");
+    }
+    if (!externalUsers.HasAzureAdB2CUsers) {
+        $("#azureadb2c-indication").html("");
+    }
+}
 $(document).on("click", "#trigger-file,#filename", function () {
     $("#filename").trigger("focus");
     $("#grid-validation-messages span").css("display", "none");
@@ -956,6 +996,7 @@ $(document).on("change", "#csvfile", function (e) {
         $(".upload-box").addClass("e-error");
     } else {
         $("#csv-upload").attr("disabled", false);
+        $("#user-import-validation-msg").css("display", "none");
         $("#filename,#trigger-file").removeClass("validation-message");
         $("#filename").val(value);
         $(".upload-box").removeClass("e-error");
@@ -1065,6 +1106,7 @@ function MakeMultipleUserAdmin() {
             if (result.Status) {
                 SuccessAlert(window.Server.App.LocalizationContent.AssignRole, window.Server.App.LocalizationContent.MakeAdmin, 7000)
                 userGrid.refresh();
+                userGrid.clearSelection();
                 $("#grant-user-button, #assign-user-role-button").attr("disabled", true);
                 hideWaitingPopup("multiple-admin-confirmation");
                 onMultipleAdminDialogClose();
@@ -1072,6 +1114,7 @@ function MakeMultipleUserAdmin() {
             else {
                 WarningAlert(window.Server.App.LocalizationContent.AssignRole, window.Server.App.LocalizationContent.MakeAdminError, result.Message, 7000)
                 userGrid.refresh();
+                userGrid.clearSelection();
                 $("#grant-user-button, #assign-user-role-button").attr("disabled", true);
                 hideWaitingPopup("multiple-admin-confirmation");
                 onMultipleAdminDialogClose();
@@ -1115,8 +1158,8 @@ function roleFilter() {
     }
     showWaitingPopup('user_grid');
     var userGrid = document.getElementById('user_grid').ej2_instances[0];
-    $(".role-filter").removeClass("show");
-    $(".role-filter").addClass("hide");
+    $(".role-filter").removeClass("d-block");
+    $(".role-filter").addClass("d-none");
     $("#role-filter-option").closest("span").children(".e-filtericon").addClass("e-filteredicon").addClass("e-filternone");
     userGrid.refresh();
     hideWaitingPopup('user_grid');
@@ -1127,9 +1170,15 @@ function resetFilter() {
     role = "";
     var userGrid = document.getElementById('user_grid').ej2_instances[0];
     $('input[name=filter]').attr('checked', false);
-    $(".role-filter").removeClass("show");
-    $(".role-filter").addClass("hide");
+    $(".role-filter").removeClass("d-block");
+    $(".role-filter").addClass("d-none");
     $("#role-filter-option").closest("span").children(".e-filtericon").removeClass("e-filteredicon").removeClass("e-filternone");
     userGrid.refresh();
     hideWaitingPopup("user_grid");
 }
+
+$(document).on("click", "#user-delete-dialog-close,#delete-dialog-close", function () {
+    onDeleteDialogClose()();
+});
+
+$(document).on("click", "#import-button", SaveUserListFromCSV);

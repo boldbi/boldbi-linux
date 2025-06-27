@@ -2,20 +2,25 @@
 @using Syncfusion.Server.Base.Middlewares;
 @using Microsoft.AspNetCore.Http.Extensions;
 @using System.Security.Claims;
+@using Newtonsoft.Json;
+@using Microsoft.AspNetCore.Html
 @{
     var reqUrl = new Uri(Context.Request.GetDisplayUrl());
     var requestUrl = reqUrl.AbsolutePath.ToLower();
 
     //To show or hide menu for mobile devices
-    var menuClass = DeviceDetection.IsMobile ? "collapse width" : "collapse in";
+    var menuClass = DeviceDetection.IsMobile(Context) ? "collapse width" : "collapse in";
 
     var includeMessageBox = ViewBag.MessageBox == null || ViewBag.MessageBox == true;
 
-    var userId = Context != null && Context.User != null && Context.Request.IsHttps ? Guid.Parse(Context.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value) : Guid.Empty;
+    var userId = Context != null && Context.User != null && Context.Request.IsHttps ? Context.User.GetUserId() : Guid.Empty;
 
     var isWelcomePage = ViewBag.IsWelcomePage != null && ViewBag.IsWelcomePage;
     var headerTitle = ViewBag.HeaderTitle != null ? ViewBag.HeaderTitle : GlobalAppSettings.SystemSettings.OrganizationName;
     var dateFormat = string.IsNullOrWhiteSpace(_clientDateTimeInfo.ClientDateTime.DateFormat) ? GlobalAppSettings.SystemSettings.DateFormat : _clientDateTimeInfo.ClientDateTime.DateFormat;
+    var cookieValue = string.IsNullOrWhiteSpace(Context.Request.Cookies["boldservice.client.locale"]) ? string.Empty : Context.Request.Cookies["boldservice.client.locale"];
+    var encodedCookieValue = new HtmlString(cookieValue);
+    var isMobile = DeviceDetection.IsMobile(Context);
 }
 
 <!DOCTYPE html>
@@ -30,21 +35,33 @@
         @ViewBag.Title
     </title>
     @await Html.PartialAsync("_Favicon")
-    <link rel="stylesheet" href="@CloudAppConfig.TenantManagementUrl.TrimEnd('/')/bundles/css/cssloader.css" asp-append-version="true" />
+    <link rel="stylesheet" href="@CloudAppConfig.TenantManagementUrl(Context).TrimEnd('/')/bundles/css/cssloader.css" asp-append-version="true" />
 
-    <script type="text/javascript">
+    <script nonce="@Context.Items["ScriptNonce"]">
         var rootUrl = "";
         var baseurl = "";
+        var setCookieHttpOnlyUrl = "@Url.Action("SetHttpOnlyCookie", "PartialView")";
+        var cookieValue = JSON.stringify(@encodedCookieValue);
+        var value = {
+            Locale: navigator.language,
+            TimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+        };
+
+        setTimeout(function () {
+            if (isEmptyOrWhitespace(cookieValue) || cookieValue != JSON.stringify(value)) {
+                SetHttpOnlyCookie("boldservice.client.locale", JSON.stringify(value), 365);
+            }
+        }, 5000);
     </script>
 
     @await Html.PartialAsync("../Shared/_FontReference")
     @await Html.PartialAsync("../Shared/_ThemeReference")
 
-    <link rel="stylesheet" href="~/bundles/css/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/bundles/css/layout.css" integrity="@IntegrityTagHelper.GetIntegrity("bundles/css/layout.css")" crossorigin="anonymous" asp-append-version="true" />
     @RenderSection("styles", false)
 
-    <script src="~/bundles/js/layout.js" asp-append-version="true"></script>
-    <script src="~/bundles/js/ej2.js" asp-append-version="true"></script>
+    <script nonce="@Context.Items["ScriptNonce"]" src="~/bundles/js/layout.js" integrity="@IntegrityTagHelper.GetIntegrity("bundles/js/layout.js")" crossorigin="anonymous" asp-append-version="true"></script>
+    <script nonce="@Context.Items["ScriptNonce"]" src="~/bundles/js/ej2.js" integrity="@IntegrityTagHelper.GetIntegrity("bundles/js/ej2.js")" crossorigin="anonymous" asp-append-version="true"></script>
 </head>
 <body ng-app="serverApp" class="clearfix" id="body">
     <div class="loader-blue loader-icon" id="layout-body-loader-icon">
@@ -55,10 +72,10 @@
     <div id="server-app-container" style="opacity: 0">
         @await Html.PartialAsync("~/Views/Shared/_LocalizationContent.cshtml")
         <section id="header-area" class="mobile-visible">
-            <div class="header-bar col-lg-12 col-md-12 col-sm-12">
+            <div class="header-bar col-lg-12 col-md-12 col-sm-12 float-start">
                 @if (!isWelcomePage)
                 {
-                    <div class="mobile-menu-icon text-center mobile-visible collapsed" data-toggle="collapse" aria-expanded="false" data-target="#menu-area">
+                    <div class="mobile-menu-icon text-center mobile-visible collapsed" data-bs-toggle="collapse" aria-expanded="false" data-target="#menu-area">
                         <span>
                             <i class="su su-mobile-menu-icon"></i>
                         </span>
@@ -68,15 +85,15 @@
                     <h5 class="header-org-name">@headerTitle</h5>
                 </div>
 
-                <div class="pull-right" id="notification-section">
-                    <a id="notification-link" class="notification-mobile-link no-padding" href="@Url.Action("getusernotifications", "notification")">
+                <div class="float-end" id="notification-section">
+                    <a id="notification-link" class="notification-mobile-link no-padding text-decoration-none" href="@Url.Action("getusernotifications", "notification")">
                     </a>
                 </div>
             </div>
         </section>
         <section id="menu-area" class="collapse">
 
-            @if (DeviceDetection.IsMobile)
+            @if (isMobile)
             {
                 if (requestUrl == "/user/profile" || requestUrl == "/profile/change-password")
                 {
@@ -112,7 +129,7 @@
                     <span id="message-content"></span><span id="view" class="view-more">@T["View more"]</span>
                     <div id="container">
                         <textarea id="text-error-area" class="scroller" name="text" value=""></textarea>
-                        <span id="copy-error-area" class="pull-right app-hyperlink" data-toggle="tooltip" title="@T["Click to copy"]"><span class="su su-copy"></span></span>
+                        <span id="copy-error-area" class="float-end app-hyperlink" data-bs-toggle="tooltip" title="@T["Click to copy"]"><span class="su su-copy"></span></span>
                     </div>
                 </div>
                 <div class="close-div">
@@ -145,10 +162,10 @@
         <div id="menu-list">
         </div>
 
-        <div id="notification" class="pull-right hidden">
+        <div id="notification" class="float-end hidden">
             <div id="notification_area_link">
-                <a href="@Url.Action("getusernotifications", "notification")">
-                    <span id="notification_area_icon" class="su su-notification-alert pull-left">
+                <a href="@Url.Action("getusernotifications", "notification")" class="text-decoration-none">
+                    <span id="notification_area_icon" class="su su-notification-alert float-start">
                     </span>
                 </a>
             </div>
@@ -158,9 +175,9 @@
 
     @RenderSection("scripts", false)
 
-    @if (DeviceDetection.IsMobile)
+    @if (isMobile)
     {
-        <script type="text/javascript">
+        <script nonce="@Context.Items["ScriptNonce"]" type="text/javascript">
             $(document).ready(function () {
                 function nextEvent() {
                     $(this).on('touchend', function (e) {
@@ -192,7 +209,7 @@
     }
     @if (includeMessageBox)
     {
-        <script>
+        <script nonce="@Context.Items["ScriptNonce"]">
             $(document).ready(function () {
 
                 var messageBoxDialog = new ej.popups.Dialog({

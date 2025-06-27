@@ -1,7 +1,7 @@
 /*!
 *  filename: ej1.treemap.all.js
-*  version : 6.1.8
-*  Copyright Syncfusion Inc. 2001 - 2023. All rights reserved.
+*  version : 12.1.5
+*  Copyright Syncfusion Inc. 2001 - 2025. All rights reserved.
 *  Use of this code is subject to the terms of our license.
 *  A copy of the current license can be obtained at any time by e-mailing
 *  licensing@syncfusion.com. Any infringement will be prosecuted under
@@ -36,7 +36,8 @@
                 gap:0,
                 itemTemplate: null,
                 labelPosition: "topleft",
-                labelVisibilityMode: "visible"
+                labelVisibilityMode: "visible",
+                isTextWrap: false
             },
             dataSource: null,
             groupColorMapping:[],			
@@ -280,6 +281,8 @@
 				this._levelItemCollections = [];
 			this._levelChangedItemCollections = [];
 			this._drillDownLevelData = null;
+			this._allowDoubleClick = false;
+            this._allowItemSelectEvent = false;
         },
 
         _setModel: function (options) {
@@ -389,7 +392,7 @@
             if (!isClear) {
                 this._drilldownItems = [];
             }
-            if (this.model.enableResize || this.model.isResponsive) {
+            if (this.model.enableResize || this.model.isResponsive || isHierarchicalDrilldown) {
                 if (this._drilldownItems.length == 0 && !isHierarchicalDrilldown) {
                     this._initPrivateProperties();
                 }
@@ -715,6 +718,7 @@
 
         _tmClick: function(e){
             var eventArgs, end, treeMap = this;
+			this._allowDoubleClick = false;
             if(this.model.click != ''){
                 eventArgs = { model: this.model, data:{ event: e }};
                 this._trigger("click", eventArgs);
@@ -734,6 +738,7 @@
 				}
                 if(this._doubleTapTimer != null && (end - this._doubleTapTimer < 300))
                 {
+					this._allowDoubleClick = true;
                     !eventArgs && (eventArgs = { model: this.model, data:{ event: e }, selectedItems: [item.Data], doubleClick:true});
                     this._trigger("doubleClick", eventArgs);
                 }
@@ -1674,6 +1679,7 @@
                 var isContain, isSelected = false;
                 var ctrlkey = event.ctrlKey;
                 var clientX = event.clientX || this.getClientX(event), clientY = event.clientY || this.getClientY(event);
+				treeMap._allowItemSelectEvent = false;
                 if (treeMap.highlightGroupOnSelection()) {
                     for (var i = 0; i < treeMap.treemapgroups.length; i++) {
                         var item = treeMap.treemapgroups[i];
@@ -1800,7 +1806,10 @@
                         }
                         setTimeout(function(){
 						if(!event.public)
-							treeMap._trigger("treeMapItemSelected", { selectedItem: item, isSelected: isSelected, selectedItems: treeMap.selectedItems, originalEvent: event, rightClick: false, treeMap: treeMap, doubleClick: (treeMap._doubleTapTimer != null && (new Date() - treeMap._doubleTapTimer < 300)) });
+							if(!treeMap._allowItemSelectEvent) {
+                                treeMap._allowItemSelectEvent = true;
+                                treeMap._trigger("treeMapItemSelected", { selectedItem: item, isSelected: isSelected, selectedItems: treeMap.selectedItems, originalEvent: event, rightClick: false, treeMap: treeMap, doubleClick: treeMap._allowDoubleClick });
+                            }
 						}, 500);
 					}
                     
@@ -2374,6 +2383,79 @@
                 if (item.labelVisibilityMode == BoldBIDashboard.datavisualization.TreeMap.VisibilityMode.HideOnExceededLength) {
                     if (bounds.height > scale * item.ItemHeight || bounds.width > scale * item.ItemWidth) {
                         bbdesigner$(label).css("display", "none");
+                    }
+                } else if (item.labelVisibilityMode == BoldBIDashboard.datavisualization.TreeMap.VisibilityMode.Visible) {
+                    var text = label[0].textContent.trim();
+                    var maxWidth = item.ItemWidth - 6;  // Tile width
+                    var maxHeight = item.ItemHeight - 6; // Tile height
+                    var fontSize = parseInt(bbdesigner$(label).css("font-size"), 10);
+                    var lineHeight = fontSize * 1.2;  // Approximate line height
+                    var words = text.split(" ");
+                    var totalHeight = 0;
+
+                    // Clear previous content
+                    label[0].innerHTML = "";
+
+                    // Apply necessary CSS
+                    bbdesigner$(label).css({
+                        "display": "block",
+                        "overflow": "hidden",
+                        "max-width": maxWidth + "px",
+                        "max-height": maxHeight + "px",
+                        "width": "unset"
+                    });
+
+                    var currentLine = document.createElement("div");
+                    var currentLineWidth = 0;
+                    currentLine.style.display = "block";
+                    label[0].appendChild(currentLine);
+
+                    var isMaxHeightReached = false;
+                    words.forEach((word) => {
+
+                        if (isMaxHeightReached) return;
+
+                        var wordSpan = document.createElement("span");
+						wordSpan.classList.add("treemap-wrap-span-element");
+                        wordSpan.textContent = word + " ";
+                        currentLine.appendChild(wordSpan);
+
+                        // Measure current word width
+                        var wordWidth = wordSpan.offsetWidth;
+                        currentLineWidth += wordWidth;
+                        //totalHeight += lineHeight;
+                        // Check if word itself exceeds maxWidth
+                        if (wordWidth > maxWidth) {
+                            while (word.length > 0 && wordSpan.offsetWidth > maxWidth) {
+                                word = word.slice(0, -1);
+                                wordSpan.textContent = word + "... ";
+                            }
+                        }
+
+                        // If the total width exceeds maxWidth, move to next line
+                        if (currentLineWidth > maxWidth) {
+                            totalHeight += currentLine.offsetHeight;
+                            if (totalHeight > maxHeight) {
+                                if (currentLine.lastElementChild) {
+                                    currentLine.removeChild(currentLine.lastElementChild);
+                                    currentLine = currentLine.childElementCount ? currentLine : currentLine.previousElementSibling;
+                                }
+                                isMaxHeightReached = true;
+                                return;
+                            }
+
+                            // Start a new line
+                            currentLine = document.createElement("div");
+                            currentLine.style.display = "block";
+                            label[0].appendChild(currentLine);
+                            //currentLine.appendChild(wordSpan);
+                            currentLineWidth = wordWidth;
+                        }
+                    });
+
+                    // If total height exceeds, add ellipsis
+                    if (isMaxHeightReached && totalHeight > maxHeight && currentLine !== null && currentLine.lastChild !== null && !currentLine.lastChild.textContent.endsWith("... ")) {
+                        currentLine.lastChild.textContent = currentLine.lastChild.textContent.trim() + "...";
                     }
                 }
             }
@@ -3383,8 +3465,8 @@
                 }
                 if (element != null) {
                     bbdesigner$(element).css({ "left": event.pageX + 10, "top": event.pageY + 10, "display": "block" , "position": "fixed" });
-					bbdesigner$(treeMap.element[0]).append(element);
-                }
+                    bbdesigner$(document.body).append(element);
+				}
             }
         },
 

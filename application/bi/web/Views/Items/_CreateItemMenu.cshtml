@@ -6,23 +6,31 @@
     var emailAddress = Context.Session.GetString("emailaddress") != null ? Context.Session.GetString("emailaddress") : string.Empty;
     var itemPermissions = Model as Dictionary<ItemType, bool>;
     var itemsCount = ViewBag.ItemsCount as Dictionary<ItemType, int>;
+    var draftCount = ViewBag.DraftDashboardCount as Dictionary<ItemType, int>;
     var showUpload = GlobalAppSettings.Branding == AppBranding.Syncfusion.Identifier || emailAddress.EndsWith("@syncfusion.com", StringComparison.OrdinalIgnoreCase) || emailAddress.Equals(ServerAppConfig.AppSettings.Syncfusion.Support.ConciergeEmail);
     var isDashboardTab = requestUrl.LocalPath.TrimEnd('/').IndexOf(Url.Action("Dashboards", "Dashboards"), StringComparison.CurrentCultureIgnoreCase) > -1;
     var userdashboardsCount = itemsCount != null ? itemsCount.ContainsKey(ItemType.Dashboard) ? itemsCount[ItemType.Dashboard] : 0 : 0;
+    var draftDashboardCount = draftCount != null ? draftCount.ContainsKey(ItemType.Dashboard) ? draftCount[ItemType.Dashboard] : 0 : 0;
     var globalAppSettings = _globalAppSettings;
     var dashboardServerResourceUrl = globalAppSettings.SystemSettings.CDNLink.TrimEnd('/');
+    var dashboardsPageUrl = Url.Action("Dashboards", "Dashboards");
+    var isDashboardCreateDenied = GlobalAppSettings.IsUrlInDnsList(globalAppSettings.DisplayUri);
+    var absoluteUrl = requestUrl.AbsolutePath.ToString().ToLower();
+    var canHideUploadDashboard = isDashboardCreateDenied && !_identityResponse.IsAdmin;
 }
 <script>
     var isDraftExistUrl = "@Url.Action("IsDraftExist", "items")";
     var dashboardDesignerUrl = "@Url.Action("DashboardDesigner", "Designer")";
     var userDashboardsCount = "@userdashboardsCount";
+    var draftDashboardCount = "@draftDashboardCount";
+    var isDashboardCreateDenied = @Json.Serialize(isDashboardCreateDenied);
     var sharableDashboardsCount = "@ViewBag.SharableDashboardsCount";
 </script>
 
 <div id="create-item-container" style="display:none">
     <aside class="create-menu create-menu-effect">
-        <div class="create-dashboard-section col-xs-12">
-            <div class="create-dashboard-header-section col-xs-12 no-padding">
+        <div class="create-dashboard-section col-12">
+            <div class="create-dashboard-header-section col-12 no-padding">
                 <div class="create-dashboard-header-title">
                     @if (isItemPageRequested && itemPermissions != null && itemPermissions.ContainsKey(ItemType.Dashboard) && itemPermissions[ItemType.Dashboard])
                     {
@@ -34,14 +42,14 @@
                     }
                 </div>
             </div>
-            <div class="create-item-body-section col-xs-12 no-padding">
-                <ul class="col-xs-12 no-padding">
+            <div class="create-item-body-section col-12 no-padding">
+                <ul class="col-12 no-padding">
                     @if (isItemPageRequested && itemPermissions != null && itemPermissions.ContainsKey(ItemType.Dashboard) && itemPermissions[ItemType.Dashboard])
                     {
                         <li class="create-dashboard-scratch">
                             <div class="create-item-list-section">
                                 <div class="create-item-list-icon" style="float: left;">
-                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/blank-dashboard.svg">
+                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/blank-dashboard.svg" loading="lazy">
                                 </div>
                                 <div class="create-item-list-title">
                                     <label>@T["Start from Scratch"]</label><br>
@@ -52,7 +60,7 @@
                         <li id="create-multitab-dashboard">
                             <div class="create-item-list-section">
                                 <div class="create-item-list-icon" style="float: left;">
-                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/create-multitab-dashboard.svg">
+                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/create-multitab-dashboard.svg" loading="lazy">
                                 </div>
                                 <div class="create-item-list-title">
                                     <label>@T["Multi-Tabbed Dashboard"]</label><br>
@@ -60,12 +68,12 @@
                                 </div>
                             </div>
                         </li>
-                        if (!ServerAppConfig.IsSelfHosted)
+                        if (!ServerAppConfig.IsSelfHosted && !isDashboardCreateDenied)
                         {
-                            <li class="deploy-template-dashboard">
+                            <li class="deploy-template-dashboard" id="deploy-template-dashboard">
                                 <div class="create-item-list-section">
                                     <div class="create-item-list-icon" style="float: left;">
-                                        <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/template-dashboard.svg">
+                                        <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/template-dashboard.svg" loading="lazy">
                                     </div>
                                     <div class="create-item-list-title">
                                         <label>@T["Start from Template"]</label><br>
@@ -80,7 +88,7 @@
                             <li class="deploy-template-dashboard add-sample-button">
                                 <div class="create-item-list-section">
                                     <div class="create-item-list-icon" style="float: left;">
-                                        <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/template-dashboard.svg">
+                                        <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/template-dashboard.svg" loading="lazy">
                                     </div>
                                     <div class="create-item-list-title">
                                         <label>@T["Sample Dashboards"]</label><br>
@@ -90,27 +98,29 @@
                             </li>
                         }
                     }
-                    @*@if (isItemPageRequested && itemPermissions != null && itemPermissions.ContainsKey(ItemType.Dashboard) && itemPermissions[ItemType.Dashboard] && showUpload)
+                    @if (isItemPageRequested && itemPermissions != null && itemPermissions.ContainsKey(ItemType.Dashboard) && itemPermissions[ItemType.Dashboard] && isDashboardTab)
                     {
-                        <li onclick="onUploadDialogOpen()">
+                        <li id ="upload-dashboard">
                             <div class="create-item-list-section">
                                 <div class="create-item-list-icon" style="float: left;">
-                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/upload-dashboard.svg">
+                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/upload-dashboard.svg" loading="lazy">
                                 </div>
-                                <div class="create-item-list-title">
-                                    <label>@T["Upload Dashboards"]</label><br>
+                                <div class="create-item-list-title upload-dashboard-div">
+                                    <label>@T["Upload Dashboards"]
+                                        <span class="badge preview-badge badge-secondary1 badge-secondary2">@T["PREVIEW"]</span>
+                                    </label><br>
                                     <span>@T["Upload your dashboards"]</span>
                                 </div>
                             </div>
                         </li>
-                    }*@
+                    }
 
                     @if (!ServerAppConfig.IsSelfHosted)
                     {
                         <li class="request-concierge-support">
                             <a class="create-item-list-section" href="@ServerAppConfig.AppSettings.Syncfusion.Support.CreateTicket" target="_blank">
                                 <div class="create-item-list-icon" style="float: left;">
-                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/support.svg">
+                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/support.svg" loading="lazy">
                                 </div>
                                 <div class="create-item-list-title">
                                     <label>@T["Support"]</label><br>
@@ -122,15 +132,15 @@
                 </ul>
             </div>
         </div>
-        <div class="create-item-section col-xs-12">
-            <div class="create-item-body-section col-xs-12 no-padding">
-                <ul class="col-xs-12 no-padding">
+        <div class="create-item-section col-12">
+            <div class="create-item-body-section col-12 no-padding">
+                <ul class="col-12 no-padding">
                     @if (isItemPageRequested && itemPermissions != null && itemPermissions.ContainsKey(ItemType.Datasource) && itemPermissions[ItemType.Datasource])
                     {
                         <li id="create-datasource-connection">
                             <div class="create-item-list-section">
                                 <div class="create-item-list-icon" style="float: left;">
-                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/create-data-sources.svg">
+                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/create-data-sources.svg" loading="lazy">
                                 </div>
                                 <div class="create-item-list-title">
                                     <label>@T["Data Sources"]</label><br>
@@ -146,7 +156,7 @@
                         <li id="create_presentation">
                             <div class="create-item-list-section">
                                 <div class="create-item-list-icon" style="float: left;">
-                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/create-slideshow.svg">
+                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/create-slideshow.svg" loading="lazy">
                                 </div>
                                 <div class="create-item-list-title">
                                     <label>@T["Slideshow"]</label><br>
@@ -160,7 +170,7 @@
                         <li id="create_schedule">
                             <div class="create-item-list-section">
                                 <div class="create-item-list-icon" style="float: left;">
-                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/create-schedule.svg">
+                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/create-schedule.svg" loading="lazy">
                                 </div>
                                 <div class="create-item-list-title">
                                     <label>@T["Schedule"]</label><br>
@@ -176,7 +186,7 @@
                         <li id="create_Category">
                             <div class="create-item-list-section">
                                 <div class="create-item-list-icon" style="float: left;">
-                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/create-category.svg">
+                                    <img id="templates-img" class="smiley" src="@(GlobalAppSettings.CdnDomain)/static/sidebar/v1/create-category.svg" loading="lazy">
                                 </div>
                                 <div class="create-item-list-title">
                                     <label>@T["Category"]</label><br>
@@ -196,9 +206,9 @@
         <div class="save-draft-content-section">
             <div class="save-draft-title">@T["Let's start with a name for your dashboard."]</div>
             <div class="row save-draft-input-section">
-                <div class="col-xs-12 save-draft-input-segment">
+                <div class="col-12 save-draft-input-segment">
                     <span>
-                        <input class="save-draft-input" id="save-draft-input" name="dashboardName" maxlength="255" tabindex="1" data-msg-containerid="plugin_validation" />
+                        <input class="save-draft-input" id="save-draft-input" name="dashboardName" data-maxlength="255" tabindex="1" data-msg-containerid="plugin_validation" />
                     </span>
                     <span id="validate-dashboard-name" class="validation-message"></span>
                     <div id="plugin_validation" class="validation-message"></div>
@@ -214,11 +224,20 @@
 {
     @await Html.PartialAsync("../Items/_AddSampleItems")
 }
-<environment include="Development,CloudDevelopment">
-    <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/create-item-menu.css" />
-    <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/create-item-menu.js"></script>
-</environment>
-<environment exclude="Development,CloudDevelopment">
-    <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/create-item-menu.min.css" />
-    <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/create-item-menu.min.js"></script>
-</environment>
+
+@if (absoluteUrl.IndexOf(dashboardsPageUrl, StringComparison.OrdinalIgnoreCase) == -1 || (itemsCount != null && itemsCount.ContainsKey(ItemType.Dashboard) && itemsCount[ItemType.Dashboard] == 0))
+{
+    <environment include="Development,CloudDevelopment">
+        <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/create-item-menu.css" />
+    </environment>
+    <environment exclude="Development,CloudDevelopment">
+        <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/create-item-menu.min.css" />
+    </environment>
+
+    <environment include="Development,CloudDevelopment">
+        <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/create-item-menu.js"></script>
+    </environment>
+    <environment exclude="Development,CloudDevelopment">
+        <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/create-item-menu.min.js"></script>
+    </environment>
+}

@@ -30,8 +30,8 @@ $grey-000: #181E2B;
 $grey: #181E2B;
 $grey-300-40: #4c545f66;
 // Warning colors
-$warning-700-25: #181e2b;
-$warning-700-28: #fb923c;
+$warning-700-25: #fed7aa40;
+$warning-700-28: #fed7aa47;
 $warning-text: #FB923C;
 /// alert variant
 $alert-400: #F25050;
@@ -89,6 +89,7 @@ $input-box-border: #969DA6;
     --grey-black: #{$grey-black};
     --grey-white: #{$grey-white};
     --grey-300-40: #{$grey-300-40};
+    --multi-tab-badge: var(--grey-400);
     /*Primary variants*/
     --primary-900: #{$primary-900};
     --primary-800: #{$primary-800};
@@ -106,6 +107,12 @@ $input-box-border: #969DA6;
     --warning-700-25: #{$warning-700-25};
     --warning-700-28: #{$warning-700-28};
     --warning-text: #{$warning-text};
+    //Nav menu color changes
+    --nav-background-normal-color: var(--grey-200);
+    --nav-background-hover-color: var(--grey-300-40);
+    --nav-background-active-color: var(--grey-300);
+    //resource-page-bg-normal-color
+    --resource-page-bg-normal-color: var(--surface);
     /*active state bg*/
     --active-bg: #{$active-bg};
     ////primary branding color
@@ -129,6 +136,8 @@ $input-box-border: #969DA6;
     //LogoSection
     --logo-section-border-color: var(--grey-400);
     --logo-section-description-color: var(--grey-700);
+    --logo-section-bg-color: var(--grey-200);
+    
     // Link colors
     --global-link-text-normal-color: var(--hyper-link-normal-color);
     --global-link-text-hover-color: var(--hyper-link-hover-color);
@@ -142,6 +151,8 @@ $input-box-border: #969DA6;
     --section-separator-color: #{$grey-300};
     //info message color
     --info-text-color: var(--secondary-text-color);
+    //top profilesection
+    --top-header-bg-color: var(--background);
     //Warning bg
     --warning-bg-normal-color: var(--warning-700-25);
     --warning-border-normal-color: var(--warning-700-28);

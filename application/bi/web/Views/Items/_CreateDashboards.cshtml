@@ -7,6 +7,12 @@
     var dashboardServerResourceUrl = globalAppSettings.SystemSettings.CDNLink.TrimEnd('/');
     var designerServiceUrl = ServerAppConfig.GetServiceEndPointUrl(ServerAppConfig.InternalAppDataServiceUrl, _globalAppSettings);
     var themeAppearanceName = globalAppSettings != null && globalAppSettings.SystemSettings != null ? globalAppSettings.SystemSettings.ThemeAppearance : "light";
+    var url = new Uri(Context.Request.GetDisplayUrl());
+    var requestUrl = url.AbsolutePath.ToString().ToLower();
+    var dashboardsPageUrl = Url.Action("Dashboards", "Dashboards");
+    var dataSourcePageUrl = Url.Action("DataSources", "DataSources");
+    var schedulePageUrl = Url.Action("Schedules", "Scheduler");
+    var slideshowPageUrl = Url.Action("Slideshows", "Slideshow");
 }
 
 <!DOCTYPE html>
@@ -33,20 +39,34 @@
         var addTemplateDashboardUrl = "@Url.Action("AddTemplateDashboard", "Dashboards")";
         var getTemplateDashboardUrl = "@Url.Action("GetTemplateDashboards", "items")";
         var dashboardServerResourceUrl = "@globalAppSettings.SystemSettings.CDNLink";
+        @{
+        #pragma warning disable SCS0029
+        }
         window.templatedashboardsList = @Html.Raw(Json.Serialize(@data));
+        @{
+        #pragma warning restore SCS0029
+        }
         var dataServiceUrl = "@designerServiceUrl.TrimEnd('/')";
         window.canCreateDataSource = "@Json.Serialize(permissions[ItemType.Datasource])";
         var serverAppPathBase = "@GlobalAppSettings.HttpPathBase";
     </script>
 
-    <environment include="Development,CloudDevelopment">
-        <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/create-dashboard.css" />      
+    <environment include="Development,CloudDevelopment">  
         <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/create-dashboard.js"></script>
     </environment>
     <environment exclude="Development,CloudDevelopment">
-        <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/create-dashboard.min.css" />
         <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/create-dashboard.min.js"></script>
     </environment>
+
+    @if (requestUrl.IndexOf(dashboardsPageUrl, StringComparison.OrdinalIgnoreCase) == -1 && requestUrl.IndexOf(dataSourcePageUrl, StringComparison.OrdinalIgnoreCase) == -1 && requestUrl.IndexOf(schedulePageUrl, StringComparison.OrdinalIgnoreCase) == -1 && requestUrl.IndexOf(slideshowPageUrl, StringComparison.OrdinalIgnoreCase) == -1)
+    {
+        <environment include="Development,CloudDevelopment">
+            <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/create-dashboard.css" />
+        </environment>
+        <environment exclude="Development,CloudDevelopment">
+            <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/create-dashboard.min.css" />
+        </environment>
+    }
 </head>
 <body>
     <div id="create-dashboard-popup" class="fluent-popup display-none custom-bootstrap-styles custom-server-style">
@@ -65,14 +85,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-12 template-item no-padding">
+                <div class="col-12 template-item no-padding">
                     <div class="col-xs-2 template-datasource" ng-init="filter[categories]={}">
-                        <div id="template-datasource-search-area" class="col-xs-12 pull-left">
-                            <input type="text" id="template-datasource-search-items" class="pull-left no-margin" ng-model="query" placeholder="@T["Search Template"]" />
-                            <span class="su close-icon su-inner-close pull-left no-margin clear-search" ng-click="query = ''" id="clear-search" title="@T["Clear search"]"></span>
-                            <span class="su su-search search-item pull-left no-margin" title="@T["Search"]"></span>
+                        <div id="template-datasource-search-area" class="col-12 float-start">
+                            <input type="text" id="template-datasource-search-items" class="float-start no-margin" ng-model="query" placeholder="@T["Search Template"]" />
+                            <span class="su close-icon su-inner-close float-end no-margin clear-search" ng-click="query = ''" id="clear-search" title="@T["Clear search"]"></span>
+                            <span class="su su-search search-item float-end no-margin" title="@T["Search"]"></span>
                         </div>
-                        <div class="col-xs-12 checkbox-groups no-padding">
+                        <div class="col-12 checkbox-groups no-padding">
                             <h1 class="template-datasource-label domain-label">@T["Domains"]</h1>
                             <ul class="datasource-list-group">
                                 <li ng-repeat="value in getItems(categories[0], templatedashboards)">
@@ -88,16 +108,23 @@
                         </div>
                     </div>
                     <div class="col-xs-10 template-dashboard-content-section no-padding">
-                        <div class="col-xs-12 no-padding template-dashboard-content-outer-div" ng-repeat="datasource in  filteredSamples =(templatedashboards | filter:query | filter: filterByDatasource  )">
-                            <div class="col-xs-12 template-dashboard-content-inner-div" ng-class="$last ? 'last-inner-div' : ''" ng-repeat="dashboard in datasource.Dashboards">
+                        <div class="col-12 no-padding template-dashboard-content-outer-div" ng-repeat="datasource in  filteredSamples =(templatedashboards | filter:query | filter: filterByDatasource  )">
+                            <div class="col-12 template-dashboard-content-inner-div" ng-class="$last ? 'last-inner-div' : ''" ng-repeat="dashboard in datasource.Dashboards">
                                 <div class="col-xs-6 template-dashboard-image">
-                                    <img ng-src="@(GlobalAppSettings.CdnDomain)/static/template-dashboards/v2/{{dashboard.ImageName | lowercase}}" />
+                                    @if (ServerAppConfig.IsSelfHosted)
+                                    {
+                                        <img ng-src="@dashboardServerResourceUrl/cdn/css/template_dashboards/{{dashboard.ImageName | lowercase}}" />
+                                    }
+                                    else
+                                    {
+                                        <img ng-src="@(GlobalAppSettings.CdnDomain)/static/template-dashboards/v2/{{dashboard.ImageName | lowercase}}" />
+                                    }
                                     <span class="su su-maximize temp-image-maximize"></span>
                                 </div>
                                 <div class="col-xs-6 template-dashboard-content">
                                     <h4 class="template-dashboard-name">{{dashboard.ShowCaseName}}</h4>
                                     <p class="template-dashboard-description">{{dashboard.Description}}</p>
-                                    <img class="service-image" title="{{datasource.Name}}" data-toggle="tooltip" ng-src="@globalAppSettings.SystemSettings.CDNLink.TrimEnd('/')/cdn/css/designer/@themeAppearanceName.Trim()/images/datasource/{{datasource.Provider | lowercase}}/{{datasource.Service | lowercase}}.png" />
+                                    <img class="service-image" title="{{datasource.Name}}" data-bs-toggle="tooltip" ng-src="@globalAppSettings.SystemSettings.CDNLink.TrimEnd('/')/cdn/css/designer/@themeAppearanceName.Trim()/images/datasource/{{datasource.Provider | lowercase}}/{{datasource.Service | lowercase}}.png" />
                                     <div class="template-dashboard-buttons-div">
                                         <button ng-if="canCreateDataSource && !IsNullorWhitespace(dashboard.Type)" data-authorize-url="@designerServiceUrl.TrimEnd('/')/v1.0/connection/authorize?provider={{datasource.Provider}}&service={{datasource.Service}}&type={{dashboard.Type}}&token={{accessToken}}&server=@(new DashboardServerApiEndPoints(globalAppSettings, true).DashboardServerApiUrl())"
                                                 class="template-dashboard-add-button primary-button app-btn-primary" data-access-token="{{accessToken}}"
@@ -117,7 +144,7 @@
                                         </button>
 
                                         <button ng-show="!canCreateDataSource" class="template-dashboard-add-button primary-button app-btn-primary disabled-template-button" type="button" disabled
-                                                title="@T["You need permission to create a new data source to connect your data."]" data-toggle="tooltip" data-container="body">
+                                                title="@T["You need permission to create a new data source to connect your data."]" data-bs-toggle="tooltip" data-container="body">
                                             @T["Connect your data"]
                                         </button>
 

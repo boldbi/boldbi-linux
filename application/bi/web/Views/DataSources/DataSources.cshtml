@@ -8,6 +8,12 @@
     var itemsCount = ViewBag.ItemsCount as Dictionary<ItemType, int>;
     var dashboardServerResourceUrl = globalAppSettings.SystemSettings.CDNLink.TrimEnd('/');
     var isEmbed = @Context.Request.QueryString.ToString().ToLower().Contains("isembed");
+    var pageDescription = T["Create and manage data sources to connect your data with a dashboard. They can be databases, web services, or flat files."];
+    var partialViewsUrl = Url.Action("LoadPartialViews", "PartialView") + "?v=" + ServerAppConfig.ProductVersion + "&c=" + @System.Globalization.CultureInfo.CurrentCulture + "&isMobile=" + isMobile + "&page=" + (int)ItemType.Datasource;
+    var isAdmin = _identityResponse.IsAdmin;
+    var isSelfHosted = ServerAppConfig.IsSelfHosted;
+    var isDataSourceCreateDenied = GlobalAppSettings.IsUrlInDnsList(globalAppSettings.DisplayUri);
+    var dataSourceCreateLimitCount = !isSelfHosted && !string.IsNullOrWhiteSpace(ServerAppConfig.AppSettings.DataSourceCreateLimitCount) ? ServerAppConfig.AppSettings.DataSourceCreateLimitCount : string.Empty;
 }
 
 @model List<ItemDetail>
@@ -34,12 +40,27 @@
 }
 
 @section scripts{
-
+    <script>
+        var partialViewsUrl = @Json.Serialize(partialViewsUrl);
+        var isMobile = @Json.Serialize(isMobile)
+        var buildVersion = "@ServerAppConfig.ProductVersion";
+        $(function () {
+            $.ajax({
+                type: "GET",
+                url: partialViewsUrl,
+                async: true,
+                success: function (response) {
+                    $('#server-app-container #content-area').append(response);
+                },
+            });
+        });
+    </script>
     <script>
         var refreshHistory = "@ViewBag.RefreshHistory";
         var refreshHistoryItemName = "@ViewBag.ItemName";
         var refreshHistoryItemId = "@ViewBag.ItemId";
         var refreshHistoryItemType = "@Convert.ToInt32(ItemType.Datasource)";
+        var copyItemType = "@Convert.ToInt32(ItemType.Datasource)";
     </script>
     @if (!isMobile)
     {
@@ -74,6 +95,13 @@
         var mergeDatasourceIframeUrl = "@Url.Action("MergeDataSource", "DataSourceDesigner")";
         var refreshData = "@Url.Action("RefreshData", "DataSources")";
         var isUpdateDataSource = @Json.Serialize(ViewBag.IsUpdateDataSource);
+        var isSelfHosted = @Json.Serialize(ServerAppConfig.IsSelfHosted);
+        var isAdmin = @Json.Serialize(isAdmin);
+        var isDataSourceCreateDenied = @Json.Serialize(isDataSourceCreateDenied);
+        var dataSourceCreateLimitCount = "@dataSourceCreateLimitCount";
+        var validateDataSourceCountUrl = "@Url.Action("ValidateDataSourceCreateLimit", "Items")";
+        var dataSourceCreateLimitCountUrl = "@Url.Action("DataSourceCreateLimit", "Items")";
+        var rowLevelSecurityIframeUrl = "@Url.Action("RowLevelSecurity", "DataSourceDesigner")";
 
         $(document).ready(function () {
             $("#search-items").val("");
@@ -98,42 +126,56 @@
 @section MainSection{
     @if (itemsCount != null && itemsCount.ContainsKey(ItemType.Datasource) && itemsCount[ItemType.Datasource] > 0)
     {
+        @if (!isMobile)
+        {
+            <div class="col-12 no-padding no-margin">
+                @await Html.PartialAsync("../Shared/_TopHeaderSection", new ViewDataDictionary(ViewData) { { "PageHeader", @T["DATA SOURCES"] }, { "PageDescription", @pageDescription } })
+                <div class="import-area col-12 bi-page-header top-nav-btn-secton">
+                    <div class="col-12 no-padding">
+                        <div id="search-area" class="float-start col-4">
+                            <input type="text" id="search-items" class="float-start no-margin" placeholder="@T["Search data sources"]" />
+                            <span class="su close-icon su-inner-close float-start no-margin clear-search" id="clear-search" title="@T["Clear search"]"></span>
+                            <span class="su su-search search-item float-start no-margin" title="@T["Search data sources"]"></span>
+                        </div>
+                        <div class="col-4 no-padding button-section">
+                            @if (itemPermissions[ItemType.Datasource])
+                            {
+                                <div id="datasource-create-dropdown" class="col-6 no-padding">
+                                    <button class="dropdown-toggle primary-button app-btn-primary float-end" data-bs-toggle="dropdown" id="datasource-create" title="@T["New Data Source"]">
+                                        <span class="create-btn-text">@T["New Data Source"] </span>
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu multi-level float-start" role="menu" id="datasource-options">
+                                            <li>
+                                                <a id="create-datasource-connection" class="create-datasource-menu" data-bs-toggle="tooltip" data-placement="left" data-container="body">
+                                                    <span>@T["Create Data Source"]</span>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a id="merge-datasource" data-bs-toggle="tooltip" data-placement="left" data-container="body">
+                                                    <span>@T["Append Data Source"]</span>
+                                                </a>
+                                            </li>
+                                    </ul>
+                                </div> 
+                            }
+                            <a href="@Url.Action("ConnectedAccounts", "User")" id="my-connection" class="link-button app-btn-link float-end connected-accounts-button" title="">@T["My Connections"]</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
         <div id="item-grid-container" data-grid-name="datasources" class="bi-page-container grid-page-container">
             <div class="bi-page-content col-md-12 no-padding">
                 <input type="hidden" class="page-name" data-content="@T["DATA SOURCES"]">
                 @if (!isMobile)
                 {
-                    <div class="import-area col-xs-12 bi-page-header">
-                        <div class="bi-page-header-description col-xs-6 no-padding">
-                            <h1 class="h2 page-title">
-                                @T["DATA SOURCES"]
-                                <feature name=@FeatureManagement.Yokogawa>
-                                <span style="display: none" id="data-source-text">(<span id="data-source-count"></span>) </span>
-                                </feature>
-                            </h1>
-                            <h5 class="page-description">@T["Create and manage data sources to connect your data with a dashboard. They can be databases, web services, or flat files."]</h5>
-                        </div>
-                        <div class="col-xs-6 no-padding bi-header-btn">
-                            @if (itemPermissions[ItemType.Datasource])
-                            {
-                                <button type="button" id="create-datasource-connection" class="pull-right primary-button app-btn-primary">@T["Create Data Source"]</button>
-                            }
-                            <a href="@Url.Action("ConnectedAccounts", "User")" id="my-connection" class="link-button app-btn-link pull-right connected-accounts-button" title="">@T["My Connections"]</a>
-                            @if (itemPermissions[ItemType.Datasource])
-                            {
-                                <button type="button" id="merge-datasource" class="pull-right link-button app-btn-link">@T["Combine Data Source"]</button>
-                            }
-                        </div>
-                    </div>
-                    <div class="col-xs-12 bi-page-body">
-                        <div id="search-area" class="pull-right">
-                            <input type="text" id="search-items" class="pull-left no-margin" placeholder="@T["Search data sources"]" />
-                            <span class="su close-icon su-inner-close pull-left no-margin clear-search" id="clear-search" title="@T["Clear search"]"></span>
-                            <span class="su su-search search-item pull-left no-margin" title="@T["Search data sources"]"></span>
-                        </div>
-
+                    <div class="col-12 bi-page-body">
                         <div class="grid-container grid">
                             @await Html.PartialAsync("../Items/_ItemsGrid", new ViewDataDictionary(ViewData) { { "gridName", "datasources" }, { "Permissions", @itemPermissions }, { "SearchQuery", ViewBag.FilterKey } })
+                        </div>
+                        <div class="view-linked-dashboards">
+                            <div id="view-linked" class="dashboard-linked-view"><span class="su su-view-linked-dashboard"> </span> - @T["Total dashboards linked with the data source"]</div>
                         </div>
                     </div>
                 }
@@ -164,6 +206,9 @@
     <div id="create-data-preview-popup" class="fluent-popup display-none">
         <iframe id="create-data-preview-iframe" class="datasource-create-frame"></iframe>
     </div>
+    <div id="create-row-level-security-popup" class="fluent-popup display-none">
+        <iframe id="create-row-level-security-iframe" class="datasource-create-frame"></iframe>
+    </div>
     <div id="create-merge-datasource-popup" class="fluent-popup display-none">
         <iframe id="create-merge-datasource-iframe" class="datasource-create-frame"></iframe>
     </div>
@@ -174,8 +219,7 @@
     @if (!isMobile)
     {
         @await Html.PartialAsync("../Items/_AddItems")
-        @await Html.PartialAsync("../Items/_ItemVersion")
         @await Html.PartialAsync("../Items/_SharePermission")
-        @await Html.PartialAsync("../Scheduler/_ScheduleHistory")
+        @await Html.PartialAsync("../Scheduler/_DataSourceScheduleHistory")
     }
 }

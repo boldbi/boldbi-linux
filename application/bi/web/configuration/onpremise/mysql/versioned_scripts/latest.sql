@@ -1,32 +1,27 @@
-CREATE TABLE {database_name}.BOLDBI_UserSession(
-	Id Char(38) NOT NULL,
-	IdpReferenceId Char(38) NOT NULL,
-	SessionId Char(38) NOT NULL,
-	DirectoryTypeId int NOT NULL DEFAULT 0,
-	IpAddress varchar(255) NOT NULL,
-	Browser varchar(255) NULL,
-	LoggedInTime datetime NOT NULL,
-	LastActive datetime NULL,
-	IsActive tinyint NOT NULL,
-	PRIMARY KEY (Id))
+CREATE TABLE {database_name}.BOLDBI_AI_REQUESTS (
+    MessageId VARCHAR(255) NOT NULL PRIMARY KEY,
+    SearchDate DATETIME,
+    Message TEXT,
+    DatasourceId VARCHAR(255),
+    SessionId VARCHAR(255),
+    HasError BOOLEAN,
+    Response TEXT,
+    StatusMessage TEXT,
+    AiModel VARCHAR(255),
+    TenantId VARCHAR(255),
+    UserEmail VARCHAR(255),
+    Feedback TEXT,
+    UserInfo TEXT,
+    RequestType VARCHAR(255),
+    Environment VARCHAR(255),
+    IsValidResponse BOOLEAN,
+    IsWidgetRendered BOOLEAN) ROW_FORMAT=DYNAMIC
 ;
 
-ALTER TABLE {database_name}.BOLDBI_Item ADD IsUploadDraft tinyint NOT NULL DEFAULT 0
-;
+SET SQL_SAFE_UPDATES = 0;
 
-CREATE TABLE {database_name}.BOLDBI_BackgroundJobs(
-    Id int NOT NULL AUTO_INCREMENT,
-    JobType varchar(100) NOT NULL,
-    ItemId Char(38) NULL,
-    UserId int NULL,
-    JobDetails text NOT NULL,
-    CreatedDate datetime NOT NULL,
-    CompletedDate datetime NOT NULL,
-    Status varchar(255) NOT NULL,
-	StatusMessage varchar(255) NULL,
-	ResourceInfo text NULL,
-	CanIncludeSensitiveInfo tinyint NULL,
-	IsSampleData tinyint NULL,
-    IsActive tinyint NOT NULL,
-    PRIMARY KEY (Id))
-;
+ALTER TABLE {database_name}.BOLDBI_CustomEmailTemplate ADD COLUMN CustomVisibilityOptions TEXT NOT NULL;
+
+UPDATE {database_name}.BOLDBI_CustomEmailTemplate SET CustomVisibilityOptions = '{}'
+
+SET SQL_SAFE_UPDATES = 1;

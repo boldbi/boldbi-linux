@@ -7,7 +7,14 @@
     var orgName = string.Empty;
     var headerLogo = string.Empty;
     var footerlogo = string.Empty;
-    if (!string.IsNullOrWhiteSpace(ViewBag.appsettings.SystemSettings.LoginLogo))
+    if ((bool)(ViewBag.appsettings.SystemSettings.UseCustomBranding))
+    {
+        headerLogo = ServerAppConfig.InternalAppIdpUrl + "/ums/logos?type=login";
+        favLogo = ServerAppConfig.InternalAppIdpUrl + "/ums/logos?type=favicon" + "&ramd=" + Syncfusion.Server.Base.Helpers.DateTimeHelper.DateTimeToUnixTimeStamp(DateTime.Now);
+        footerlogo = ServerAppConfig.InternalAppIdpUrl + "/ums/logos?type=poweredby";
+        orgName = ViewBag.appsettings.SystemSettings.OrganizationName;
+    }
+    else if (!string.IsNullOrWhiteSpace(ViewBag.appsettings.SystemSettings.LoginLogo))
     {
         headerLogo = new Uri(ViewBag.appsettings.SystemSettings.LoginLogo).PathAndQuery;
         favLogo = new Uri(ViewBag.appsettings.SystemSettings.FavIcon).PathAndQuery + "&ramd=" + Syncfusion.Server.Base.Helpers.DateTimeHelper.DateTimeToUnixTimeStamp(DateTime.Now);
@@ -16,9 +23,9 @@
     }
     else
     {
-        headerLogo = dashboardServerResourceUrl + "/cdn/images/application/boldbi/" + ServerAppConfig.Theme.Appearance + "/deployment_header_logo.svg";
+        headerLogo = dashboardServerResourceUrl + "/cdn/images/application/boldbi/" + ServerAppConfig.Theme.Appearance + "/" + ServerAppConfig.BrandingJson.BrandingImages.DeploymentHeaderLogo;
         favLogo = dashboardServerResourceUrl + "/cdn/images/application/boldbi/favicon.ico";
-        footerlogo = dashboardServerResourceUrl + "/cdn/images/application/boldbi/" + ServerAppConfig.Theme.Appearance + "/footer_logo.svg";
+        footerlogo = dashboardServerResourceUrl + "/cdn/images/application/boldbi/" + ServerAppConfig.Theme.Appearance + "/" + ServerAppConfig.BrandingJson.BrandingImages.FooterLogo;
         orgName = @GlobalAppSettings.BrandingDisplayName + " Enterprise";
     }
     var pathbase = GlobalAppSettings.HttpPathBase;
@@ -39,23 +46,23 @@
     @await Html.PartialAsync("~/Views/Shared/_BaseThemeStyleSheet.cshtml")
     @await Html.PartialAsync("~/Views/Shared/_BaseFontStyleSheet.cshtml")
     <link rel="icon" href="@favLogo" />
+    <script asp-append-version="true" src="~/js/localizationcontent.js?v=@ServerAppConfig.ProductVersion&c=@System.Globalization.CultureInfo.CurrentCulture"></script>
     <environment include="Development,CloudDevelopment">
         <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/tenant-registration.js"></script>
         <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/layout.css" />
         <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/tenant-registration-page.css" />
-        <script asp-append-version="true" src="~/js/localizationcontent.js?v=@ServerAppConfig.ProductVersion&c=@System.Globalization.CultureInfo.CurrentCulture"></script>
     </environment>
     <environment exclude="Development,CloudDevelopment">
         <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/tenant-registration.min.js"></script>
         <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/layout.min.css" />
         <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/tenant-registration-page.min.css" />
-        <script asp-append-version="true" src="~/js/localizationcontent.js?v=@ServerAppConfig.ProductVersion&c=@System.Globalization.CultureInfo.CurrentCulture"></script>
     </environment>
     <script>
         var statusTracker;
         var setSystemSettingsUrl = "@Url.Action("SetSystemSettings", "ServerConfiguration")";
         var progressStatusUrl = "@Url.Action("ProgressStatus", "ServerConfiguration")";
         var idpUrl = "@ServerAppConfig.InternalAppIdpUrl";
+        var drmValue = "@ServerAppConfig.DRM";
         var isFirstTenant = @Json.Serialize(isFirstTenant);
         var siteRegistrationCompleted = false;
         $(function() {
@@ -85,10 +92,7 @@
 
                         if (typeof (result.AdditionalData) != "undefined" && result.AdditionalData != null && result.Percentage == 100) {
                             siteRegistrationCompleted = true;
-                            if (typeof (result.AdditionalData.RedirectUrl) != "undefined" && !isNullOrWhitespace(result.AdditionalData.RedirectUrl) && isFirstTenant) {
-                                $(".deploy-tenant-parent, .deployment-footer").addClass("hide");
-                                $("body").addClass("welcome-page-footer-alignment");
-                                $(".deployment-header, .welcome-tenant-parent, .base-footer-wrapper").removeClass("hide");
+                            if (typeof (result.AdditionalData.RedirectUrl) != "undefined" && !isNullOrWhitespace(result.AdditionalData.RedirectUrl) && isFirstTenant && isNullOrWhitespace(drmValue)) {
                                 $(".user-name span").text(result.AdditionalData.DisplayName);
                                 $(".profile-pic-tag").attr({
                                     "data-id": result.AdditionalData.UserId,
@@ -96,7 +100,6 @@
                                 });
 
                                 generateProfileAvatar();
-                                $(".dashboard-parent-container > a, #close-welcome-page").attr("href", result.AdditionalData.RedirectUrl);
                             } else {
                                 window.location = "@baseUrl";
                             }
@@ -134,10 +137,9 @@
                     if (result.deploymentFailed) {
                         window.location.href = result.redirectUrl;
                     } else {
-                        if (result.isDefaultTenant) {
+                        if (result.isDefaultTenant && isNullOrWhitespace(drmValue)) {
                             $(".deploy-tenant-parent, .deployment-footer").addClass("hide");
-                            $("body").addClass("welcome-page-footer-alignment");
-                            $(".deployment-header, .welcome-tenant-parent, .base-footer-wrapper").removeClass("hide");
+                            window.location = result.redirectUrl;
                         }
                         else {
                             window.location = result.redirectUrl
@@ -186,9 +188,9 @@
         <div class="welcome-tenant-child">
             <div class="welcome-tenant-bg">
                 <div id="user-profile-picture" style="background-image: url('@themeBasedImageHelper.ProfilePictureBackgroundImage()');">
-                    <div class="profile-pic-tag" data-type="user" data-image-size="100" data-toggle="tooltip" data-placement="top"></div>
+                    <div class="profile-pic-tag" data-type="user" data-image-size="100" data-bs-toggle="tooltip" data-placement="top"></div>
                 </div>
-                <div class="user-name">@Html.Raw(string.Format(T["Hello, {0}Welcome to {1} Enterprise Dashboards"].Value, "<span></span></div><div class='welcome-content'>","Bold BI"))</div>
+                <div class="user-name">@Html.Raw(string.Format(T["Hello, {0}Welcome to {1} Enterprise Dashboards"].Value, "<span></span></div><div class='welcome-content'>", @ServerAppConfig.BrandingJson.BrandingName))</div>
                 <div class="tenant-parent-container">
                     <a class="admin-link-container" rel="alternate" hreflang="en" href="@ServerAppConfig.InternalAppIdpUrl/@ServerAppConfig.TenantManagementHostName/sites">
                         <table class="admin-options">

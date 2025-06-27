@@ -13,17 +13,23 @@ clientlibrary=$root_path/clientlibrary
 clientlibraryzip=$clientlibrary/clientlibrary.zip
 clientlibraryextractpath=$clientlibrary/temp
 pluginpath=$root_path/application/bi/dataservice/Plugins/connections
+
+# Colours used in this script
+Yellow='\033[0;33m'
+Green='\033[0;32m'
+NC='\033[0m'
+
 # check empty command 
 if [ -z "$command" ]
 then
-echo "Please enter the valid command"
-echo "install-optional-libs"
+echo -e  "${Yellow}Warning:${NC}Please enter the valid command." >&2
+echo -e "${Green}info:${NC} Ex: bash install-optional.libs.sh install-optional-libs "mongodb,influxdb,snowflake,mysql,oracle,google,clickhouse"." >&2
 
 # check valid command
 elif [ $command != "$installoptionlibs" ];
 then
-echo "Please enter the valid command"
-echo "install-optional-libs"
+echo -e  "${Yellow}Warning:${NC}Please enter the valid command." >&2
+echo -e "${Green}info:${NC} Ex: bash install-optional.libs.sh install-optional-libs "mongodb,influxdb,snowflake,mysql,oracle,google,clickhouse"." >&2
 
 # copy optionlib block
 else
@@ -31,7 +37,9 @@ else
 # check empty assembly names
 if [ -z "$arguments" ]
 then
-echo "Please pass optional library names as arguments."
+echo -e  "${Yellow}Warning:${NC}No optional libraries were chosen. Please pass the names of the optional libraries as arguments." >&2
+echo -e "${Green}info:${NC} Bold BI supports the following optional libraries. To install them, please pass their names as environment variables." >&2
+echo "mongodb,mysql,influxdb,snowflake,oracle,clickhouse,google"
 else
 
 # copy the optional libraries names
@@ -42,6 +50,11 @@ then
 else
         echo $2 >>"$root_path/optional-lib.txt"
 fi
+
+# Eliminate special characters and spaces.
+arguments=$(echo "$arguments" | tr -dc '[:alpha:],')
+# Eliminate any extra commas if there are any available.
+arguments=$(echo "$arguments" | sed 's/,\+/,/g')
 
 # split assembly name into array
 IFS=', ' read -r -a assmeblyarguments <<< "$arguments"
@@ -56,22 +69,17 @@ do
 fi
 done
 
-# check non exist assembly count
-if [ ${#nonexistassembly[@]} -ne 0 ]; then
-echo "The below optional library names do not exist. Please enter valid library names."
+# Remove old client libs file if it exists.
+if [ -d "$clientlibraryextractpath" ]; then
+  rm -r "$clientlibraryextractpath"
+fi
 
-for element in "${nonexistassembly[@]}"
-do 
-echo "$element"
-done
+# Recreate the temp folder.
+mkdir -p "$clientlibraryextractpath"
 
-else
-echo "$clientlibraryextractpath"
-rm -r temp
-mkdir temp
 if [ $arguments != "phantomjs" ]
 then
-unzip -q clientlibrary.zip -d $clientlibraryextractpath
+unzip -q $root_path/clientlibrary/clientlibrary.zip -d $clientlibraryextractpath
 fi
 pluginpath=$root_path/application/bi/dataservice/Plugins/connections
 for element in "${assmeblyarguments[@]}"
@@ -85,41 +93,49 @@ yes | cp -rf $clientlibraryextractpath/MongoDB.Driver.Core.dll $destination
 yes | cp -rf $clientlibraryextractpath/MongoDB.Driver.dll $destination
 yes | cp -rf $clientlibraryextractpath/MongoDB.Driver.Legacy.dll $destination
 yes | cp -rf $clientlibraryextractpath/MongoDB.Libmongocrypt.dll $destination
-echo "mongodb libraries are installed"
+echo -e "${Green}info:${NC} Mongodb libraries are installed"
 ;;
 "mysql")
 destination=$pluginpath/mysqlserver
 yes | cp -rf $clientlibraryextractpath/MySqlConnector.dll $destination
-echo "mysql libraries are installed"
+echo -e "${Green}info:${NC} Mysql libraries are installed"
 ;;
 "influxdb")
 destination=$pluginpath/influxdb
 yes | cp -rf $clientlibraryextractpath/InfluxData.Net.dll $destination
-echo "influxdb libraries are installed"
+echo -e "${Green}info:${NC} Influxdb libraries are installed"
 ;;
  "snowflake")
 destination=$pluginpath/snowflake
 yes | cp -rf $clientlibraryextractpath/Snowflake.Data.dll $destination
-echo "snowflake libraries are installed"
+echo -e "${Green}info:${NC} Snowflake libraries are installed"
 ;;
  "oracle")
 destination=$pluginpath/oracle
 yes | cp -rf $clientlibraryextractpath/Oracle.ManagedDataAccess.dll $destination
-echo "oracle libraries are installed"
+echo -e "${Green}info:${NC} Oracle libraries are installed"
 ;;
 "google")
 destination=$pluginpath/google
 yes | cp -rf $clientlibraryextractpath/Google.Cloud.BigQuery.V2.dll $destination
-echo "google libraries are installed"
+echo -e "${Green}info:${NC} Google libraries are installed"
 ;;
 "clickhouse")
 destination=$pluginpath/clickhouse
 yes | cp -rf $clientlibraryextractpath/ClickHouse.Client.dll $destination
-echo "clickhouse libraries are installed"
+echo -e "${Green}info:${NC} Clickhouse libraries are installed"
 ;;
 esac
 done
 rm -r $clientlibraryextractpath
 fi
+# check non exist assembly count
+if [ ${#nonexistassembly[@]} -ne 0 ]; then
+echo -e "${Yellow}Warning:${NC}The below optional library names do not exist. Please enter valid library names." >&2
+for element in "${nonexistassembly[@]}"
+do
+echo "$element"
+done
+echo "The supported client library names are mongodb,mysql,influxdb,snowflake,oracle,google,clickhouse."
 fi
 fi

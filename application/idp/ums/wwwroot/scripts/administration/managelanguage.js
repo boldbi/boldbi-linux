@@ -9,7 +9,12 @@ var dropDownList = "";
 var isApplicationLanguage = false;
 var rowchecked;
 var isavailableLanguage = false;
+var isNewLanguageAdded = false;
+var isdeleteLanguages = false;
 $(document).ready(function () {
+    createWaitingPopup("localization-container");
+    createWaitingPopup("upload-container");
+    createWaitingPopup("language-delete-dialog");
     var localizationDialog = new ejs.popups.Dialog({
         width: "900px",
         height: "712px",
@@ -27,20 +32,20 @@ $(document).ready(function () {
     });
     localizationDialog.appendTo("#localization-container");
 
-     dropDownList = new ejs.dropdowns.DropDownList({
+    dropDownList = new ejs.dropdowns.DropDownList({
         dataSource: defaultLanguages,
         fields: { text: 'Text', value: 'Value' },
         placeholder: window.Server.App.LocalizationContent.SelectLanguage,
         floatLabelType: "Never",
         cssClass: 'e-outline e-custom e-non-float',
-         change: onDropDownChange,
+        change: onDropDownChange,
         allowFiltering: true,
         filterType: "Contains"
     });
     dropDownList.appendTo("#model-language");
 
     var uploadDialog = new ejs.popups.Dialog({
-        header: window.Server.App.LocalizationContent.UploadLangauage,
+        header: window.Server.App.LocalizationContent.UploadLanguage,
         content: document.getElementById("upload-content"),
         showCloseIcon: true,
         width: '424px',
@@ -85,14 +90,16 @@ $(document).ready(function () {
         height: "176px",
         isModal: true,
         animationSettings: { effect: 'Zoom' },
-        visible: false
+        visible: false,
+        close: languageDeleteDialogClose
     });
     languageDeleteDialog.appendTo("#language-delete-dialog");
 
     var uploadZipFile = new ej.inputs.Uploader({
         asyncSettings: {
-            saveUrl: window.zipFileUploadUrl ,
+            saveUrl: window.zipFileUploadUrl,
         },
+        uploading: addHeaders,
         autoUpload: true,
         showFileList: false,
         maxFileSize: 25000000,
@@ -136,7 +143,7 @@ $(document).ready(function () {
                 }
                 else if (data.Message) {
                     isavailableLanguage = data.Message;
-                    isValidationSuccess = true ;
+                    isValidationSuccess = true;
                     $("#upload-container .e-file-select-wrap .e-btn").attr("disabled", true);
                     $(".uploaded-language").attr("disabled", false);
                     $("#message-container").show();
@@ -146,8 +153,7 @@ $(document).ready(function () {
                     $(".validation-error-message").hide();
                 }
                 else {
-                    if (!data.Message)
-                    {
+                    if (!data.Message) {
                         $("#message-container").show();
                         $(".localization-message-content").addClass('error-content');
                         $(".validation-error-content").remove();
@@ -155,7 +161,7 @@ $(document).ready(function () {
                         $("#file-name").val(zipFileName);
                         $(".localization-message-content").append(data.result);
                     }
-                   
+
                 }
             });
         }
@@ -177,7 +183,6 @@ function onDropDownChange() {
 function onLocalizationDialogOpen() {
     document.getElementById("localization-container").ej2_instances[0].show();
     $("#delete-language").hide();
-
     if (document.getElementById('Localization_grid').ej2_instances == null) {
         $("#search-languages").val("");
         var data = new ejs.data.DataManager({
@@ -191,7 +196,7 @@ function onLocalizationDialogOpen() {
             allowPaging: true,
             allowSorting: true,
             allowSelection: true,
-            selectionSettings: { type: 'Multiple', mode: 'Row'},
+            selectionSettings: { type: 'Multiple', mode: 'Row' },
             pageSettings: { pageSize: 9 },
             load: fnActionBeginLocalization,
             actionBegin: fnActionBeginLocalization,
@@ -199,22 +204,22 @@ function onLocalizationDialogOpen() {
                 this.multiSelectCtrlRequest = true;
             },
             dataBound: function () {
-                $('[data-toggle="tooltip"]').tooltip(
-                    {
-                        container: 'body'
-                    });
+                var tooltipTriggerEl = document.querySelector('[data-bs-toggle="tooltip"]');
+                var tooltip = new bootstrap.Tooltip(tooltipTriggerEl, {
+                    container: 'body'
+                });
             },
             enableHover: true,
             enableAltRow: false,
             rowDataBound: function (args) {
                 args.row.querySelector('.remove-access').firstChild.style.visibility = "hidden";
-              
+
                 args.row.addEventListener('mouseenter', function (args) {
-                  
+
                     args.target.querySelector('.remove-access').firstChild.style.visibility = "visible";
                 })
                 args.row.addEventListener('mouseleave', function (args) {
-                  
+
                     args.target.querySelector('.remove-access').firstChild.style.visibility = "hidden";
                 })
             },
@@ -231,7 +236,7 @@ function onLocalizationDialogOpen() {
                     type: "string",
                     allowFiltering: false,
                     allowSorting: true
-                   
+
                 },
                 {
                     template: true,
@@ -253,6 +258,9 @@ function closeLocalizationDialog() {
     localizationGrid.refresh();
     document.getElementById("localization-container").ej2_instances[0].hide();
     count = 0;
+    if (isNewLanguageAdded || isdeleteLanguages) {
+        window.location.reload();
+    }
 }
 
 function uploadDialogOpen() {
@@ -275,13 +283,11 @@ $(document).on("click", ".remove-language", function (args) {
     fileName.push(record.rowData.LangaugeCode);
     var getRowdata = rowdata.getRows();
     var i = 1;
-    for (i; i < getRowdata.length; i++)
-    {
-        if (getRowdata[i].querySelector('input[type=checkbox]'))
-        {
+    for (i; i < getRowdata.length; i++) {
+        if (getRowdata[i].querySelector('input[type=checkbox]')) {
             var uncheck = (getRowdata[i].querySelector('input[type=checkbox]'));
             uncheck.checked = false;
-        } 
+        }
     }
     count = 0;
     languageDeleteDialogOpen();
@@ -293,10 +299,11 @@ $(document).on("click", ".remove-language", function (args) {
 
 $(document).on("click", "#clear-search", function (args) {
     $(".close-icon").css('display', 'none');
-    $(".su-search").css('display' , 'block');
+    $(".su-search").css('display', 'block');
 });
 
 function uploadLanguage() {
+    showWaitingPopup("upload-container");
     if (isValidationSuccess) {
         if (isavailableLanguage) {
             fileName.push(document.getElementById("model-language").ej2_instances[0].value);
@@ -306,6 +313,7 @@ function uploadLanguage() {
         var languageName = document.getElementById("model-language").ej2_instances[0].value;
         doAjaxPost("POST", addLocalizationUrl, "languageName=" + languageName, function (data) {
             if (data.Status) {
+                isNewLanguageAdded = true;
                 document.getElementById("upload-container").ej2_instances[0].hide();
                 messageBox("", window.Server.App.LocalizationContent.AddLanguageHeader, window.Server.App.LocalizationContent.LanguageAddSuccessMessage, "success", function () {
                     parent.onCloseMessageBox();
@@ -317,6 +325,7 @@ function uploadLanguage() {
                     parent.onCloseMessageBox();
                 });
             }
+            hideWaitingPopup("upload-container");
         });
         localizationGrid.clearSelection();
         localizationGrid.refresh();
@@ -325,6 +334,11 @@ function uploadLanguage() {
 
 function fnActionBeginLocalization(args) {
     var searchValue = $("#search-languages").val();
+    if (fileName.length > 0) {
+        fileName = [];
+    }
+    $("#delete-language").hide();
+    count = 0;
     if (this.properties.query.params.length > 0) {
         this.properties.query.params = [];
         this.properties.query.params.push({ key: "searchKey", value: searchValue });
@@ -350,7 +364,9 @@ function uploadDialogClose() {
     document.getElementById("upload-container").ej2_instances[0].hide();
     localizationGrid.clearSelection();
     localizationGrid.refresh();
+    dropDownList.refresh();
     dropDownList.value = null;
+    dropDownList.list.innerHTML = "";
 }
 
 $(document).on("change", ".localization-checkbox-row", function () {
@@ -386,10 +402,20 @@ $(document).on("change", ".localization-checkbox-row", function () {
         count--;
         fileName.pop(currentId);
     }
+
+    if (count >= 1)
+    {
+        $("#add-language").attr("disabled", true);
+        $(".su-add").addClass('su-disable');
+    }
+    else
+    {
+        $("#add-language").attr("disabled", false);
+        $(".su-add").removeClass('su-disable');
+    }
 });
 
-function languageDeleteDialogOpen()
-{
+function languageDeleteDialogOpen() {
     var selectLanguageCode = ""
     for (var lancode of fileName) {
         var languageCase = lancode.toLowerCase();
@@ -410,7 +436,7 @@ function languageDeleteDialogOpen()
         else {
             isApplicationLanguage = false;
             $("#language-delete-dialog-content").addClass("warning-message");
-            $(".info-message").html(window.Server.App.LocalizationContent.RemoveLanguages);
+            $(".info-message").html(window.Server.App.LocalizationContent.RemoveLanguage);
             document.getElementById("language-delete-dialog").ej2_instances[0].show();
         }
     }
@@ -424,15 +450,19 @@ function languageDeleteDialogClose() {
     count = 0;
     $("#delete-language").hide();
     $(".selected-language").hide();
+    $("#add-language").attr("disabled", false);
+    $(".su-add").removeClass('su-disable');
     localizationGrid.clearSelection();
     localizationGrid.refresh();
 }
 
-function deleteLanguages()
-{
+function deleteLanguages() {
+    showWaitingPopup("language-delete-dialog");
+    showWaitingPopup("localization-container");
     doAjaxPost("POST", removeLocalizationUrl, "languageName=" + fileName, function (data) {
         if (data.Status) {
             document.getElementById("language-delete-dialog").ej2_instances[0].hide();
+            isdeleteLanguages = true;
             messageBox("", window.Server.App.LocalizationContent.RemoveLanguageHeader, window.Server.App.LocalizationContent.LanguageRemoveSuccessMessage, "success", function () {
                 parent.onCloseMessageBox();
                 if (isApplicationLanguage) {
@@ -440,14 +470,15 @@ function deleteLanguages()
                 }
             });
         }
-        else
-        {
+        else {
             document.getElementById("language-delete-dialog").ej2_instances[0].hide();
-            messageBox("", window.Server.App.LocalizationContent.RemoveLanguageHeader, data.Message, "error", function () {
+            var errorMessage = data.Message != null ? data.Message : window.Server.App.LocalizationContent.LanguageRemoveFailedMessage;
+                messageBox("", window.Server.App.LocalizationContent.RemoveLanguageHeader, errorMessage, "error", function () {
                 parent.onCloseMessageBox();
             });
-            
+
         }
+        hideWaitingPopup("language-delete-dialog");
     });
     localizationGrid.clearSelection();
     localizationGrid.refresh();
@@ -455,4 +486,29 @@ function deleteLanguages()
     count = 0;
     $(".selected-language").hide();
     $("#delete-language").hide();
+    $("#add-language").attr("disabled", false);
+    $(".su-add").removeClass('su-disable');
+    hideWaitingPopup("localization-container");
 }
+
+$("#search-languages").on("keyup keydown", function () {
+    fileName.length = 0;
+    $("#delete-language").hide();
+    count = 0;
+});
+
+
+$(document).on("click", "#add-language", function () {
+    if (count < 1)
+    {
+        uploadDialogOpen();
+    }
+});
+
+$(document).on("click", "#delete-language", function () {
+    languageDeleteDialogOpen();
+});
+
+$(document).on("click", "#manage", function () {
+    onLocalizationDialogOpen();
+});

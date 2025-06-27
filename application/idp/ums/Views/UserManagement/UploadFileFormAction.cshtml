@@ -3,12 +3,15 @@
 }
 
 @section styles{
-    <link rel="stylesheet" href="~/bundles/css/user-management-module.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/bundles/css/user-management-module.css" integrity="@IntegrityTagHelper.GetIntegrity("bundles/css/user-management-module.css")" crossorigin="anonymous" asp-append-version="true" />
 }
 @section scripts{
-    <script src="~/bundles/js/user-management.js" asp-append-version="true"></script>
+    <script nonce="@Context.Items["ScriptNonce"]" src="~/bundles/js/user-management.js" integrity="@IntegrityTagHelper.GetIntegrity("bundles/js/user-management.js")" crossorigin="anonymous" asp-append-version="true"></script>
     
-    <script>
+       <script nonce="@Context.Items["ScriptNonce"]" type="text/javascript">
+        document.getElementById("filename").addEventListener("focus", function () {
+            this.blur();
+        });
         var checkMailSettingUrl = "@Url.Action("checkmailsettingsexist", "Administration")";
         var postactionUrl = "@Url.Action("postaction", "UserManagement")";
         var isPresentEmailId = "@Url.Action("IsPresentEmailId", "UserManagement")";
@@ -20,17 +23,7 @@
         var deleteSingleFromUserListUrl = "@Url.Action("DeleteSingleFromUserList", "UserManagement")";
         var isAutomaticActivation = @Json.Serialize(GlobalAppSettings.SystemSettings.ActivationType == ActivationType.AutomaticActivation);
         var isEmailRequired = @Json.Serialize(GlobalAppSettings.SystemSettings.EmailRequired == EmailRequired.Required);
-    </script>
-
-    <script>
-        $(document).ready(function () {
-            $("a").click(function () {
-                return checkUserImported(this);
-            });
-        });
-    </script>
-    <script type="text/javascript">
-        var data1 = @Html.Raw(ViewBag.user);
+        var data1 = @Json.Serialize(ViewBag.user);
         var csvImportGridColumn = [
             { field: "Username", customAttributes: { class: 'user-name' }, headerText: "@T["Username"]", width: 50 },
             { field: "Fullname", headerText: "@T["Name"]", width: 50 }
@@ -61,12 +54,17 @@
                 userImportGrid.appendTo("#user_import_grid");
             });
 
+            $("a").click(function () {
+                return checkUserImported(this);
+            });
         });
         function onComplete(args) {
-            $('[data-toggle="tooltip"]').tooltip(
-                {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl, {
                     container: 'body'
                 });
+            });
             if(this.currentViewData.length>0){
                 $('#import-button').prop("disabled", false);
             }
@@ -78,36 +76,48 @@
 }
 
 @section MainSection{
-    <div class="admin-page-content-container full-page-container">
-        <div class="admin-page-content col-md-12 no-padding">
-            <div class="col-xs-12 admin-page-header">
-                <div class="col-xs-6 no-padding">
-                    <a href="@Url.Action("index", "UserManagement")" data-toggle="tooltip" data-placement="top" title="@T["Users"]" class="back-button pull-left">
-                        <i class="su su-arrow-back"> </i>
-                    </a>
-                    <hgroup class="admin-page-header-description">
+
+    <div class="col-12 float-start no-padding no-margin width-alignment admin-header-width">
+        <div class="admin-page-header col-md-12 col-lg-12 col-sm-12 float-start">
+            <div class="col-6 float-start no-padding">
+                <a href="@Url.Action("index", "UserManagement")" data-bs-toggle="tooltip" data-bs-placement="bottom" title="@T["Users"]" class="back-button float-start text-decoration-none">
+                    <i class="su su-arrow-back"> </i>
+                </a>
+                <div class="admin-page-header-description col-6 float-start no-padding" id="application-title">
+                    <hgroup class="col-12 float-start header-group">
                         <h2 class="page-title">  @T["IMPORT USERS "]</h2>
                     </hgroup>
                 </div>
-                <div class="col-xs-6 no-padding admin-header-btn">
-                    <input type="button" value="@T["Import Users"]" title="@T["Import users from the list below"]" onclick="SaveUserListFromCSV()" id="import-button" class="primary-button pull-right" disabled />
+            </div>
+
+            <div class="col-4 top-nav-sec no-padding">
+                @await Html.PartialAsync("../Shared/_TopMenu")
+            </div>
+        </div>
+
+        <div class="col-md-12 import-area bi-page-header admin-page-icon">
+            <div class="col-12 float-start no-padding">
+                <div class="col-6 float-start no-padding admin-header-btn float-end" id="user-management-options">
+                    <input type="button" value="@T["Import Users"]" title="@T["Import users from the list below"]"  id="import-button" class="primary-button float-end" disabled />
                 </div>
             </div>
-            <div class="admin-page-body col-xs-12">
-                <form action="@Url.Action("UploadFileFormAction", "UserManagement")" method="post" onsubmit="" enctype="multipart/form-data">
+        </div>
+
+    </div>
+
+    <div class="admin-page-content-container full-page-container">
+        <div class="admin-page-content col-md-12 no-padding">
+            <div class="admin-page-body col-12 float-start">
+                <form action="@Url.Action("UploadFileFormAction", "UserManagement")" method="post" enctype="multipart/form-data">
+                    @Html.AntiForgeryToken()
                     <div class="col-md-12 import-file no-padding">
                         <div class="no-padding">
-                            <div class="upload-box">
-                                <input type="text" class="form-control col-md-6 no-margin" onfocus="this.blur()" id="filename" value="@T["Browse file path (.csv)"]" readonly>
+                            <div class="upload-box no-margin">
+                                <input type="text" class="form-control col-md-6 no-margin" id="filename" value="@T["Browse file path (.csv)"]" readonly>
                                 <span id="trigger-file" class="input-group-addon btn popup no-left-border">
                                     ...
                                 </span>
                                 <input type="file" accept=".csv" name="csvfile" id="csvfile" class="btn popup upload-btn">
-                            </div>
-                            <input type="submit" class="primary-button" title="@T["Upload CSV File here"]" id="csv-upload" disabled="" value="@T["Upload"]" />
-
-                            <p>
-                                <a href="@Url.Action("DownloadTemplate", "UserManagement")" class="download-template" title="@T["Download sample template"]">@T["Download Template"]</a>
                                 @if (ViewBag.result.ToLower() == "error")
                                 {
                                     <span id="user-import-validation-msg">@T["Please upload a valid csv file."]</span>
@@ -124,11 +134,19 @@
                                 {
                                     <span id=""></span>
                                 }
+                            </div>
+                            <div class="file-upload-btn">
+                                <input type="submit" class="primary-button" title="@T["Upload CSV File here"]" id="csv-upload" disabled="" value="@T["Upload"]"/>
+                            </div>
+
+                            <div class="separator"></div>
+                            <p class="download-template-text no-padding">
+                                <a href="@Url.Action("DownloadTemplate", "UserManagement")" class="download-template text-decoration-none" title="@T["Download sample template"]">@T["Download Template"]</a>
                             </p>
                         </div>
                     </div>
                 </form>
-                <div class="col-xs-12 grid-area no-padding">
+                <div class="col-12 float-start grid-area no-padding">
                     <div class="list" id="grid-validation-messages">
                         <span id="grid-nodata-validation">@T["There is no data in the uploaded file. Please check and try uploading again."]</span>
                         <span id="grid-validation"><span id="userCount">@ViewBag.UserCount</span> @T["User(s) has been added successfully."]</span>

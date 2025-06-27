@@ -119,6 +119,16 @@ body {
         margin-left: 13px;
         margin-top: 4px;
         margin-bottom: 2px;
+        cursor: pointer !important;
+    }
+
+    #know-more-error {
+        color: $link-text-color !important;
+    }
+
+    .oci-object-storage-error-message {
+        margin-top: -23px !important;
+        margin-bottom: 10px !important;
     }
 
     .center-storage-types {
@@ -156,6 +166,32 @@ body {
                     color: $grey-700;
                 }
             }
+        }
+    }
+
+    #oci-object-storage-form, #amazon-s3-storage-form {
+        .connection-label {
+            letter-spacing: 0.56px;
+            margin-bottom: 8px;
+        }
+
+        .validation-txt-errors {
+            font-size: 12px;
+            color: $validation-text-color;
+        }
+
+        .form-div {
+            margin: 0px !important;
+            padding-top: 24px;
+        }
+
+        .custom-endpoint-form-element {
+            margin: 0px !important;
+            position: relative;
+        }
+
+        #connection-string {
+            height: 60px;
         }
     }
 
@@ -212,6 +248,10 @@ body {
                                     font-size: map-get($app-text-size, md);
                                     letter-spacing: 0.65px;
                                     margin-top: 18px;
+                                }
+
+                                &.third-content {
+                                    margin-top: 10px;
                                 }
                             }
 
@@ -424,6 +464,8 @@ body {
                                         border-bottom-right-radius: 4px;
                                         margin-left: -1px;
                                         cursor: pointer;
+                                        padding-right: 15px;
+                                        padding-left: 15px;
                                     }
 
                                     input[type="file"] {
@@ -524,8 +566,11 @@ body {
 
                             .secondary-button {
                                 margin-right: 20px;
-
                                 @include button(34px, 45%, "secondary");
+                            }
+
+                            .remove-margin-left {
+                                margin-left: 0px !important;
                             }
                         }
 
@@ -570,6 +615,15 @@ body {
                     float: none;
                     display: none;
 
+                    .deployment-error {
+                        display: none;
+
+                        #error-display {
+                            width: 500px;
+                            height: 180px;
+                        }
+                    }
+
                     .image-container {
                         text-align: center;
                         margin-top: -$startup-header-height;
@@ -612,7 +666,14 @@ body {
                         }
                     }
 
-
+                    #admin-nav {
+                        .disable-adv {
+                            cursor: not-allowed;
+                            color: $input-box-text-disable-color !important;
+                            background: $input-box-bg-normal-color;
+                            pointer-events: none;
+                        }
+                    }
 
                     :disabled {
                         cursor: default;
@@ -762,7 +823,7 @@ body {
 
                                             &:before {
                                                 background: $sub-nav-menu-header-bg-color;
-                                                border:1px solid $sub-nav-menu-header-border-color;
+                                                border: 1px solid $sub-nav-menu-header-border-color;
                                                 left: 0;
                                                 right: 0;
                                                 position: absolute;
@@ -773,6 +834,18 @@ body {
                                     }
                                 }
                             }
+                        }
+
+                        #database-new-or-existing {
+                            height: auto;
+                        }
+
+                        .custom-height {
+                            height: 100px !important;
+                        }
+
+                        .custom-height {
+                            height: 106px;
                         }
 
                         #database-type-dropdown {
@@ -786,6 +859,7 @@ body {
 
                         .txt-holder {
                             padding-bottom: 20px;
+                            position: relative !important;
 
                             .info-icon {
                                 margin-left: 5px;
@@ -876,12 +950,6 @@ body {
                 .database-types {
                     padding-top: 24px;
                     position: relative;
-
-                    .file-storage-align, .blob-storage-align {
-                        display: inline-block;
-                        margin-bottom: 24px;
-                        margin-left: 90px;
-                    }
                 }
 
                 .content-value {
@@ -911,7 +979,7 @@ body {
                     }
                 }
 
-                .storage-block {
+                .storage-block, #oci-object-storage {
                     .azure-validation {
                         margin-bottom: 10px;
 
@@ -921,7 +989,7 @@ body {
                         }
                     }
 
-                    #blob-storage-form {
+                    #blob-storage-form, #oci-object-storage-form, #oci-object-storage, #amazon-s3-storage-form {
                         .connection-label {
                             letter-spacing: 0.56px;
                             margin-bottom: 8px;
@@ -946,6 +1014,33 @@ body {
                             height: 60px;
                         }
                     }
+                }
+
+                @extend %button-holder-style;
+            }
+
+            #system-settings-configuration-mode-container {
+                display: none;
+                @extend %form-field-container;
+                padding-top: 20px;
+
+                .configuration-mode-box {
+                    border: 1px solid gainsboro;
+                    padding: 20px;
+                    border-radius: 4px;
+                }
+
+                .configuration-mode-description {
+                    display: block;
+                    margin-left: 28px;
+                }
+
+                .configuration-mode-box-distance {
+                    margin-top: 10px;
+                }
+
+                .configuration-mode-description-support {
+                    padding-top: 10px;
                 }
 
                 @extend %button-holder-style;
@@ -1028,22 +1123,17 @@ body {
     }
 }
 
-#new-password + .popover {
-    background: $black;
+.custom-popover {
+    background: $black !important;
     opacity: 0.8;
     width: 210px;
-    top: -154px !important;
 
-    .arrow {
-        top: 80% !important;
-    }
-
-    .arrow::after {
-        border-left-color: $black;
+    .popover-arrow::after {
+        border-left-color: $black !important;
         opacity: 0.8;
     }
 
-    .popover-title {
+    .popover-header {
         background: $black;
         opacity: 0.8;
         color: $white;
@@ -1054,7 +1144,7 @@ body {
         border: none;
     }
 
-    .popover-content {
+    .popover-body {
         padding-top: 0px;
         height: 175px;
 
@@ -1149,4 +1239,8 @@ body {
 .offline-width {
     width: 568px !important;
     height: 398px !important;
+}
+
+.tooltip .tooltip-inner {
+    font-size: 12px;
 }

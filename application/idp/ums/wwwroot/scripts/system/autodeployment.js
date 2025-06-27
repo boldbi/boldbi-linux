@@ -5,13 +5,17 @@
 function proceedAutoDeployment(result) {
     $.ajax({
         url: setSystemSettingsUrl,
+        headers: {
+            "CSRF-TOKEN": document.cookie.split("; ").find(row => row.startsWith("BOLD-UMS-XSRF-TOKEN=")).split("=")[1],
+        },
         type: "POST",
         async: false,
         data: {
             systemSettingsData: result.systemSettingsData,
-            azureData: result.azureData,
+            storage: result.storage,
             tenantInfo: result.tenantInfo,
-            globalAdminDetails: result.globalAdminDetails
+            globalAdminDetails: result.globalAdminDetails,
+            configurationMode : configurationMode
         },
         success: function (setSystemSettingsResponse) {
             window.location = setSystemSettingsResponse.redirectUrl;

@@ -1,4 +1,4 @@
-﻿CREATE TABLE BOLDTC_CouponLogType (
+CREATE TABLE BOLDTC_CouponLogType (
 	Id SERIAL NOT NULL,
 	Name varchar(1026) NOT NULL,
 	IsActive smallint NOT NULL,
@@ -183,6 +183,7 @@ CREATE TABLE BOLDTC_User (
 	ExternalProviderId varchar(512),
 	DirectoryTypeId int NOT NULL,
 	IsActivated smallint NOT NULL,
+    ActivationMethod varchar(20),
 	IsActive smallint NOT NULL,
 	IsDeleted smallint NOT NULL,
 	Status int NULL,
@@ -198,7 +199,7 @@ CREATE TABLE BOLDTC_UserLogin (
 	DirectoryTypeId int NOT NULL,
 	ClientToken varchar(4000) NOT NULL,
 	LoggedInDomain varchar(255) NOT NULL,
-	IpAddress varchar(50) NOT NULL,
+	IpAddress varchar(255) NOT NULL,
 	Browser varchar(255) NULL,
 	LoggedInTime timestamp NOT NULL,
 	LastActive timestamp NULL,
@@ -231,7 +232,9 @@ CREATE TABLE BOLDTC_TenantUser (
 	Id uuid NOT NULL,
 	UserId uuid NOT NULL,
 	TenantInfoId uuid NOT NULL,
+    IsFavorite smallint NOT NULL DEFAULT '0',
 	IsActive smallint NOT NULL,
+    LastAccessedDate timestamp NULL,
   CONSTRAINT PK_BOLDTC_TENANTUSER PRIMARY KEY (Id)
 )
 ;
@@ -338,6 +341,8 @@ CREATE TABLE BOLDTC_TenantInfo (
 	DatabaseType int Default 0,
 	BlobConnectionString varchar(1026),
 	ConnectionString varchar(1026),
+	SchemaName varchar(1026),
+	Prefix varchar(1026),
 	AdditionalParameters varchar(1026),
 	MaintenanceDatabase varchar(255) NULL,
 	TenantSQLServerId int,
@@ -359,9 +364,12 @@ CREATE TABLE BOLDTC_TenantInfo (
 	IsMaster smallint NOT NULL,
 	IsolationCode varchar(4000),
 	IsTenantIsolationCodeEnabled smallint NOT NULL DEFAULT '0',
+	IsRowLevelSecurityEnabled smallint NOT NULL DEFAULT '1',
+    ResourceLimitationSettings varchar(4000),
 	UseCustomBranding smallint NOT NULL,
 	IsNewImDbDatabase smallint NOT NULL,
 	IsNewDatabase smallint NOT NULL,
+	StorageType INT NOT NULL,
   CONSTRAINT PK_BOLDTC_TENANTINFO PRIMARY KEY (Id)
 )
 ;
@@ -505,7 +513,7 @@ CREATE TABLE BOLDTC_InternalApps (
 	 URL  varchar(100) NOT NULL,
 	 ModifiedDate timestamp NOT NULL,
 	 IsActive  smallint NOT NULL,
-	CONSTRAINT  PK_BOLDTC_INTERNALAPPS PRIMARY KEY (Id)
+	CONSTRAINT PK_BOLDTC_INTERNALAPPS PRIMARY KEY (Id)
 )
 ;
 CREATE TABLE BOLDTC_FormType (
@@ -530,7 +538,7 @@ CREATE TABLE BOLDTC_RegistrationFormVersion (
   CONSTRAINT PK_BOLDTC_REGISTRATIONFORMVERSION PRIMARY KEY (Id)
 )
 ;
-CREATE TABLE BOLDTC_TERMSOFUSEVERSION (
+CREATE TABLE BOLDTC_TermsOfUseVersion (
 	Id SERIAL NOT NULL,
 	Name varchar(255) NOT NULL,
 	Location varchar(255) NOT NULL,
@@ -538,7 +546,7 @@ CREATE TABLE BOLDTC_TERMSOFUSEVERSION (
 	ModifiedDate timestamp NOT NULL,
 	IsLatest smallint NOT NULL,
 	IsActive smallint NOT NULL,
-  CONSTRAINT PK_BOLDTC_TERMSOFUSEVERSION PRIMARY KEY (Id)
+  CONSTRAINT PK_BOLDTC_TermsOfUseVersion PRIMARY KEY (Id)
 )
 ;
 CREATE TABLE BOLDTC_PrivacyPolicyVersion (
@@ -725,6 +733,7 @@ CREATE TABLE BOLDTC_AuthSettings (
     TenantInfoId uuid NULL,
     AuthProviderId int NOT NULL,
     Settings varchar(1026),
+    EncryptionValues text,
     IsEnabled smallint NOT NULL,
     CreatedBy uuid NULL,
     ModifiedBy uuid NULL,
@@ -830,6 +839,126 @@ CREATE TABLE BOLDTC_EmailActivityLog(
 	CONSTRAINT PK_BOLDTC_EMAILACTIVITYLOG PRIMARY KEY (Id) 
 	)
 ;
+
+CREATE TABLE BOLDTC_ActivityLog
+(
+    Id SERIAL,
+    EventCategory varchar(100) NOT NULL,
+    EventType varchar(100) NOT NULL,
+    EventDate timestamp NOT NULL,
+    InitiatedBy uuid NULL,
+    TargetUser uuid NULL,
+    IpAddress varchar(100) NOT NULL,
+    AppSource varchar(255) NULL,
+    AppType varchar(255) NULL,
+    EventLog text NULL,
+    ClientId varchar(100) NULL,
+    UserAgent varchar(255) NULL,
+    IsActive smallint NOT NULL,
+    CanDelete smallint NOT NULL,
+    CONSTRAINT PK_BOLDTC_ACTIVITYLOG PRIMARY KEY (Id)
+)
+;
+
+CREATE TABLE BOLDTC_QueryMetrics ( 
+    Id SERIAL,
+    DashboardID varchar(100),
+    WidgetID varchar(100),
+    WidgetName varchar(100),
+    QueryStartTime timestamp,
+    QueryEndTime timestamp,
+    Query text, 
+    QueryStatus varchar(100), 
+    Rowsretrieved bigint, 
+    QueryPlan varchar(100), 
+    TrackingId varchar(100), 
+    QueryType varchar(100), 
+    QueryExecutiontime varchar(100), 
+    DashboardName varchar(100), 
+    UserName varchar(100), 
+    TenantId uuid, 
+    UserId varchar(100), 
+    DataSourceID varchar(100), 
+    DataSourceName varchar(100),
+    CONSTRAINT PK_BOLDTC_QUERYMETRICS PRIMARY KEY (Id)
+)
+;
+
+CREATE TABLE BOLDTC_TenantSettings (
+	Id SERIAL NOT NULL,
+	TenantInfoId uuid NOT NULL,
+	Settings text NOT NULL,
+	CreatedDate timestamp NOT NULL,
+	ModifiedDate timestamp NOT NULL,
+	IsActive smallint NOT NULL,
+  CONSTRAINT PK_BOLDTC_TENANTSETTINGS PRIMARY KEY (Id)
+)
+;
+
+CREATE TABLE BOLDTC_UserAttributes(
+	Id SERIAL primary key NOT NULL,
+	Name varchar(255) NOT NULL,
+	Value varchar(4000) NOT NULL,
+	Description varchar(1024) NULL,
+	Encrypt smallint NOT NULL,
+	UserId uuid NOT NULL,
+	CreatedById uuid NULL,
+	ModifiedById uuid NULL,
+	CreatedDate timestamp NOT NULL,
+    ModifiedDate timestamp NOT NULL,
+	IsActive smallint NOT NULL)
+;
+
+CREATE TABLE BOLDTC_BackUp (
+    Id SERIAL primary key NOT NULL,
+    ConfigurationData text NOT NULL,
+    PrivateKey text NOT NULL,
+    ModifiedDate timestamp NOT NULL,
+    IsActive smallint NOT NULL
+);
+
+CREATE TABLE BOLDTC_CustomEmailTemplate (
+    Id SERIAL PRIMARY KEY,
+    IsEnabled smallint,
+    DisclaimerContent VARCHAR(255) NOT NULL,
+    HeaderContent VARCHAR(255) NULL,
+    Subject VARCHAR(255),
+    TemplateName VARCHAR(255),
+    Language VARCHAR(255) NOT NULL,
+    MailBody TEXT NOT NULL,
+    CreatedDate TIMESTAMP NOT NULL,
+    ModifiedDate TIMESTAMP,
+	SendEmailAsHTML smallint NOT NULL,
+    IsActive smallint NOT NULL,
+	TemplateId INTEGER NOT NULL,
+	IsDefaultTemplate smallint NOT NULL,
+	IsSystemDefault smallint NOT NULL,
+	Description VARCHAR(255) NULL,
+	ModifiedBy uuid NOT NULL,
+	TemplateLocalizationKey VARCHAR(255) NULL
+);
+
+CREATE TABLE BOLDTC_AICredentials(
+    Id uuid NOT NULL,
+    AIModel INTEGER NOT NULL,
+    AIConfiguration varchar(4000) NULL,
+    CreatedById uuid NULL,
+    ModifiedById uuid NULL,
+    CreatedDate timestamp NOT NULL,
+    ModifiedDate timestamp NOT NULL,
+    IsActive smallint NOT NULL)
+;
+
+CREATE TABLE BOLDTC_TenantStorageDetails (
+    Id uuid NOT NULL,
+    TenantInfoId uuid NOT NULL,
+    StorageType INT NOT NULL,
+    ConnectionInfo VARCHAR(1026),
+    CreatedDate TIMESTAMP NOT NULL,
+    ModifiedDate TIMESTAMP NOT NULL,
+    IsActive smallint NOT NULL,
+    CONSTRAINT PK_BOLDTC_TenantStorageDetails PRIMARY KEY (Id)
+);
 
 INSERT into BOLDTC_TenantLogType  ( Name , IsActive ) VALUES (N'Registration', 1);
 INSERT into BOLDTC_TenantLogType  ( Name ,  IsActive ) VALUES (N'StatusUpdated', 1);
@@ -991,321 +1120,321 @@ INSERT into BOLDTC_Source  (Type, Value, CreatedDate, ModifiedDate, IsActive) VA
 INSERT into BOLDTC_Source  (Type, Value, CreatedDate, ModifiedDate, IsActive) VALUES (N'Report Server Jobs', 9, now() at time zone 'utc', now() at time zone 'utc', 1);
 INSERT into BOLDTC_Source  (Type, Value, CreatedDate, ModifiedDate, IsActive) VALUES (N'Admin Utility', 10, now() at time zone 'utc', now() at time zone 'utc', 1);
 
-ALTER TABLE  BOLDTC_CouponLog  ADD CONSTRAINT  BOLDTC_CouponLog_fk0  FOREIGN KEY ( CouponLogTypeId ) REFERENCES  BOLDTC_CouponLogType ( Id )
+ALTER TABLE  BOLDTC_CouponLog  ADD CONSTRAINT BOLDTC_CouponLog_fk0  FOREIGN KEY ( CouponLogTypeId ) REFERENCES  BOLDTC_CouponLogType ( Id )
 ;
-ALTER TABLE  BOLDTC_CouponLog  VALIDATE CONSTRAINT  BOLDTC_CouponLog_fk0 
+ALTER TABLE  BOLDTC_CouponLog  VALIDATE CONSTRAINT BOLDTC_CouponLog_fk0 
 ;
-ALTER TABLE  BOLDTC_CouponLog  ADD CONSTRAINT  BOLDTC_CouponLog_fk1  FOREIGN KEY ( PaymentLogId ) REFERENCES  BOLDTC_TenantPaymentLog ( id )
+ALTER TABLE  BOLDTC_CouponLog  ADD CONSTRAINT BOLDTC_CouponLog_fk1  FOREIGN KEY ( PaymentLogId ) REFERENCES  BOLDTC_TenantPaymentLog ( id )
 ;
-ALTER TABLE  BOLDTC_CouponLog  VALIDATE CONSTRAINT  BOLDTC_CouponLog_fk1 
-;
-
-ALTER TABLE  BOLDTC_TenantPaymentSubscription  ADD CONSTRAINT  BOLDTC_TenantPaymentSubscription_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
-;
-ALTER TABLE  BOLDTC_TenantPaymentSubscription  VALIDATE CONSTRAINT  BOLDTC_TenantPaymentSubscription_fk0 
+ALTER TABLE  BOLDTC_CouponLog  VALIDATE CONSTRAINT BOLDTC_CouponLog_fk1 
 ;
 
-ALTER TABLE  BOLDTC_TenantInvoiceDetails  ADD CONSTRAINT  BOLDTC_TenantInvoiceDetails_fk0  FOREIGN KEY ( SubscriptionId ) REFERENCES  BOLDTC_TenantPaymentSubscription ( Id )
+ALTER TABLE  BOLDTC_TenantPaymentSubscription  ADD CONSTRAINT BOLDTC_TenantPaymentSubscription_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
 ;
-ALTER TABLE  BOLDTC_TenantInvoiceDetails  VALIDATE CONSTRAINT  BOLDTC_TenantInvoiceDetails_fk0 
-;
-
-ALTER TABLE  BOLDTC_TenantPaymentLog  ADD CONSTRAINT  BOLDTC_TenantPaymentLog_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
-;
-ALTER TABLE  BOLDTC_TenantPaymentLog  VALIDATE CONSTRAINT  BOLDTC_TenantPaymentLog_fk0 
+ALTER TABLE  BOLDTC_TenantPaymentSubscription  VALIDATE CONSTRAINT BOLDTC_TenantPaymentSubscription_fk0 
 ;
 
-ALTER TABLE  BOLDTC_TenantPaymentLog  ADD CONSTRAINT  BOLDTC_TenantPaymentLog_fk1  FOREIGN KEY ( SubscriptionId ) REFERENCES  BOLDTC_TenantPaymentSubscription ( Id )
+ALTER TABLE  BOLDTC_TenantInvoiceDetails  ADD CONSTRAINT BOLDTC_TenantInvoiceDetails_fk0  FOREIGN KEY ( SubscriptionId ) REFERENCES  BOLDTC_TenantPaymentSubscription ( Id )
 ;
-ALTER TABLE  BOLDTC_TenantPaymentLog  VALIDATE CONSTRAINT  BOLDTC_TenantPaymentLog_fk1 
-;
-
-ALTER TABLE  BOLDTC_SqlElasticPool  ADD CONSTRAINT  BOLDTC_SqlElasticPool_fk0  FOREIGN KEY ( SqlServerId ) REFERENCES  BOLDTC_SqlServer ( Id )
-;
-ALTER TABLE  BOLDTC_SqlElasticPool  VALIDATE CONSTRAINT  BOLDTC_SqlElasticPool_fk0 
+ALTER TABLE  BOLDTC_TenantInvoiceDetails  VALIDATE CONSTRAINT BOLDTC_TenantInvoiceDetails_fk0 
 ;
 
-ALTER TABLE  BOLDTC_Tenant  ADD CONSTRAINT  BOLDTC_Tenant_fk0  FOREIGN KEY ( UserId ) REFERENCES  BOLDTC_User ( Id )
+ALTER TABLE  BOLDTC_TenantPaymentLog  ADD CONSTRAINT BOLDTC_TenantPaymentLog_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
 ;
-ALTER TABLE  BOLDTC_Tenant  VALIDATE CONSTRAINT  BOLDTC_Tenant_fk0 
-;
-
-ALTER TABLE  BOLDTC_TenantLog  ADD CONSTRAINT  BOLDTC_TenantLog_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
-;
-ALTER TABLE  BOLDTC_TenantLog  VALIDATE CONSTRAINT  BOLDTC_TenantLog_fk0 
+ALTER TABLE  BOLDTC_TenantPaymentLog  VALIDATE CONSTRAINT BOLDTC_TenantPaymentLog_fk0 
 ;
 
-ALTER TABLE  BOLDTC_TenantLog  ADD CONSTRAINT  BOLDTC_TenantLog_fk1  FOREIGN KEY ( TenantLogType ) REFERENCES  BOLDTC_TenantLogType ( Id )
+ALTER TABLE  BOLDTC_TenantPaymentLog  ADD CONSTRAINT BOLDTC_TenantPaymentLog_fk1  FOREIGN KEY ( SubscriptionId ) REFERENCES  BOLDTC_TenantPaymentSubscription ( Id )
 ;
-ALTER TABLE  BOLDTC_TenantLog  VALIDATE CONSTRAINT  BOLDTC_TenantLog_fk1 
-;
-
-ALTER TABLE  BOLDTC_TenantLog  ADD CONSTRAINT  BOLDTC_TenantLog_fk2  FOREIGN KEY ( ToStatus ) REFERENCES  BOLDTC_TenantStatus ( Id )
-;
-ALTER TABLE  BOLDTC_TenantLog  VALIDATE CONSTRAINT  BOLDTC_TenantLog_fk2 
+ALTER TABLE  BOLDTC_TenantPaymentLog  VALIDATE CONSTRAINT BOLDTC_TenantPaymentLog_fk1 
 ;
 
-ALTER TABLE  BOLDTC_Coupon  ADD CONSTRAINT  BOLDTC_Coupon_fk0  FOREIGN KEY ( CreatedById ) REFERENCES  BOLDTC_User ( Id )
+ALTER TABLE  BOLDTC_SqlElasticPool  ADD CONSTRAINT BOLDTC_SqlElasticPool_fk0  FOREIGN KEY ( SqlServerId ) REFERENCES  BOLDTC_SqlServer ( Id )
 ;
-ALTER TABLE  BOLDTC_Coupon  VALIDATE CONSTRAINT  BOLDTC_Coupon_fk0 
-;
-
-ALTER TABLE  BOLDTC_Coupon  ADD CONSTRAINT  BOLDTC_Coupon_fk1  FOREIGN KEY ( ModifiedById ) REFERENCES  BOLDTC_User ( Id )
-;
-ALTER TABLE  BOLDTC_Coupon  VALIDATE CONSTRAINT  BOLDTC_Coupon_fk1 
+ALTER TABLE  BOLDTC_SqlElasticPool  VALIDATE CONSTRAINT BOLDTC_SqlElasticPool_fk0 
 ;
 
-ALTER TABLE  BOLDTC_UserPreference  ADD CONSTRAINT  BOLDTC_UserPreference_fk0  FOREIGN KEY ( UserId ) REFERENCES  BOLDTC_User ( Id )
+ALTER TABLE  BOLDTC_Tenant  ADD CONSTRAINT BOLDTC_Tenant_fk0  FOREIGN KEY ( UserId ) REFERENCES  BOLDTC_User ( Id )
 ;
-ALTER TABLE  BOLDTC_UserPreference  VALIDATE CONSTRAINT  BOLDTC_UserPreference_fk0 
-;
-
-ALTER TABLE  BOLDTC_User  ADD CONSTRAINT  BOLDTC_User_fk0  FOREIGN KEY ( DirectoryTypeId ) REFERENCES  BOLDTC_DirectoryType ( Id )
-;
-ALTER TABLE  BOLDTC_User  VALIDATE CONSTRAINT  BOLDTC_User_fk0 
+ALTER TABLE  BOLDTC_Tenant  VALIDATE CONSTRAINT BOLDTC_Tenant_fk0 
 ;
 
-ALTER TABLE  BOLDTC_UserLogin  ADD CONSTRAINT  BOLDTC_UserLogin_fk0  FOREIGN KEY ( UserId ) REFERENCES  BOLDTC_User ( Id )
+ALTER TABLE  BOLDTC_TenantLog  ADD CONSTRAINT BOLDTC_TenantLog_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
 ;
-ALTER TABLE  BOLDTC_UserLogin  VALIDATE CONSTRAINT  BOLDTC_UserLogin_fk0 
+ALTER TABLE  BOLDTC_TenantLog  VALIDATE CONSTRAINT BOLDTC_TenantLog_fk0 
+;
+
+ALTER TABLE  BOLDTC_TenantLog  ADD CONSTRAINT BOLDTC_TenantLog_fk1  FOREIGN KEY ( TenantLogType ) REFERENCES  BOLDTC_TenantLogType ( Id )
+;
+ALTER TABLE  BOLDTC_TenantLog  VALIDATE CONSTRAINT BOLDTC_TenantLog_fk1 
+;
+
+ALTER TABLE  BOLDTC_TenantLog  ADD CONSTRAINT BOLDTC_TenantLog_fk2  FOREIGN KEY ( ToStatus ) REFERENCES  BOLDTC_TenantStatus ( Id )
+;
+ALTER TABLE  BOLDTC_TenantLog  VALIDATE CONSTRAINT BOLDTC_TenantLog_fk2 
+;
+
+ALTER TABLE  BOLDTC_Coupon  ADD CONSTRAINT BOLDTC_Coupon_fk0  FOREIGN KEY ( CreatedById ) REFERENCES  BOLDTC_User ( Id )
+;
+ALTER TABLE  BOLDTC_Coupon  VALIDATE CONSTRAINT BOLDTC_Coupon_fk0 
+;
+
+ALTER TABLE  BOLDTC_Coupon  ADD CONSTRAINT BOLDTC_Coupon_fk1  FOREIGN KEY ( ModifiedById ) REFERENCES  BOLDTC_User ( Id )
+;
+ALTER TABLE  BOLDTC_Coupon  VALIDATE CONSTRAINT BOLDTC_Coupon_fk1 
+;
+
+ALTER TABLE  BOLDTC_UserPreference  ADD CONSTRAINT BOLDTC_UserPreference_fk0  FOREIGN KEY ( UserId ) REFERENCES  BOLDTC_User ( Id )
+;
+ALTER TABLE  BOLDTC_UserPreference  VALIDATE CONSTRAINT BOLDTC_UserPreference_fk0 
+;
+
+ALTER TABLE  BOLDTC_User  ADD CONSTRAINT BOLDTC_User_fk0  FOREIGN KEY ( DirectoryTypeId ) REFERENCES  BOLDTC_DirectoryType ( Id )
+;
+ALTER TABLE  BOLDTC_User  VALIDATE CONSTRAINT BOLDTC_User_fk0 
+;
+
+ALTER TABLE  BOLDTC_UserLogin  ADD CONSTRAINT BOLDTC_UserLogin_fk0  FOREIGN KEY ( UserId ) REFERENCES  BOLDTC_User ( Id )
+;
+ALTER TABLE  BOLDTC_UserLogin  VALIDATE CONSTRAINT BOLDTC_UserLogin_fk0 
 ;
 ALTER TABLE BOLDTC_UserLogin ADD CONSTRAINT BOLDTC_UserLogin_fk1 FOREIGN KEY (DirectoryTypeId) REFERENCES BOLDTC_DirectoryType(Id)
 ;
 ALTER TABLE BOLDTC_UserLogin VALIDATE CONSTRAINT BOLDTC_UserLogin_fk1
 ;
 
-ALTER TABLE  BOLDTC_TMUserGroup  ADD CONSTRAINT  BOLDTC_TMUserGroup_fk0  FOREIGN KEY ( GroupId ) REFERENCES  BOLDTC_TMGroup ( Id )
+ALTER TABLE  BOLDTC_TMUserGroup  ADD CONSTRAINT BOLDTC_TMUserGroup_fk0  FOREIGN KEY ( GroupId ) REFERENCES  BOLDTC_TMGroup ( Id )
 ;
-ALTER TABLE  BOLDTC_TMUserGroup  VALIDATE CONSTRAINT  BOLDTC_TMUserGroup_fk0 
-;
-
-ALTER TABLE  BOLDTC_TMUserGroup  ADD CONSTRAINT  BOLDTC_TMUserGroup_fk1  FOREIGN KEY ( UserId ) REFERENCES  BOLDTC_User ( Id )
-;
-ALTER TABLE  BOLDTC_TMUserGroup  VALIDATE CONSTRAINT  BOLDTC_TMUserGroup_fk1 
+ALTER TABLE  BOLDTC_TMUserGroup  VALIDATE CONSTRAINT BOLDTC_TMUserGroup_fk0 
 ;
 
-ALTER TABLE  BOLDTC_TMGroup  ADD CONSTRAINT  BOLDTC_TMGroup_fk0  FOREIGN KEY ( DirectoryTypeId ) REFERENCES  BOLDTC_DirectoryType ( Id )
+ALTER TABLE  BOLDTC_TMUserGroup  ADD CONSTRAINT BOLDTC_TMUserGroup_fk1  FOREIGN KEY ( UserId ) REFERENCES  BOLDTC_User ( Id )
 ;
-ALTER TABLE  BOLDTC_TMGroup  VALIDATE CONSTRAINT  BOLDTC_TMGroup_fk0 
-;
-
-ALTER TABLE  BOLDTC_TenantUser  ADD CONSTRAINT  BOLDTC_TenantUser_fk0  FOREIGN KEY ( UserId ) REFERENCES  BOLDTC_User ( Id )
-;
-ALTER TABLE  BOLDTC_TenantUser  VALIDATE CONSTRAINT  BOLDTC_TenantUser_fk0 
+ALTER TABLE  BOLDTC_TMUserGroup  VALIDATE CONSTRAINT BOLDTC_TMUserGroup_fk1 
 ;
 
-ALTER TABLE  BOLDTC_TenantUser  ADD CONSTRAINT  BOLDTC_TenantUser_fk1  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+ALTER TABLE  BOLDTC_TMGroup  ADD CONSTRAINT BOLDTC_TMGroup_fk0  FOREIGN KEY ( DirectoryTypeId ) REFERENCES  BOLDTC_DirectoryType ( Id )
 ;
-ALTER TABLE  BOLDTC_TenantUser  VALIDATE CONSTRAINT  BOLDTC_TenantUser_fk1 
-;
-
-ALTER TABLE  BOLDTC_Schedule  ADD CONSTRAINT  BOLDTC_Schedule_fk0  FOREIGN KEY ( RecurrenceTypeId ) REFERENCES  BOLDTC_RecurrenceType ( Id )
-;
-ALTER TABLE  BOLDTC_Schedule  VALIDATE CONSTRAINT  BOLDTC_Schedule_fk0 
+ALTER TABLE  BOLDTC_TMGroup  VALIDATE CONSTRAINT BOLDTC_TMGroup_fk0 
 ;
 
-ALTER TABLE  BOLDTC_Schedule  ADD CONSTRAINT  BOLDTC_Schedule_fk1  FOREIGN KEY ( ScheduleTypeId ) REFERENCES  BOLDTC_ScheduleType ( id )
+ALTER TABLE  BOLDTC_TenantUser  ADD CONSTRAINT BOLDTC_TenantUser_fk0  FOREIGN KEY ( UserId ) REFERENCES  BOLDTC_User ( Id )
 ;
-ALTER TABLE  BOLDTC_Schedule  VALIDATE CONSTRAINT  BOLDTC_Schedule_fk1 
-;
-
-ALTER TABLE  BOLDTC_ScheduleLog  ADD CONSTRAINT  BOLDTC_ScheduleLog_fk0  FOREIGN KEY ( ScheduleId ) REFERENCES  BOLDTC_Schedule ( id )
-;
-ALTER TABLE  BOLDTC_ScheduleLog  VALIDATE CONSTRAINT  BOLDTC_ScheduleLog_fk0 
+ALTER TABLE  BOLDTC_TenantUser  VALIDATE CONSTRAINT BOLDTC_TenantUser_fk0 
 ;
 
-ALTER TABLE  BOLDTC_ScheduleLog  ADD CONSTRAINT  BOLDTC_ScheduleLog_fk1  FOREIGN KEY ( ScheduleStatusId ) REFERENCES  BOLDTC_ScheduleStatus ( Id )
+ALTER TABLE  BOLDTC_TenantUser  ADD CONSTRAINT BOLDTC_TenantUser_fk1  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
 ;
-ALTER TABLE  BOLDTC_ScheduleLog  VALIDATE CONSTRAINT  BOLDTC_ScheduleLog_fk1 
-;
-
-ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT  BOLDTC_TenantInfo_fk0  FOREIGN KEY ( TenantId ) REFERENCES  BOLDTC_Tenant ( Id )
-;
-ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT  BOLDTC_TenantInfo_fk0 
+ALTER TABLE  BOLDTC_TenantUser  VALIDATE CONSTRAINT BOLDTC_TenantUser_fk1 
 ;
 
-ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT  BOLDTC_TenantInfo_fk1  FOREIGN KEY ( TenantTypeId ) REFERENCES  BOLDTC_TenantType ( Id )
+ALTER TABLE  BOLDTC_Schedule  ADD CONSTRAINT BOLDTC_Schedule_fk0  FOREIGN KEY ( RecurrenceTypeId ) REFERENCES  BOLDTC_RecurrenceType ( Id )
 ;
-ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT  BOLDTC_TenantInfo_fk1 
-;
-
-ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT  BOLDTC_TenantInfo_fk2  FOREIGN KEY ( SaaSPlanId ) REFERENCES  BOLDTC_SaaSPlan ( Id )
-;
-ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT  BOLDTC_TenantInfo_fk2 
+ALTER TABLE  BOLDTC_Schedule  VALIDATE CONSTRAINT BOLDTC_Schedule_fk0 
 ;
 
-ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT  BOLDTC_TenantInfo_fk3  FOREIGN KEY ( TenantSQLServerId ) REFERENCES  BOLDTC_SqlServer ( Id )
+ALTER TABLE  BOLDTC_Schedule  ADD CONSTRAINT BOLDTC_Schedule_fk1  FOREIGN KEY ( ScheduleTypeId ) REFERENCES  BOLDTC_ScheduleType ( id )
 ;
-ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT  BOLDTC_TenantInfo_fk3 
-;
-
-ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT  BOLDTC_TenantInfo_fk4  FOREIGN KEY ( ElasticPoolId ) REFERENCES  BOLDTC_SqlElasticPool ( Id )
-;
-ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT  BOLDTC_TenantInfo_fk4 
+ALTER TABLE  BOLDTC_Schedule  VALIDATE CONSTRAINT BOLDTC_Schedule_fk1 
 ;
 
-ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT  BOLDTC_TenantInfo_fk5  FOREIGN KEY ( TenantStatus ) REFERENCES  BOLDTC_TenantStatus ( Id )
+ALTER TABLE  BOLDTC_ScheduleLog  ADD CONSTRAINT BOLDTC_ScheduleLog_fk0  FOREIGN KEY ( ScheduleId ) REFERENCES  BOLDTC_Schedule ( id )
 ;
-ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT  BOLDTC_TenantInfo_fk5 
-;
-
-ALTER TABLE  BOLDTC_UserBillingAddress  ADD CONSTRAINT  BOLDTC_UserBillingAddress_fk1  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
-;
-ALTER TABLE  BOLDTC_UserBillingAddress  VALIDATE CONSTRAINT  BOLDTC_UserBillingAddress_fk1 
+ALTER TABLE  BOLDTC_ScheduleLog  VALIDATE CONSTRAINT BOLDTC_ScheduleLog_fk0 
 ;
 
-ALTER TABLE  BOLDTC_TenantAddon  ADD CONSTRAINT  BOLDTC_TenantAddon_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+ALTER TABLE  BOLDTC_ScheduleLog  ADD CONSTRAINT BOLDTC_ScheduleLog_fk1  FOREIGN KEY ( ScheduleStatusId ) REFERENCES  BOLDTC_ScheduleStatus ( Id )
 ;
-ALTER TABLE  BOLDTC_TenantAddon  VALIDATE CONSTRAINT  BOLDTC_TenantAddon_fk0 
-;
-
-ALTER TABLE  BOLDTC_TenantAddon  ADD CONSTRAINT  BOLDTC_TenantAddon_fk1  FOREIGN KEY ( AddonId ) REFERENCES  BOLDTC_Addon ( Id )
-;
-ALTER TABLE  BOLDTC_TenantAddon  VALIDATE CONSTRAINT  BOLDTC_TenantAddon_fk1 
+ALTER TABLE  BOLDTC_ScheduleLog  VALIDATE CONSTRAINT BOLDTC_ScheduleLog_fk1 
 ;
 
-ALTER TABLE  BOLDTC_CustomPlan  ADD CONSTRAINT  BOLDTC_CustomPlan_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT BOLDTC_TenantInfo_fk0  FOREIGN KEY ( TenantId ) REFERENCES  BOLDTC_Tenant ( Id )
 ;
-ALTER TABLE  BOLDTC_CustomPlan  VALIDATE CONSTRAINT  BOLDTC_CustomPlan_fk0 
-;
-
-ALTER TABLE  BOLDTC_ExternalIdP  ADD CONSTRAINT  BOLDTC_ExternalIdP_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
-;
-ALTER TABLE  BOLDTC_ExternalIdP  VALIDATE CONSTRAINT  BOLDTC_ExternalIdP_fk0 
+ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT BOLDTC_TenantInfo_fk0 
 ;
 
-ALTER TABLE  BOLDTC_ExternalIdP  ADD CONSTRAINT  BOLDTC_ExternalIdP_fk1  FOREIGN KEY ( DirectoryTypeId ) REFERENCES  BOLDTC_DirectoryType ( Id )
+ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT BOLDTC_TenantInfo_fk1  FOREIGN KEY ( TenantTypeId ) REFERENCES  BOLDTC_TenantType ( Id )
 ;
-ALTER TABLE  BOLDTC_ExternalIdP  VALIDATE CONSTRAINT  BOLDTC_ExternalIdP_fk1 
-;
-
-ALTER TABLE  BOLDTC_ExternalIdP  ADD CONSTRAINT  BOLDTC_ExternalIdP_fk2  FOREIGN KEY ( CredentialTypeId ) REFERENCES  BOLDTC_IdPCredentialType ( Id )
-;
-ALTER TABLE  BOLDTC_ExternalIdP  VALIDATE CONSTRAINT  BOLDTC_ExternalIdP_fk2 
+ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT BOLDTC_TenantInfo_fk1 
 ;
 
-ALTER TABLE  BOLDTC_SqlServer  ADD CONSTRAINT  BOLDTC_SqlServer_fk0  FOREIGN KEY ( SqlServerType ) REFERENCES  BOLDTC_SqlServerType ( Id )
+ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT BOLDTC_TenantInfo_fk2  FOREIGN KEY ( SaaSPlanId ) REFERENCES  BOLDTC_SaaSPlan ( Id )
 ;
-ALTER TABLE  BOLDTC_SqlServer  VALIDATE CONSTRAINT  BOLDTC_SqlServer_fk0 
-;
-
-ALTER TABLE  BOLDTC_SqlElasticPool  ADD CONSTRAINT  BOLDTC_SqlElasticPool_fk1  FOREIGN KEY ( SqlServerType ) REFERENCES  BOLDTC_SqlServerType ( Id )
-;
-ALTER TABLE  BOLDTC_SqlElasticPool  VALIDATE CONSTRAINT  BOLDTC_SqlElasticPool_fk1 
+ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT BOLDTC_TenantInfo_fk2 
 ;
 
-ALTER TABLE  BOLDTC_SqlElasticPool  ADD CONSTRAINT  BOLDTC_SqlElasticPool_fk2  FOREIGN KEY ( TenantType ) REFERENCES  BOLDTC_TenantType ( Id )
+ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT BOLDTC_TenantInfo_fk3  FOREIGN KEY ( TenantSQLServerId ) REFERENCES  BOLDTC_SqlServer ( Id )
 ;
-ALTER TABLE  BOLDTC_SqlElasticPool  VALIDATE CONSTRAINT  BOLDTC_SqlElasticPool_fk2 
-;
-
-ALTER TABLE  BOLDTC_SqlServer  ADD CONSTRAINT  BOLDTC_SqlServer_fk1  FOREIGN KEY ( TenantType ) REFERENCES  BOLDTC_TenantType ( Id )
-;
-ALTER TABLE  BOLDTC_SqlServer  VALIDATE CONSTRAINT  BOLDTC_SqlServer_fk1 
+ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT BOLDTC_TenantInfo_fk3 
 ;
 
-ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT  BOLDTC_ImDbElasticPoolId  FOREIGN KEY ( ImDbElasticPoolId ) REFERENCES  BOLDTC_SqlElasticPool ( Id )
+ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT BOLDTC_TenantInfo_fk4  FOREIGN KEY ( ElasticPoolId ) REFERENCES  BOLDTC_SqlElasticPool ( Id )
 ;
-ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT  BOLDTC_ImDbElasticPoolId
-;
-
-ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT  BOLDTC_IDbSqlServerId  FOREIGN KEY ( ImDbSqlServerId ) REFERENCES  BOLDTC_SqlServer ( Id )
-;
-ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT  BOLDTC_IDbSqlServerId 
+ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT BOLDTC_TenantInfo_fk4 
 ;
 
-ALTER TABLE  BOLDTC_RegistrationFormVersion  ADD CONSTRAINT  BOLDTC_RegistrationFormVersion_fk0  FOREIGN KEY ( FormTypeId ) REFERENCES  BOLDTC_FormType ( Id )
+ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT BOLDTC_TenantInfo_fk5  FOREIGN KEY ( TenantStatus ) REFERENCES  BOLDTC_TenantStatus ( Id )
 ;
-ALTER TABLE  BOLDTC_RegistrationFormVersion  VALIDATE CONSTRAINT  BOLDTC_RegistrationFormVersion_fk0 
-;
-
-ALTER TABLE  BOLDTC_PrivacyAcceptance  ADD CONSTRAINT  BOLDTC_PrivacyAcceptance_fk0  FOREIGN KEY ( PrivacyPolicyVersion ) REFERENCES  BOLDTC_PrivacyPolicyVersion ( Id )
-;
-ALTER TABLE  BOLDTC_PrivacyAcceptance  VALIDATE CONSTRAINT  BOLDTC_PrivacyAcceptance_fk0 
+ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT BOLDTC_TenantInfo_fk5 
 ;
 
-ALTER TABLE  BOLDTC_PrivacyAcceptance  ADD CONSTRAINT  BOLDTC_PrivacyAcceptance_fk1  FOREIGN KEY ( TermsOfUseVersion ) REFERENCES  BOLDTC_TermsOfUseVersion ( Id )
+ALTER TABLE  BOLDTC_UserBillingAddress  ADD CONSTRAINT BOLDTC_UserBillingAddress_fk1  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
 ;
-ALTER TABLE  BOLDTC_PrivacyAcceptance  VALIDATE CONSTRAINT  BOLDTC_PrivacyAcceptance_fk1 
-;
-
-ALTER TABLE  BOLDTC_PrivacyAcceptance  ADD CONSTRAINT  BOLDTC_PrivacyAcceptance_fk2  FOREIGN KEY ( RegistrationFormVersion ) REFERENCES  BOLDTC_RegistrationFormVersion ( Id )
-;
-ALTER TABLE  BOLDTC_PrivacyAcceptance  VALIDATE CONSTRAINT  BOLDTC_PrivacyAcceptance_fk2 
+ALTER TABLE  BOLDTC_UserBillingAddress  VALIDATE CONSTRAINT BOLDTC_UserBillingAddress_fk1 
 ;
 
-ALTER TABLE  BOLDTC_FeedBack  ADD CONSTRAINT  BOLDTC_FeedBack_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+ALTER TABLE  BOLDTC_TenantAddon  ADD CONSTRAINT BOLDTC_TenantAddon_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
 ;
-ALTER TABLE  BOLDTC_FeedBack  VALIDATE CONSTRAINT  BOLDTC_FeedBack_fk0 
-;
-
-ALTER TABLE  BOLDTC_Support  ADD CONSTRAINT  BOLDTC_Support_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
-;
-ALTER TABLE  BOLDTC_Support  VALIDATE CONSTRAINT  BOLDTC_Support_fk0 
+ALTER TABLE  BOLDTC_TenantAddon  VALIDATE CONSTRAINT BOLDTC_TenantAddon_fk0 
 ;
 
-ALTER TABLE  BOLDTC_TenantActivity  ADD CONSTRAINT  BOLDTC_TenantActivity_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+ALTER TABLE  BOLDTC_TenantAddon  ADD CONSTRAINT BOLDTC_TenantAddon_fk1  FOREIGN KEY ( AddonId ) REFERENCES  BOLDTC_Addon ( Id )
 ;
-ALTER TABLE  BOLDTC_TenantActivity  VALIDATE CONSTRAINT  BOLDTC_TenantActivity_fk0 
-;
-
-ALTER TABLE  BOLDTC_PreviewFeatures  ADD CONSTRAINT  BOLDTC_PreviewFeatures_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
-;
-ALTER TABLE  BOLDTC_PreviewFeatures  VALIDATE CONSTRAINT  BOLDTC_PreviewFeatures_fk0 
+ALTER TABLE  BOLDTC_TenantAddon  VALIDATE CONSTRAINT BOLDTC_TenantAddon_fk1 
 ;
 
-ALTER TABLE  BOLDTC_KcTenants  ADD CONSTRAINT  BOLDTC_KcTenant_FK0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+ALTER TABLE  BOLDTC_CustomPlan  ADD CONSTRAINT BOLDTC_CustomPlan_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
 ;
-ALTER TABLE  BOLDTC_KcTenants  VALIDATE CONSTRAINT  BOLDTC_KcTenant_FK0 
-;
-
-ALTER TABLE  BOLDTC_SSLMapping  ADD CONSTRAINT  BOLDTC_SSLMapping_fk1  FOREIGN KEY ( TenantId ) REFERENCES  BOLDTC_Tenant ( Id )
-;
-ALTER TABLE  BOLDTC_SSLMapping  VALIDATE CONSTRAINT  BOLDTC_SSLMapping_fk1 
+ALTER TABLE  BOLDTC_CustomPlan  VALIDATE CONSTRAINT BOLDTC_CustomPlan_fk0 
 ;
 
-ALTER TABLE  BOLDTC_SSLMapping  ADD CONSTRAINT  BOLDTC_SSLMapping_fk2  FOREIGN KEY ( CertificateId ) REFERENCES  BOLDTC_SSLCertificate ( Id )
+ALTER TABLE  BOLDTC_ExternalIdP  ADD CONSTRAINT BOLDTC_ExternalIdP_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
 ;
-ALTER TABLE  BOLDTC_SSLMapping  VALIDATE CONSTRAINT  BOLDTC_SSLMapping_fk2 
-;
-
-ALTER TABLE  BOLDTC_AuthProvider  ADD CONSTRAINT  BOLDTC_AuthProvider_fk0  FOREIGN KEY ( AuthTypeId ) REFERENCES  BOLDTC_AuthType ( Id )
-;
-ALTER TABLE  BOLDTC_AuthProvider  VALIDATE CONSTRAINT  BOLDTC_AuthProvider_fk0 
+ALTER TABLE  BOLDTC_ExternalIdP  VALIDATE CONSTRAINT BOLDTC_ExternalIdP_fk0 
 ;
 
-ALTER TABLE  BOLDTC_GlobalAuthControl  ADD CONSTRAINT  BOLDTC_GlobalAuthControl_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+ALTER TABLE  BOLDTC_ExternalIdP  ADD CONSTRAINT BOLDTC_ExternalIdP_fk1  FOREIGN KEY ( DirectoryTypeId ) REFERENCES  BOLDTC_DirectoryType ( Id )
 ;
-ALTER TABLE  BOLDTC_GlobalAuthControl  VALIDATE CONSTRAINT  BOLDTC_GlobalAuthControl_fk0 
-;
-ALTER TABLE  BOLDTC_GlobalAuthControl  ADD CONSTRAINT  BOLDTC_GlobalAuthControl_fk1  FOREIGN KEY ( AuthTypeId ) REFERENCES  BOLDTC_AuthType ( Id )
-;
-ALTER TABLE  BOLDTC_GlobalAuthControl  VALIDATE CONSTRAINT  BOLDTC_GlobalAuthControl_fk1
-;
-ALTER TABLE  BOLDTC_GlobalAuthControl  ADD CONSTRAINT  BOLDTC_GlobalAuthControl_fk2  FOREIGN KEY ( CreatedBy ) REFERENCES  BOLDTC_User ( Id )
-;
-ALTER TABLE  BOLDTC_GlobalAuthControl  VALIDATE CONSTRAINT  BOLDTC_GlobalAuthControl_fk2
-;
-ALTER TABLE  BOLDTC_GlobalAuthControl  ADD CONSTRAINT  BOLDTC_GlobalAuthControl_fk3  FOREIGN KEY ( ModifiedBy ) REFERENCES  BOLDTC_User ( Id )
-;
-ALTER TABLE  BOLDTC_GlobalAuthControl  VALIDATE CONSTRAINT  BOLDTC_GlobalAuthControl_fk3
+ALTER TABLE  BOLDTC_ExternalIdP  VALIDATE CONSTRAINT BOLDTC_ExternalIdP_fk1 
 ;
 
-ALTER TABLE  BOLDTC_AuthSettings  ADD CONSTRAINT  BOLDTC_AuthSettings_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+ALTER TABLE  BOLDTC_ExternalIdP  ADD CONSTRAINT BOLDTC_ExternalIdP_fk2  FOREIGN KEY ( CredentialTypeId ) REFERENCES  BOLDTC_IdPCredentialType ( Id )
 ;
-ALTER TABLE  BOLDTC_AuthSettings  VALIDATE CONSTRAINT  BOLDTC_AuthSettings_fk0
+ALTER TABLE  BOLDTC_ExternalIdP  VALIDATE CONSTRAINT BOLDTC_ExternalIdP_fk2 
 ;
-ALTER TABLE  BOLDTC_AuthSettings  ADD CONSTRAINT  BOLDTC_AuthSettings_fk1  FOREIGN KEY ( AuthProviderId ) REFERENCES  BOLDTC_AuthProvider ( Id )
+
+ALTER TABLE  BOLDTC_SqlServer  ADD CONSTRAINT BOLDTC_SqlServer_fk0  FOREIGN KEY ( SqlServerType ) REFERENCES  BOLDTC_SqlServerType ( Id )
 ;
-ALTER TABLE  BOLDTC_AuthSettings  VALIDATE CONSTRAINT  BOLDTC_AuthSettings_fk1
+ALTER TABLE  BOLDTC_SqlServer  VALIDATE CONSTRAINT BOLDTC_SqlServer_fk0 
 ;
-ALTER TABLE  BOLDTC_AuthSettings  ADD CONSTRAINT  BOLDTC_AuthSettings_fk2  FOREIGN KEY ( CreatedBy ) REFERENCES  BOLDTC_User ( Id )
+
+ALTER TABLE  BOLDTC_SqlElasticPool  ADD CONSTRAINT BOLDTC_SqlElasticPool_fk1  FOREIGN KEY ( SqlServerType ) REFERENCES  BOLDTC_SqlServerType ( Id )
 ;
-ALTER TABLE  BOLDTC_AuthSettings  VALIDATE CONSTRAINT  BOLDTC_AuthSettings_fk2
+ALTER TABLE  BOLDTC_SqlElasticPool  VALIDATE CONSTRAINT BOLDTC_SqlElasticPool_fk1 
 ;
-ALTER TABLE  BOLDTC_AuthSettings  ADD CONSTRAINT  BOLDTC_AuthSettings_fk3  FOREIGN KEY ( ModifiedBy ) REFERENCES  BOLDTC_User ( Id )
+
+ALTER TABLE  BOLDTC_SqlElasticPool  ADD CONSTRAINT BOLDTC_SqlElasticPool_fk2  FOREIGN KEY ( TenantType ) REFERENCES  BOLDTC_TenantType ( Id )
 ;
-ALTER TABLE  BOLDTC_AuthSettings  VALIDATE CONSTRAINT  BOLDTC_AuthSettings_fk3
+ALTER TABLE  BOLDTC_SqlElasticPool  VALIDATE CONSTRAINT BOLDTC_SqlElasticPool_fk2 
+;
+
+ALTER TABLE  BOLDTC_SqlServer  ADD CONSTRAINT BOLDTC_SqlServer_fk1  FOREIGN KEY ( TenantType ) REFERENCES  BOLDTC_TenantType ( Id )
+;
+ALTER TABLE  BOLDTC_SqlServer  VALIDATE CONSTRAINT BOLDTC_SqlServer_fk1 
+;
+
+ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT BOLDTC_ImDbElasticPoolId  FOREIGN KEY ( ImDbElasticPoolId ) REFERENCES  BOLDTC_SqlElasticPool ( Id )
+;
+ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT BOLDTC_ImDbElasticPoolId
+;
+
+ALTER TABLE  BOLDTC_TenantInfo  ADD CONSTRAINT BOLDTC_IDbSqlServerId  FOREIGN KEY ( ImDbSqlServerId ) REFERENCES  BOLDTC_SqlServer ( Id )
+;
+ALTER TABLE  BOLDTC_TenantInfo  VALIDATE CONSTRAINT BOLDTC_IDbSqlServerId 
+;
+
+ALTER TABLE  BOLDTC_RegistrationFormVersion  ADD CONSTRAINT BOLDTC_RegistrationFormVersion_fk0  FOREIGN KEY ( FormTypeId ) REFERENCES  BOLDTC_FormType ( Id )
+;
+ALTER TABLE  BOLDTC_RegistrationFormVersion  VALIDATE CONSTRAINT BOLDTC_RegistrationFormVersion_fk0 
+;
+
+ALTER TABLE  BOLDTC_PrivacyAcceptance  ADD CONSTRAINT BOLDTC_PrivacyAcceptance_fk0  FOREIGN KEY ( PrivacyPolicyVersion ) REFERENCES  BOLDTC_PrivacyPolicyVersion ( Id )
+;
+ALTER TABLE  BOLDTC_PrivacyAcceptance  VALIDATE CONSTRAINT BOLDTC_PrivacyAcceptance_fk0 
+;
+
+ALTER TABLE  BOLDTC_PrivacyAcceptance  ADD CONSTRAINT BOLDTC_PrivacyAcceptance_fk1  FOREIGN KEY ( TermsOfUseVersion ) REFERENCES  BOLDTC_TermsOfUseVersion ( Id )
+;
+ALTER TABLE  BOLDTC_PrivacyAcceptance  VALIDATE CONSTRAINT BOLDTC_PrivacyAcceptance_fk1 
+;
+
+ALTER TABLE  BOLDTC_PrivacyAcceptance  ADD CONSTRAINT BOLDTC_PrivacyAcceptance_fk2  FOREIGN KEY ( RegistrationFormVersion ) REFERENCES  BOLDTC_RegistrationFormVersion ( Id )
+;
+ALTER TABLE  BOLDTC_PrivacyAcceptance  VALIDATE CONSTRAINT BOLDTC_PrivacyAcceptance_fk2 
+;
+
+ALTER TABLE  BOLDTC_FeedBack  ADD CONSTRAINT BOLDTC_FeedBack_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+;
+ALTER TABLE  BOLDTC_FeedBack  VALIDATE CONSTRAINT BOLDTC_FeedBack_fk0 
+;
+
+ALTER TABLE  BOLDTC_Support  ADD CONSTRAINT BOLDTC_Support_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+;
+ALTER TABLE  BOLDTC_Support  VALIDATE CONSTRAINT BOLDTC_Support_fk0 
+;
+
+ALTER TABLE  BOLDTC_TenantActivity  ADD CONSTRAINT BOLDTC_TenantActivity_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+;
+ALTER TABLE  BOLDTC_TenantActivity  VALIDATE CONSTRAINT BOLDTC_TenantActivity_fk0 
+;
+
+ALTER TABLE  BOLDTC_PreviewFeatures  ADD CONSTRAINT BOLDTC_PreviewFeatures_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+;
+ALTER TABLE  BOLDTC_PreviewFeatures  VALIDATE CONSTRAINT BOLDTC_PreviewFeatures_fk0 
+;
+
+ALTER TABLE  BOLDTC_KcTenants  ADD CONSTRAINT BOLDTC_KcTenant_FK0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+;
+ALTER TABLE  BOLDTC_KcTenants  VALIDATE CONSTRAINT BOLDTC_KcTenant_FK0 
+;
+
+ALTER TABLE  BOLDTC_SSLMapping  ADD CONSTRAINT BOLDTC_SSLMapping_fk1  FOREIGN KEY ( TenantId ) REFERENCES  BOLDTC_Tenant ( Id )
+;
+ALTER TABLE  BOLDTC_SSLMapping  VALIDATE CONSTRAINT BOLDTC_SSLMapping_fk1 
+;
+
+ALTER TABLE  BOLDTC_SSLMapping  ADD CONSTRAINT BOLDTC_SSLMapping_fk2  FOREIGN KEY ( CertificateId ) REFERENCES  BOLDTC_SSLCertificate ( Id )
+;
+ALTER TABLE  BOLDTC_SSLMapping  VALIDATE CONSTRAINT BOLDTC_SSLMapping_fk2 
+;
+
+ALTER TABLE  BOLDTC_AuthProvider  ADD CONSTRAINT BOLDTC_AuthProvider_fk0  FOREIGN KEY ( AuthTypeId ) REFERENCES  BOLDTC_AuthType ( Id )
+;
+ALTER TABLE  BOLDTC_AuthProvider  VALIDATE CONSTRAINT BOLDTC_AuthProvider_fk0 
+;
+
+ALTER TABLE  BOLDTC_GlobalAuthControl  ADD CONSTRAINT BOLDTC_GlobalAuthControl_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+;
+ALTER TABLE  BOLDTC_GlobalAuthControl  VALIDATE CONSTRAINT BOLDTC_GlobalAuthControl_fk0 
+;
+ALTER TABLE  BOLDTC_GlobalAuthControl  ADD CONSTRAINT BOLDTC_GlobalAuthControl_fk1  FOREIGN KEY ( AuthTypeId ) REFERENCES  BOLDTC_AuthType ( Id )
+;
+ALTER TABLE  BOLDTC_GlobalAuthControl  VALIDATE CONSTRAINT BOLDTC_GlobalAuthControl_fk1
+;
+ALTER TABLE  BOLDTC_GlobalAuthControl  ADD CONSTRAINT BOLDTC_GlobalAuthControl_fk2  FOREIGN KEY ( CreatedBy ) REFERENCES  BOLDTC_User ( Id )
+;
+ALTER TABLE  BOLDTC_GlobalAuthControl  VALIDATE CONSTRAINT BOLDTC_GlobalAuthControl_fk2
+;
+ALTER TABLE  BOLDTC_GlobalAuthControl  ADD CONSTRAINT BOLDTC_GlobalAuthControl_fk3  FOREIGN KEY ( ModifiedBy ) REFERENCES  BOLDTC_User ( Id )
+;
+ALTER TABLE  BOLDTC_GlobalAuthControl  VALIDATE CONSTRAINT BOLDTC_GlobalAuthControl_fk3
+;
+
+ALTER TABLE  BOLDTC_AuthSettings  ADD CONSTRAINT BOLDTC_AuthSettings_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+;
+ALTER TABLE  BOLDTC_AuthSettings  VALIDATE CONSTRAINT BOLDTC_AuthSettings_fk0
+;
+ALTER TABLE  BOLDTC_AuthSettings  ADD CONSTRAINT BOLDTC_AuthSettings_fk1  FOREIGN KEY ( AuthProviderId ) REFERENCES  BOLDTC_AuthProvider ( Id )
+;
+ALTER TABLE  BOLDTC_AuthSettings  VALIDATE CONSTRAINT BOLDTC_AuthSettings_fk1
+;
+ALTER TABLE  BOLDTC_AuthSettings  ADD CONSTRAINT BOLDTC_AuthSettings_fk2  FOREIGN KEY ( CreatedBy ) REFERENCES  BOLDTC_User ( Id )
+;
+ALTER TABLE  BOLDTC_AuthSettings  VALIDATE CONSTRAINT BOLDTC_AuthSettings_fk2
+;
+ALTER TABLE  BOLDTC_AuthSettings  ADD CONSTRAINT BOLDTC_AuthSettings_fk3  FOREIGN KEY ( ModifiedBy ) REFERENCES  BOLDTC_User ( Id )
+;
+ALTER TABLE  BOLDTC_AuthSettings  VALIDATE CONSTRAINT BOLDTC_AuthSettings_fk3
 ;
 
 ALTER TABLE BOLDTC_UserLog  ADD CONSTRAINT BOLDTC_UserLog_fk1 FOREIGN KEY (UserId) REFERENCES BOLDTC_User(Id)
@@ -1316,25 +1445,33 @@ ALTER TABLE BOLDTC_UserLog  ADD CONSTRAINT BOLDTC_UserLog_fk2 FOREIGN KEY (Reque
 ;
 ALTER TABLE BOLDTC_UserLog  VALIDATE CONSTRAINT BOLDTC_UserLog_fk2
 ;
-ALTER TABLE  BOLDTC_AzureBlob  ADD CONSTRAINT  BOLDTC_AzureBlob_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+ALTER TABLE  BOLDTC_AzureBlob  ADD CONSTRAINT BOLDTC_AzureBlob_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
 ;
-ALTER TABLE  BOLDTC_AzureBlob  VALIDATE CONSTRAINT  BOLDTC_AzureBlob_fk0
-;
-
-ALTER TABLE  BOLDTC_User  ADD CONSTRAINT  BOLDTC_User_fk1  FOREIGN KEY ( Status ) REFERENCES  BOLDTC_UserStatus ( Value )
-;
-ALTER TABLE  BOLDTC_User  VALIDATE CONSTRAINT  BOLDTC_User_fk1 
+ALTER TABLE  BOLDTC_AzureBlob  VALIDATE CONSTRAINT BOLDTC_AzureBlob_fk0
 ;
 
-ALTER TABLE  BOLDTC_User  ADD CONSTRAINT  BOLDTC_User_fk2  FOREIGN KEY ( MfaType ) REFERENCES  BOLDTC_MfaType ( Value )
+ALTER TABLE  BOLDTC_User  ADD CONSTRAINT BOLDTC_User_fk1  FOREIGN KEY ( Status ) REFERENCES  BOLDTC_UserStatus ( Value )
 ;
-ALTER TABLE  BOLDTC_User  VALIDATE CONSTRAINT  BOLDTC_User_fk2
+ALTER TABLE  BOLDTC_User  VALIDATE CONSTRAINT BOLDTC_User_fk1 
 ;
 
-ALTER TABLE  BOLDTC_UserLog  ADD CONSTRAINT  BOLDTC_UserLog_fk3  FOREIGN KEY ( Source ) REFERENCES  BOLDTC_Source ( Value )
+ALTER TABLE  BOLDTC_User  ADD CONSTRAINT BOLDTC_User_fk2  FOREIGN KEY ( MfaType ) REFERENCES  BOLDTC_MfaType ( Value )
 ;
-ALTER TABLE  BOLDTC_UserLog  VALIDATE CONSTRAINT  BOLDTC_UserLog_fk3
+ALTER TABLE  BOLDTC_User  VALIDATE CONSTRAINT BOLDTC_User_fk2
+;
+
+ALTER TABLE  BOLDTC_UserLog  ADD CONSTRAINT BOLDTC_UserLog_fk3  FOREIGN KEY ( Source ) REFERENCES  BOLDTC_Source ( Value )
+;
+ALTER TABLE  BOLDTC_UserLog  VALIDATE CONSTRAINT BOLDTC_UserLog_fk3
 ;
 
 ALTER TABLE BOLDTC_EmailActivityLog  ADD CONSTRAINT BOLDTC_EmailActivityLog_fk0 FOREIGN KEY (UserId) REFERENCES BOLDTC_User(Id)
+;
+
+ALTER TABLE  BOLDTC_TenantSettings  ADD CONSTRAINT BOLDTC_TenantSettings_fk0  FOREIGN KEY ( TenantInfoId ) REFERENCES  BOLDTC_TenantInfo ( Id )
+;
+ALTER TABLE  BOLDTC_TenantSettings  VALIDATE CONSTRAINT BOLDTC_TenantSettings_fk0
+;
+
+ALTER TABLE BOLDTC_UserAttributes ADD FOREIGN KEY(UserId) REFERENCES BOLDTC_User (Id)
 ;

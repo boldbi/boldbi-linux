@@ -1,6 +1,9 @@
 ﻿@{
     var globalAppSettings = _globalAppSettings;
     var dashboardServerResourceUrl = globalAppSettings.SystemSettings.CDNLink.TrimEnd('/');
+    var url = new Uri(Context.Request.GetDisplayUrl());
+    var dashboardsPageUrl = Url.Action("Dashboards", "Dashboards");
+    var requesrUrl = url.AbsolutePath.ToString().ToLower();
 }
 <div id="EditCategoryPopup" style="display:none">
     <div style="background:white;" class="dialog">
@@ -11,7 +14,7 @@
                         <td class="text-right padding-right-15"><div class="bottom-margin30">@T["Category Name"]<span class="mandatory">*</span></div></td>
                         <td>
                             <span>
-                                <input type="text" id="category_name" class="popup form-control text-field bottom-margin30 text" maxlength="255" value="" tabindex="1" autofocus name="categoryName">
+                                <input type="text" id="category_name" class="popup form-control text-field bottom-margin30 text" data-maxlength="255" value="" tabindex="1" autofocus name="categoryName">
                                 <span id="validate-name" class="validation-message text"></span>
                                 <div id="plugin_validation" class="validation-message text"></div>
                             </span>
@@ -31,9 +34,12 @@
         </form>
     </div>
 </div>
-<environment include="Development,CloudDevelopment">
-    <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/edit-category.js"></script>
-</environment>
-<environment exclude="Development,CloudDevelopment">
-    <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/edit-category.min.js"></script>
-</environment>
+
+@if (requesrUrl.IndexOf(dashboardsPageUrl, StringComparison.OrdinalIgnoreCase) == -1){
+    <environment include="Development,CloudDevelopment">
+        <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/edit-category.js"></script>
+    </environment>
+    <environment exclude="Development,CloudDevelopment">
+        <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/edit-category.min.js"></script>
+    </environment>
+}

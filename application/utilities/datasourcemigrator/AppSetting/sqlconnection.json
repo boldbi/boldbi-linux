@@ -1,0 +1,24 @@
+{
+  "test_run": "false",
+  "tenant_list": "",
+  "filter": "",
+  "source_type": "SQL", //Redshift ,MySQL , PostgreSQL
+  "destination_type": "", // For switch provider type from SQL to PostgreSQL
+  "old_connection": {
+    "ServerName": "localhost",
+    "Database": "",
+    "UserName": "",
+    "Password": "",
+    "Port": "",
+    "Schema": ""
+  },
+  "new_connection": {
+    "ServerName": "127.0.0.1",
+    "Database": "",
+    "UserName": "",
+    "Password": "",
+    "Port": "",
+    "Schema": ""
+
+  }
+}

@@ -188,6 +188,24 @@ span.su-password-tick {
 .admin-page-content .admin-page-body .no-tenant-detail {
   padding: 28% 0% 20% 25%;
   font-size: 14px; }
+.admin-page-content .admin-page-body .form-group {
+  margin-bottom: 15px; }
+  .admin-page-content .admin-page-body .form-group .form-input-field {
+    padding-left: 15px;
+    padding-right: 6px; }
+.admin-page-content .admin-page-body .search-margin {
+  margin-bottom: 15px !important; }
+.admin-page-content .admin-page-body .ai-padding {
+  padding-bottom: 20px; }
+.admin-page-content .admin-page-body .ai-service-note {
+  width: 584px;
+  border-radius: 4px;
+  margin-top: 0;
+  margin-bottom: 32px;
+  padding: 12px;
+  letter-spacing: .26px;
+  background-color: var(--warning-bg-normal-color);
+  border: 1px solid var(--warning-border-normal-color); }
 .admin-page-content #application-tab .img-view-holder {
   border: 0.5px solid var(--grid-content-border-normal-color);
   border-radius: 2px;
@@ -203,8 +221,26 @@ span.su-password-tick {
     width: 40px; }
 .admin-page-content #application-tab #edit-application-form-div {
   margin-left: 20px; }
-.admin-page-content #custom-attribute-tab #add-custom-attribute, .admin-page-content #custom-attribute-tab .application-isolation-code, .admin-page-content #data-security-tab #add-custom-attribute, .admin-page-content #data-security-tab .application-isolation-code {
+.admin-page-content #custom-attribute-tab #add-custom-attribute, .admin-page-content #custom-attribute-tab .application-isolation-code, .admin-page-content #data-security-tab #add-custom-attribute, .admin-page-content #data-security-tab .application-isolation-code, .admin-page-content .user-attributes-content #add-custom-attribute, .admin-page-content .user-attributes-content .application-isolation-code {
   margin-bottom: 20px; }
+.admin-page-content #site-settings-tab .admin-page-body .site-settings {
+  padding: 20px 20px 15px 20px; }
+  .admin-page-content #site-settings-tab .admin-page-body .site-settings .switch-padding {
+    padding-top: 20px;
+    margin-left: 30px; }
+  .admin-page-content #site-settings-tab .admin-page-body .site-settings .settings-info {
+    color: var(--info-text-color); }
+.admin-page-content #site-settings-tab .admin-page-body .e-checkbox-wrapper .e-frame {
+  height: 16px;
+  width: 16px; }
+.admin-page-content #site-settings-tab .admin-page-body input[type=checkbox] {
+  margin-top: 0 !important; }
+.admin-page-content #site-settings-tab .admin-page-body .settings-label {
+  padding-left: 5px; }
+.admin-page-content #site-settings-tab .admin-page-body .tooltip {
+  left: 0 !important; }
+.admin-page-content #site-settings-tab #update-tenant-settings {
+  width: 90px !important; }
 .admin-page-content #users-tab #user-list-container #new-user-button {
   position: relative;
   right: 20px; }
@@ -214,6 +250,16 @@ span.su-password-tick {
   margin-left: 10px; }
 .admin-page-content #users-tab #user-list-container #remove-users-button {
   margin-right: 50px; }
+  .admin-page-content #users-tab #user-list-container #remove-users-button .button {
+    height: 32px; }
+.admin-page-content #resource-limitation-tab .form-control {
+  width: 260px !important; }
+.admin-page-content #resource-limitation-tab .info-message {
+  padding-left: 43px; }
+.admin-page-content #resource-limitation-tab .has-error {
+  border-color: var(--input-box-border-alert-color) !important;
+  color: var(--input-box-text-normal-color) !important;
+  background: var(--input-box-bg-normal-color) !important; }
 
 .cancel-button {
   margin-right: 10px !important; }
@@ -238,3 +284,29 @@ span.su-password-tick {
 
 #master-site-change {
   line-height: 5px; }
+
+.e-popup .e-checkbox-wrapper .e-frame.e-check, .e-popup .e-checkbox-wrapper:hover .e-css.e-checkbox-wrapper .e-frame.e-check {
+  background-color: var(--checkbox-bg-disable-color);
+  color: var(--grey-white); }
+
+.e-checkbox-wrapper .e-checkbox:focus + .e-frame {
+  background-color: var(--checkbox-bg-disable-color); }
+
+.e-input-group:not(.e-float-icon-left):not(.e-float-input)::before, .e-input-group:not(.e-float-icon-left):not(.e-float-input)::after {
+  background-color: transparent !important; }
+
+.e-checkbox-wrapper .e-frame.e-check, .e-checkbox-wrapper .e-frame.e-stop {
+  background-color: var(--primary-button-bg-normal-color) !important;
+  border: 1px solid var(--primary-button-border-normal-color);
+  color: var(--primary-button-text-normal-color) !important; }
+
+.e-checkbox-wrapper .e-frame {
+  background-color: var(--checkbox-bg-disable-color); }
+
+.e-custom.e-non-float:not(.e-popup-open) {
+  height: 32px !important;
+  font-family: var(--font-family) !important;
+  font-size: 14px !important; }
+
+#cancel-isolation-code, #cancel-enable-aiservice, #cancel-tenant-settings {
+  margin-right: 24px; }

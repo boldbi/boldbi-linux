@@ -239,6 +239,7 @@ CREATE TABLE [BOLDTC_User] (
 	ExternalProviderId nvarchar(512),
 	DirectoryTypeId int NOT NULL,
 	IsActivated bit NOT NULL,
+    ActivationMethod nvarchar(20),
 	IsActive bit NOT NULL,
 	IsDeleted bit NOT NULL,
 	Status int NULL,
@@ -258,7 +259,7 @@ CREATE TABLE [BOLDTC_UserLogin] (
 	DirectoryTypeId int not null,
 	ClientToken nvarchar(4000) NOT NULL,
 	LoggedInDomain nvarchar(255) NOT NULL,
-	IpAddress nvarchar(50) NOT NULL,
+	IpAddress nvarchar(255) NOT NULL,
 	Browser nvarchar(255) NULL,
 	LoggedInTime datetime NOT NULL,
 	LastActive datetime NULL,
@@ -302,7 +303,9 @@ CREATE TABLE [BOLDTC_TenantUser] (
 	Id uniqueidentifier NOT NULL,
 	UserId uniqueidentifier NOT NULL,
 	TenantInfoId uniqueidentifier NOT NULL,
+	IsFavorite bit NOT NULL DEFAULT '0',
 	IsActive bit NOT NULL,
+    LastAccessedDate datetime NULL,
   CONSTRAINT [PK_BOLDTC_TENANTUSER] PRIMARY KEY CLUSTERED
   (
   [Id] ASC
@@ -453,6 +456,8 @@ CREATE TABLE [BOLDTC_TenantInfo] (
 	DatabaseType int Default 0,
 	BlobConnectionString nvarchar(max),
 	ConnectionString nvarchar(max),
+	SchemaName nvarchar(max),
+	Prefix nvarchar(max),
 	AdditionalParameters nvarchar(max),
 	MaintenanceDatabase nvarchar(255) NULL,
 	TenantSQLServerId int,
@@ -474,9 +479,12 @@ CREATE TABLE [BOLDTC_TenantInfo] (
 	IsMaster bit NOT NULL,
 	IsolationCode nvarchar(4000),
 	IsTenantIsolationCodeEnabled bit NOT NULL DEFAULT '0',
+	IsRowLevelSecurityEnabled bit NOT NULL DEFAULT '1',
+    ResourceLimitationSettings nvarchar(max),
 	UseCustomBranding bit NOT NULL,
 	IsNewImDbDatabase bit NOT NULL,
 	IsNewDatabase bit NOT NULL,
+	StorageType int NOT NULL
   CONSTRAINT [PK_BOLDTC_TENANTINFO] PRIMARY KEY CLUSTERED
   (
   [Id] ASC
@@ -651,7 +659,7 @@ CREATE TABLE [BOLDTC_SqlServerType] (
   ) WITH (IGNORE_DUP_KEY = OFF)
 )
 ;
-CREATE TABLE [dbo].[BOLDTC_OAuthToken](
+CREATE TABLE [BOLDTC_OAuthToken](
     [Id] int IDENTITY(1,1) NOT NULL,
 	[Token] [nvarchar](max) NULL,
 	[Ticket] [nvarchar](max) NULL,
@@ -660,7 +668,7 @@ CREATE TABLE [dbo].[BOLDTC_OAuthToken](
 	  (  [Id] ASC  ) WITH (IGNORE_DUP_KEY = OFF)
 )
 ;
-CREATE TABLE [dbo].[BOLDTC_InternalApps](
+CREATE TABLE [BOLDTC_InternalApps](
 	[Id] int IDENTITY(1,1) NOT NULL,
 	[ClientId] uniqueidentifier NOT NULL UNIQUE,
 	[ClientSecret] nvarchar(max) NOT NULL,
@@ -702,7 +710,7 @@ CREATE TABLE [BOLDTC_RegistrationFormVersion] (
 
 )
 ;
-CREATE TABLE BOLDTC_TERMSOFUSEVERSION (
+CREATE TABLE [BOLDTC_TermsOfUseVersion] (
 	Id int IDENTITY(1,1) NOT NULL,
 	Name nvarchar(255) NOT NULL,
 	Location nvarchar(255) NOT NULL,
@@ -710,7 +718,7 @@ CREATE TABLE BOLDTC_TERMSOFUSEVERSION (
 	ModifiedDate datetime NOT NULL,
 	IsLatest bit NOT NULL,
 	IsActive bit NOT NULL,
-  CONSTRAINT [PK_BOLDTC_TERMSOFUSEVERSION] PRIMARY KEY CLUSTERED
+  CONSTRAINT [PK_BOLDTC_TermsOfUseVersion] PRIMARY KEY CLUSTERED
   (
   [Id] ASC
   ) WITH (IGNORE_DUP_KEY = OFF)
@@ -935,6 +943,7 @@ CREATE TABLE [BOLDTC_AuthSettings] (
     TenantInfoId uniqueidentifier NULL,
     AuthProviderId int NOT NULL,
     Settings nvarchar(max),
+    EncryptionValues nvarchar(max),
     IsEnabled bit NOT NULL,
     CreatedBy uniqueidentifier NULL,
     ModifiedBy uniqueidentifier NULL,
@@ -967,6 +976,30 @@ CREATE TABLE [BOLDTC_UserLog] (
   ) WITH (IGNORE_DUP_KEY = OFF)
 )
 ;
+
+CREATE TABLE [BOLDTC_ActivityLog]
+(
+	Id int IDENTITY(1,1) NOT NULL,
+	EventCategory nvarchar(100) NOT NULL,
+	EventType nvarchar(100) NOT NULL,
+	EventDate datetime NOT NULL,
+	InitiatedBy nvarchar(255) NULL,
+	TargetUser nvarchar(255) NULL,
+	IpAddress nvarchar(100) NOT NULL,
+    AppSource nvarchar(255) NULL,
+	AppType nvarchar(255) NULL,
+	EventLog nvarchar(max) NULL,
+	ClientId nvarchar(100) NULL,
+	UserAgent nvarchar(255) NULL,
+	IsActive bit NOT NULL,
+	CanDelete bit NOT NULL,
+    CONSTRAINT [PK_BOLDTC_ActivityLog] PRIMARY KEY CLUSTERED
+    (
+    [Id] ASC
+    ) WITH (IGNORE_DUP_KEY = OFF)
+)
+;
+
 
 CREATE TABLE [BOLDTC_AzureBlob] (
 	Id int IDENTITY(1,1) NOT NULL,
@@ -1070,36 +1103,159 @@ CREATE TABLE [BOLDTC_EmailActivityLog](
   )
 ;
 
-INSERT [dbo].[BOLDTC_TenantLogType] ([Name], [IsActive]) VALUES (N'Registration', 1)
-INSERT [dbo].[BOLDTC_TenantLogType] ([Name], [IsActive]) VALUES (N'StatusUpdated', 1)
-INSERT [dbo].[BOLDTC_TenantLogType] ([Name], [IsActive]) VALUES (N'PaymentUpdated', 1)
-INSERT [dbo].[BOLDTC_TenantLogType] ([Name], [IsActive]) VALUES (N'SubscriptionUpdated', 1)
-INSERT [dbo].[BOLDTC_TenantLogType] ([Name], [IsActive]) VALUES (N'BillingAddressUpdated', 1)
+CREATE TABLE [BOLDTC_QueryMetrics] ( 
+    Id int IDENTITY(1,1),
+    DashboardID nvarchar(100),
+    WidgetID nvarchar(100), 
+    WidgetName nvarchar(100) , 
+    QueryStartTime datetimeoffset, 
+    QueryEndTime datetimeoffset, 
+    Query nvarchar(max) , 
+    QueryStatus nvarchar(100), 
+    Rowsretrieved bigint, 
+    QueryPlan nvarchar(max), 
+    TrackingId nvarchar(100), 
+    QueryType nvarchar(100), 
+    QueryExecutiontime nvarchar(100), 
+    DashboardName nvarchar(100), 
+    UserName nvarchar(100), 
+    TenantId uniqueidentifier, 
+    UserId nvarchar(100), 
+    DataSourceID nvarchar(100), 
+    DataSourceName nvarchar(100),
+    CONSTRAINT [PK_BOLDTC_QUERYMETRICS] PRIMARY KEY CLUSTERED
+  (
+  [Id] ASC
+  ) WITH (IGNORE_DUP_KEY = OFF)
+)
+;
 
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'AccountActivationPending', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'PaymentPending', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'SubscriptionCreationInProgress', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'SubscriptionCreationFailed', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'DeploymentPending', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'DBDeploymentInProgress', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'DBDeploymentFailed', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'StorageDeploymentInProgress', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'StorageDeploymentFailed', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'ServerDeploymentInProgress', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'ServerDeploymentFailed', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'DeploymentFailed', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'Active', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'SubscriptionCancelled', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'MarkedForSuspension', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'Suspended', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'MarkedForDeletion', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'Expired', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'SubscriptionDeleted', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'DBDeleted', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'StorageDeleted', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'Deleted', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'Trial', 1)
-INSERT [dbo].[BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'ActivePaymentRequired', 1)
+CREATE TABLE [BOLDTC_Credentials] (
+    Id uniqueidentifier NOT NULL,
+    Name nvarchar(100) NOT NULL,
+    Description nvarchar(100) NOT NULL,
+    Credentials nvarchar(1026) NOT NULL,
+    CredentialTypeId int NOT NULL,
+    CreatedDate datetime NOT NULL,
+    ModifiedDate datetime NOT NULL,
+    IsActive bit NOT NULL,
+    CONSTRAINT [PK_BOLDTC_Credentials] PRIMARY KEY CLUSTERED
+  (
+  [Id] ASC
+  ) WITH (IGNORE_DUP_KEY = OFF)
+);
+
+CREATE TABLE [BOLDTC_TenantSettings] (
+	Id int IDENTITY(1,1) NOT NULL,
+	TenantInfoId uniqueidentifier NOT NULL,
+	Settings nvarchar(max) NOT NULL,
+	CreatedDate datetime NOT NULL,
+	ModifiedDate datetime NOT NULL,
+	IsActive bit NOT NULL,
+  CONSTRAINT [PK_BOLDTC_TenantSettings] PRIMARY KEY CLUSTERED
+  (
+  [Id] ASC
+  ) WITH (IGNORE_DUP_KEY = OFF)
+)
+;
+
+CREATE TABLE [BOLDTC_UserAttributes](
+	[Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
+	[Name] [nvarchar](255) NOT NULL,
+	[Value] [nvarchar](4000) NOT NULL,
+	[Description] [nvarchar](1024) NULL,
+	[Encrypt] [bit] NOT NULL,
+	[UserId] [uniqueidentifier] NOT NULL,
+	[CreatedById] [uniqueidentifier] NULL,
+	[ModifiedById] [uniqueidentifier] NULL,
+    [CreatedDate] [datetime] NOT NULL,
+    [ModifiedDate] [datetime] NOT NULL,
+	[IsActive] [bit] NOT NULL)
+;
+
+CREATE TABLE [BOLDTC_BackUp](
+    Id int IDENTITY(1,1) NOT NULL,
+    ConfigurationData nvarchar(max) NOT NULL,
+    PrivateKey nvarchar(max) NOT NULL,
+    ModifiedDate datetime NOT NULL,
+    IsActive bit NOT NULL
+);
+
+CREATE TABLE [BOLDTC_CustomEmailTemplate](
+[Id] [int] IDENTITY(1,1) primary key NOT NULL,
+[IsEnabled] [bit] NULL,
+[DisclaimerContent] [nvarchar](255) NOT NULL,
+[HeaderContent] [nvarchar](255) NULL,
+[Subject] [nvarchar](255) NULL,
+[TemplateName] [nvarchar](255) NULL,
+[Language] [nvarchar](255) NOT NULL,
+[MailBody] [nvarchar](max) NOT NULL,
+[CreatedDate] [datetime] NOT NULL,
+[ModifiedDate] [datetime] NULL,
+[SendEmailAsHTML] [bit] NOT NULL,
+[IsActive] [bit] NOT NULL,
+[TemplateId] [int] NOT NULL,
+[IsDefaultTemplate][bit] NOT NULL,
+[IsSystemDefault][bit] NOT NULL,
+[Description][nvarchar](255) NULL,
+[ModifiedBy][uniqueidentifier] NOT NULL,
+[TemplateLocalizationKey][nvarchar](255) NULL);
+
+CREATE TABLE [BOLDTC_AICredentials](
+    [Id] uniqueidentifier NOT NULL,
+    [AIModel] [int] NOT NULL,
+    [AIConfiguration] [nvarchar](4000) NULL,
+    [CreatedById] [uniqueidentifier] NULL,
+    [ModifiedById] [uniqueidentifier] NULL,
+    [CreatedDate] [datetime] NOT NULL,
+    [ModifiedDate] [datetime] NOT NULL,
+    [IsActive] [bit] NOT NULL)
+;
+
+CREATE TABLE [BOLDTC_TenantStorageDetails] (
+    Id uniqueidentifier NOT NULL,
+    TenantInfoId uniqueidentifier NOT NULL,
+    StorageType int NOT NULL,
+    ConnectionInfo nvarchar(1026),
+    CreatedDate datetime NOT NULL,
+    ModifiedDate datetime NOT NULL,
+    IsActive bit NOT NULL,
+    CONSTRAINT [PK_BOLDTC_TenantStorageDetails] PRIMARY KEY CLUSTERED
+  (
+  [Id] ASC
+  ) WITH (IGNORE_DUP_KEY = OFF)
+);
+
+INSERT [BOLDTC_TenantLogType] ([Name], [IsActive]) VALUES (N'Registration', 1)
+INSERT [BOLDTC_TenantLogType] ([Name], [IsActive]) VALUES (N'StatusUpdated', 1)
+INSERT [BOLDTC_TenantLogType] ([Name], [IsActive]) VALUES (N'PaymentUpdated', 1)
+INSERT [BOLDTC_TenantLogType] ([Name], [IsActive]) VALUES (N'SubscriptionUpdated', 1)
+INSERT [BOLDTC_TenantLogType] ([Name], [IsActive]) VALUES (N'BillingAddressUpdated', 1)
+
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'AccountActivationPending', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'PaymentPending', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'SubscriptionCreationInProgress', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'SubscriptionCreationFailed', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'DeploymentPending', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'DBDeploymentInProgress', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'DBDeploymentFailed', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'StorageDeploymentInProgress', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'StorageDeploymentFailed', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'ServerDeploymentInProgress', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'ServerDeploymentFailed', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'DeploymentFailed', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'Active', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'SubscriptionCancelled', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'MarkedForSuspension', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'Suspended', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'MarkedForDeletion', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'Expired', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'SubscriptionDeleted', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'DBDeleted', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'StorageDeleted', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'Deleted', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'Trial', 1)
+INSERT [BOLDTC_TenantStatus] ([Name], [IsActive]) VALUES (N'ActivePaymentRequired', 1)
 
 INSERT into [BOLDTC_ScheduleStatus] (Name,IsActive) VALUES (N'Success', 1)
 INSERT into [BOLDTC_ScheduleStatus] (Name,IsActive) VALUES (N'Failure', 1)
@@ -1172,8 +1328,8 @@ INSERT into [BOLDTC_TenantType] ([Type],IsActive) VALUES (N'BoldReports',1)
 INSERT into [BOLDTC_TenantType] ([Type],IsActive) VALUES (N'BoldBIOn-Premise',1)
 INSERT into [BOLDTC_TenantType] ([Type],IsActive) VALUES (N'BoldReportsOn-Premise',1)
 
-INSERT [dbo].[BOLDTC_Addon] ([Name], [StripePlanId], [PlanSchema], [ModifiedDate], [IsActive]) VALUES (N'AdditionalDataStorage', N'additional_data_storage', '', GETUTCDATE(), N'True')
-INSERT [dbo].[BOLDTC_Addon] ([Name], [StripePlanId], [PlanSchema], [ModifiedDate], [IsActive]) VALUES (N'CustomDomain', N'custom_domain', '', GETUTCDATE(), N'True')
+INSERT [BOLDTC_Addon] ([Name], [StripePlanId], [PlanSchema], [ModifiedDate], [IsActive]) VALUES (N'AdditionalDataStorage', N'additional_data_storage', '', GETUTCDATE(), N'True')
+INSERT [BOLDTC_Addon] ([Name], [StripePlanId], [PlanSchema], [ModifiedDate], [IsActive]) VALUES (N'CustomDomain', N'custom_domain', '', GETUTCDATE(), N'True')
 
 INSERT INTO [BOLDTC_SqlServerEdition] VALUES('V12', 4000, 'East US', 1, 1)
 ;
@@ -1246,6 +1402,8 @@ INSERT into [BOLDTC_Source] ([Type],[Value],[CreatedDate],[ModifiedDate],[IsActi
 INSERT [BOLDTC_AuthType]([Name],[ModifiedDate],[IsActive])VALUES( N'AzureADB2C', GETUTCDATE(), 1);
 INSERT [BOLDTC_AuthProvider] ([Name], [AuthTypeId], [ModifiedDate], [IsActive]) VALUES (N'AzureADB2C', 7, GETUTCDATE(), 1);
 INSERT into [BOLDTC_DirectoryType] (DirectoryName,IsActive) VALUES (N'AzureADB2C',1);
+
+
 
 ALTER TABLE [BOLDTC_CouponLog] WITH CHECK ADD CONSTRAINT [BOLDTC_CouponLog_fk0] FOREIGN KEY ([CouponLogTypeId]) REFERENCES [BOLDTC_CouponLogType]([Id])
 
@@ -1553,4 +1711,13 @@ ALTER TABLE [BOLDTC_UserLog] CHECK CONSTRAINT [BOLDTC_UserLog_fk3]
 ;
 
 ALTER TABLE [BOLDTC_EmailActivityLog] WITH CHECK ADD CONSTRAINT [BOLDTC_EmailActivityLog_fk0] FOREIGN KEY ([UserId]) REFERENCES [BOLDTC_User]([Id])
+;
+
+ALTER TABLE [BOLDTC_TenantSettings] WITH CHECK ADD CONSTRAINT [BOLDTC_TenantSettings_fk0] FOREIGN KEY ([TenantInfoId]) REFERENCES [BOLDTC_TenantInfo]([Id])
+;
+
+ALTER TABLE [BOLDTC_TenantSettings] CHECK CONSTRAINT [BOLDTC_TenantSettings_fk0]
+;
+
+ALTER TABLE [BOLDTC_UserAttributes] ADD FOREIGN KEY([UserId]) REFERENCES [BOLDTC_User] ([Id])
 ;

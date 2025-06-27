@@ -30,18 +30,70 @@ $(document).ready(function () {
     addPlacehoder("#search-app-admins");
     addPlacehoder("#add-admin-search");
     addPlacehoder("#add-user-search-area");
-    $("[data-toggle='tooltip']").tooltip();
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
     createWaitingPopup('user-remove-confirmation-dialog');
     createWaitingPopup('add-tenant-popup');
     createWaitingPopup('grant-users-access-dialog');
+    toggleInputFields();
+    updateInfoMessage();
+
+    var isolationSwitchContainer = $("#isolation-switch-container");
+    if (isolationSwitchContainer.length) {
+        isolationSwitchContainer.on("click", function () {
+            enableIsolationCode();
+        });
+    }
+
+    if (enableAIFeature != undefined && enableAIFeature)
+    {
+        var aiservice = document.getElementById("aiservice-enable-switch");
+        var dashboard = document.getElementById("dashboardinsight-enable-switch");
+        var updateai = document.getElementById("update-enable-aiservice");
+
+        if (aiservice)
+        {
+            aiservice.disabled = false;
+        }
+        if (dashboard)
+        {
+            dashboard.disabled = false;
+        }
+        if (updateai)
+        {
+            updateai.disabled = false;
+        }
+        
+    }
+    else
+    {
+        var aiservice = document.getElementById("aiservice-enable-switch");
+        var dashboard = document.getElementById("dashboardinsight-enable-switch");
+        var updateai = document.getElementById("update-enable-aiservice");
+       
+        if (aiservice)
+        {
+            aiservice.disabled = true;
+        }
+        if (dashboard)
+        {
+            dashboard.disabled = true;
+        }
+        if (updateai)
+        {
+            updateai.disabled = true;
+        }
+    }
 
     var grantUserAccessDialog = new ej.popups.Dialog({
         header: window.Server.App.LocalizationContent.GrantAccessToUsers + " - " + tenantName,
         content: document.getElementById("grant-users-access-dialog-content"),
         showCloseIcon: true,
         buttons: [
-            { click: provideAccesstoUsers, buttonModel: { content: window.Server.App.LocalizationContent.GrantSiteAccessButton, isPrimary: true, cssClass: 'provide-access-button' } },
-            { click: onAddUsersDialogClose, buttonModel: { content: window.Server.App.LocalizationContent.CancelButton, cssClass: 'cancel-button' } }
+            { click: onAddUsersDialogClose, buttonModel: { content: window.Server.App.LocalizationContent.CancelButton, cssClass: 'cancel-button' } },
+            { click: provideAccesstoUsers, buttonModel: { content: window.Server.App.LocalizationContent.GrantSiteAccessButton, isPrimary: true, cssClass: 'provide-access-button' } }
         ],
         width: "900px",
         height: "539px",
@@ -56,7 +108,7 @@ $(document).ready(function () {
     $("#add-users-button").on("click", function () {
         var gridObj = document.getElementById('users_grid').ej2_instances[0];
         gridObj.clearSelection();
-        $("#remove-users-button").addClass("hide").removeClass("show");
+        $("#remove-users-button").addClass("d-none").removeClass("d-block");
         document.getElementById("grant-users-access-dialog").ej2_instances[0].show();
         onAddUsersDialogOpen();
     });
@@ -89,51 +141,81 @@ $(document).ready(function () {
     });
     addTenantDialog.appendTo("#add-tenant-popup");
 
+    initializeEj2CheckBox("all-settings");
+    initializeEj2CheckBox("date-and-time");
+    initializeEj2CheckBox("look-and-feel");
+    initializeEj2CheckBox("branding");
+    initializeEj2CheckBox("email");
+    initializeEj2CheckBox("account");
+    initializeEj2CheckBox("language");
+
     var query = window.location.search;
     if (query.includes("?tab=general")) {
         $('a[href="#application-tab"]').tab("show");
     }
-    else if (query.includes("?tab=users")) {
+    else if (query.includes("?tab=users") && isActiveSite) {
         if (!isUserTabLoaded) {
             getAppUsers();
             isUserTabLoaded = true;
         }
         $('a[href="#users-tab"]').tab("show");
     }
-    else if (query.includes("?tab=isolation-code")) {
+    else if (query.includes("?tab=isolation-code") && isActiveSite) {
         $('a[href="#data-security-tab"]').tab("show");
         enableIsolationCode();
     }
-    else if (query.includes("?tab=attributes")) {
+    else if (query.includes("?tab=attributes") && isActiveSite) {
         if (!isAttributeTabLoaded) {
             getAttributes();
             isAttributeTabLoaded = true;
         }
         $('a[href="#custom-attribute-tab"]').tab("show");
     }
+    else if (query.includes("?tab=site-settings") && isActiveSite) {
+        $('a[href="#site-settings-tab"]').tab("show");
+    }
+    else if (query.includes("?tab=ai-service") && isActiveSite) {
+        $('a[href="#ai-serviceKey-tab"]').tab("show");
+    }
+    else if (query.includes("?tab=resource-limitation") && isActiveSite) {
+        $('a[href="#resource-limitation-tab"]').tab("show");
+    }
     else {
         isFreshLoad = false;
-        history.replaceState(null, null, window.location.href);
+        $('a[href="#application-tab"]').tab("show");
     }
 
     window.addEventListener("popstate", function (e) {
         needPush = false;
         var tab = e.state;
+        $("li").removeClass("active");
         if (tab === "general") {
             $("#application a").attr("href", "#application-tab");
             $('a[href="#application-tab"]').tab('show');
         }
-        else if (tab === "users") {
+        else if (tab === "users" && isActiveSite) {
             $("#users a").attr("href", "#users-tab");
             $('a[href="#users-tab"]').tab('show');
         }
-        else if (tab === "isolation-code") {
+        else if (tab === "isolation-code" && isActiveSite) {
             $("#data-security a").attr("href", "#data-security-tab");
             $('a[href="#data-security-tab"]').tab('show');
         }
-        else if (tab === "attributes") {
+        else if (tab === "ai-service" && isActiveSite) {
+            $("#ai-service a").attr("href", "#ai-serviceKey-tab");
+            $('a[href="#ai-serviceKey-tab"]').tab('show');
+        }
+        else if (tab === "resource-limitation" && isActiveSite) {
+            $("#resource-limitation a").attr("href", "#resource-limitation-tab");
+            $('a[href="#resource-limitation-tab"]').tab('show');
+        }
+        else if (tab === "attributes" && isActiveSite) {
             $("#custom-attribute a").attr("href", "#custom-attribute-tab");
             $('a[href="#custom-attribute-tab"]').tab('show');
+        }
+        else if (tab === "site-settings" && isActiveSite) {
+            $("#site-settings a").attr("href", "#site-settings-tab");
+            $('a[href="#site-settings-tab"]').tab('show');
         }
         else {
             $("#application a").attr("href", "#application-tab");
@@ -157,7 +239,7 @@ $(document).ready(function () {
             showWaitingPopup('user-add-dialog');
 
             var lastName = $('#lastname').val().trim();
-            var values = "&userName=" + userName + "&emailid=" + emailid + "&firstname=" + firstName + "&lastname=" + lastName + "&password=" + password + "&tenantId=" + tenantId;
+            var values = { UserName: userName, Email: emailid, FirstName: firstName, LastName: lastName, Password: password };
 
             $.ajax({
                 type: "POST", url: isPresentUserNameAndEmailId, data: { userName: userName, emailId: emailid.toLowerCase() },
@@ -179,12 +261,12 @@ $(document).ready(function () {
                     }
                     else {
                         $.ajax({
-                            type: "POST", url: addUserUrl, data: values,
+                            type: "POST", url: addUserUrl, data: { userDetail: values, tenantInfoId: tenantId },
                             success: function (data) {
                                 if (data.Data) {
                                     hideWaitingPopup('user-add-dialog');
                                     $("#add-user").attr("disabled", "disabled");
-                                    $("#create-new-user").removeClass("hide").addClass("show");
+                                    $("#create-new-user").removeClass("d-none").addClass("d-block");
                                     $(".form input[type='text']").val('');
                                     onUserAddDialogClose();
                                     $.ajax({
@@ -195,11 +277,11 @@ $(document).ready(function () {
                                             if (result.activation == 0) {
                                                 SuccessAlert(window.Server.App.LocalizationContent.AddUser, window.Server.App.LocalizationContent.UserAddedActivated, 7000)
                                             }
-                                            else if (result.result == "success" && result.activation == 1) {
+                                            else if (result.result  && result.activation == 1) {
                                                 SuccessAlert(window.Server.App.LocalizationContent.AddUser, window.Server.App.LocalizationContent.UserAdded, 7000);
                                             }
-                                            else if (result.result == "failure" && result.isAdmin == true && result.activation == 1) {
-                                                WarningAlert(window.Server.App.LocalizationContent.AddUser, window.Server.App.LocalizationContent.UserActivationEmailCannotSent, 7000);
+                                            else if (!result.result && result.isAdmin == true && result.activation == 1) {
+                                                WarningAlert(window.Server.App.LocalizationContent.AddUser, window.Server.App.LocalizationContent.UserActivationEmailCannotSent, null, 7000);
                                             }
                                             g.refresh();
                                         }
@@ -225,15 +307,18 @@ $(document).ready(function () {
 
 });
 
-$(document).on("shown.bs.tab", 'a[data-toggle="tab"]', function (e) {
+$(document).on("shown.bs.tab", 'a[data-bs-toggle="tab"]', function (e) {
+    $("li").removeClass("active");
     var target = $(e.target).attr("href"); // activated tab
     var data;
 
     if (target.indexOf("#application-tab") !== -1) {
+        $("#application").closest("li").addClass("active");
         data = "general";
     }
 
     else if (target.indexOf("#users-tab") !== -1) {
+        $("#users").closest("li").addClass("active");
         data = "users";
         if (!isUserTabLoaded) {
             getAppUsers();
@@ -242,15 +327,29 @@ $(document).on("shown.bs.tab", 'a[data-toggle="tab"]', function (e) {
     }
 
     else if (target.indexOf("#data-security-tab") !== -1) {
+        $("#data-security").closest("li").addClass("active");
         data = "isolation-code";
     }
 
+    else if (target.indexOf("#ai-serviceKey-tab") !== -1) {
+        $("#ai-service").closest("li").addClass("active");
+        data = "ai-service";
+    }
+    else if (target.indexOf("#resource-limitation-tab") !== -1) {
+        $("#resource-limitation").closest("li").addClass("active");
+        data = "resource-limitation";
+    }
     else if (target.indexOf("#custom-attribute-tab") !== -1) {
+        $("#custom-attribute").closest("li").addClass("active");
         data = "attributes";
         if (!isAttributeTabLoaded) {
             getAttributes();
             isAttributeTabLoaded = true;
         }
+    }
+    else if (target.indexOf("#site-settings-tab") !== -1) {
+        $("#site-settings").closest("li").addClass("active");
+        data = "site-settings";
     }
     pushUrl(data);
     needPush = true;
@@ -270,7 +369,7 @@ function pushUrl(data) {
 
 function fnOnApplicationGridLoad() {
     isFirstRequest = true;
-    var searchValue = $("#search-tenants").val();
+    var searchValue = $("#search-tenants").val().trim();
     if (this.properties.query.params.length > 0) {
         this.properties.query.params = [];
         this.properties.query.params.push({ key: "searchKey", value: searchValue });
@@ -292,7 +391,7 @@ function fnApplicationRecordClick(args) {
 
 function fnOnApplicationGridActionBegin(args) {
     isFirstRequest = true;
-    var searchValue = $("#search-tenants").val();
+    var searchValue = $("#search-tenants").val().trim();
     if (this.properties.query.params.length > 0) {
         this.properties.query.params = [];
         this.properties.query.params.push({ key: "searchKey", value: searchValue });
@@ -327,9 +426,13 @@ function fnOnAddUserGridActionBegin(args) {
 }
 
 function fnOnApplicationGridActionComplete(args) {
-    $('[data-toggle="tooltip"]').tooltip({
-        container: 'body'
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            container: 'body'
+        });
     });
+    
     if (this.properties.pageSettings.totalRecordsCount != null) {
         $("#application-count").text(this.properties.pageSettings.totalRecordsCount);
     }
@@ -347,7 +450,10 @@ function fnOnApplicationGridActionComplete(args) {
 }
 
 function fnOnUserGridActionComplete(args) {
-    $('[data-toggle="tooltip"]').tooltip();
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
     var usergrid = document.getElementById('users_grid').ej2_instances[0];
     if (args.requestType == "paging" || args.requestType == "sorting") {
         if (typeof usergrid.currentViewData != 'undefined') {
@@ -366,10 +472,10 @@ function fnOnUserGridActionComplete(args) {
     }
 
     if (usergrid.getSelectedRecords().length != 0) {
-        $("#remove-users-button").removeClass("hide").addClass("show");
+        $("#remove-users-button").removeClass("d-none").addClass("d-block");
     }
     else {
-        $("#remove-users-button").removeClass("show").addClass("hide");
+        $("#remove-users-button").removeClass("d-block").addClass("d-none");
     }
 }
 
@@ -421,10 +527,12 @@ function getAppUsers() {
             })
         },
         dataBound: function (args) {
-            $('[data-toggle="tooltip"]').tooltip(
-                {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl, {
                     container: 'body'
                 });
+            });
         },
         load: fnOnUserGridActionBegin,
         actionBegin: fnOnUserGridActionBegin,
@@ -457,8 +565,17 @@ function getAppUsers() {
                 width: 135
             },
             {
+                field: "Activation Method",
+                allowFiltering: false,
+                template: "#activation-method-template",
+                headerTemplate: "#activation-method-header",
+                type: "string",
+                width: 135
+            },
+            {
                 field: "UserStatus",
                 allowFiltering: false,
+                allowSorting: false,
                 template: "#user-status-template",
                 headerTemplate: "#status-header",
                 type: "string",
@@ -479,6 +596,12 @@ function getAppUsers() {
 }
 
 function getAttributes() {
+    var tooltip = new ej.popups.Tooltip({
+        target: ".grid-content",
+        position: 'TopCenter',
+        beforeRender: beforeRender
+    }, "#grid-tooltip");
+
     var attributeGrid = new ejs.grids.Grid({
         dataSource: window.siteAttributes,
         gridLines: 'None',
@@ -492,10 +615,6 @@ function getAttributes() {
         enableAltRow: false,
         created: initialSiteGridCreate,
         dataBound: function (args) {
-            $('[data-toggle="tooltip"]').tooltip(
-                {
-                    container: 'body'
-                });
         },
         columns: [
             { field: 'Name', template: "#attribute-name-template", headerText: window.Server.App.LocalizationContent.Name, width: 40, allowSorting: true, allowFiltering: true },
@@ -519,6 +638,10 @@ function getAttributes() {
             hideWaitingPopup("SiteAttributesGrid");
         }
     });
+
+    function beforeRender(args) {
+        tooltip.content = args.target.closest("td").innerText;
+    }
 }
 
 function getUsersWithoutAccess() {
@@ -551,10 +674,12 @@ function getUsersWithoutAccess() {
                 }
             },
             dataBound: function (args) {
-                $('[data-toggle="tooltip"]').tooltip(
-                    {
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl, {
                         container: 'body'
                     });
+                });
             },
             columns: [
                 {
@@ -627,7 +752,10 @@ function fnOnAddUserGridActionComplete(args) {
     }
 
     enableAccessButton();
-    $('[data-toggle="tooltip"]').tooltip();
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 }
 
 $(document).on("change", ".checkbox-row", function (args) {
@@ -747,7 +875,8 @@ function provideAccesstoUsers() {
 }
 
 ////Remove user Access
-$(document).on("click", ".delete-permission", function () {
+$(document).on("click", ".delete-permission", function (e) {
+    e.preventDefault();
     singleUserSelectedId = $(this).attr("data-user-id");
     document.getElementById("user-remove-confirmation-dialog").ej2_instances[0].show();
     singleUserRemove = true;
@@ -771,7 +900,7 @@ function removeConfirm() {
     removeUserAccess(users);
 }
 
-function removeUserAccess(users) { 
+function removeUserAccess(users) {
     var requestUrl = $("meta[name='remove-app-access-link']").attr("content") + $("#application-id").val();
     if (users.length > 0) {
         showWaitingPopup('user-remove-confirmation-dialog');
@@ -786,12 +915,17 @@ function removeUserAccess(users) {
                 userGridObj.pageSettings.currentPage = getCurrentPageNumber(userGridObj.pageSettings.pageSize, selectedUsers.length, userGridObj.pageSettings.totalRecordsCount, userGridObj.pageSettings.currentPage);
                 selectedUsers = [];
                 userGridObj.refresh();
-                $("#remove-users-button").removeClass("show").addClass("hide");
+                $("#remove-users-button").removeClass("d-block").addClass("d-none");
                 document.getElementById("user-remove-confirmation-dialog").ej2_instances[0].hide();
                 if (result.status) {
                     var content = window.Server.App.LocalizationContent.RevokedAccessFor.format(result.count);
                     SuccessAlert(window.Server.App.LocalizationContent.RevokeSiteAccess, content, 7000);
-                } else {
+                }
+                else if (!result.status && result.errormessage !== '')
+                {
+                    WarningAlert(window.Server.App.LocalizationContent.RevokeSiteAccess, window.Server.App.LocalizationContent.RevokeSiteAccessForAdminError, null, 7000);
+                }
+                else {
                     WarningAlert(window.Server.App.LocalizationContent.RevokeSiteAccess, window.Server.App.LocalizationContent.RevokeSiteAccessError, result.Message, 7000);
                 }
                 singleUserRemove = false;
@@ -810,10 +944,10 @@ function onUserRecordSelect(args) {
     selectedRecords = usergrid.getSelectedRecords();
     selectedUsersArrayPushPopAllowed = true;
     if (selectedRecords.length >= 1) {
-        $("#remove-users-button").removeClass("hide").addClass("show");
+        $("#remove-users-button").removeClass("d-none").addClass("d-block");
     }
     else {
-        $("#remove-users-button").addClass("hide").removeClass("show");
+        $("#remove-users-button").addClass("d-none").removeClass("d-block");
     }
 }
 
@@ -857,8 +991,13 @@ $(document).on("click", ".tenant-action", function (e) {
         headerIcon = "delete";
         headerText = window.Server.App.LocalizationContent.Delete;
         actionUrl = deleteTenantUrl;
-        messageContent += "<br/><br/><div><span><input type='checkbox' class='material-checkbox' id='delete-database-checkbox' /><input id='delete-database-checkbox' type='hidden'/><label for='delete-database-checkbox' class='label-database'>" + window.Server.App.LocalizationContent.DeleteDatabase + "</label></span ></div><div class='tenant-delete-warning'> <span>" + window.Server.App.LocalizationContent.Warning + ":" + "</span><div class = 'warning-content'> " + window.Server.App.LocalizationContent.DeleteAllResourceWithoutDataBase + "</div></div>";
-
+        if (useSingleTenantDb)
+        {
+            messageContent += "<br/><br/>";
+        }
+        else {
+            messageContent += "<br/><br/><div><span><input type='checkbox' class='material-checkbox' id='delete-database-checkbox' /><input id='delete-database-checkbox' type='hidden'/><label for='delete-database-checkbox' class='label-database'>" + window.Server.App.LocalizationContent.DeleteDatabase + "</label></span ></div><div class='tenant-delete-warning'> <span>" + window.Server.App.LocalizationContent.Warning + ":" + "</span><div class = 'warning-content'> " + window.Server.App.LocalizationContent.DeleteAllResourceWithoutDataBase + "</div></div>";
+        }
     }
     else if (action === "make-master") {
         UpdateTenantId = tenantId;
@@ -919,13 +1058,12 @@ function updateTenantStatus(actionUrl, tenantId, action) {
                 else if (action === "activate") {
                     SuccessAlert(actionName + " " + window.Server.App.LocalizationContent.SiteLetter, window.Server.App.LocalizationContent.SiteActivatedSuccess, 7000);
                 }
-
-                var tenantGridObj = document.getElementById('tenants_grid').ej2_instances[0];
-                tenantGridObj.refresh();
             }
             else {
-                WarningAlert(actionName + " " + window.Server.App.LocalizationContent.SiteLetter, window.Server.App.LocalizationContent.InternalServerErrorTryAgain, data.Message, 7000);
+                WarningAlert(actionName + " " + window.Server.App.LocalizationContent.SiteLetter, window.Server.App.LocalizationContent.SuspendOrDeleteSiteFailed.format(action), data.Message, 7000);
             }
+            var tenantGridObj = document.getElementById('tenants_grid').ej2_instances[0];
+            tenantGridObj.refresh();
         },
         complete: function () {
             hideWaitingPopup('messageBox');
@@ -934,12 +1072,12 @@ function updateTenantStatus(actionUrl, tenantId, action) {
     });
 }
 
-
 function enableIsolationCode() {
     isolationCode = isIsolationCodeUpdated ? $("#isolation-code").val().trim() : isolationCode;
     var isEnabled = $("#isolation-enable-switch").is(":checked");
     if (isEnabled) {
         $("#isolation-code").removeAttr("disabled");
+        $("#row-security-enable-switch").prop("disabled", false);
         $("#isolation-code").focus();
     } else {
         $("#isolation-code").attr('disabled', 'disabled');
@@ -947,6 +1085,7 @@ function enableIsolationCode() {
         $("#isolation-code-validation").html("");
         $("#isolation-code").removeClass("has-error");
         isIsolationCodeUpdated = false;
+        $("#row-security-enable-switch").prop("disabled", true);
     }
 
     if ($("#isolation-code").val() == "" && isEnabled) {
@@ -954,25 +1093,188 @@ function enableIsolationCode() {
         $("#isolation-code-validation").html(window.Server.App.LocalizationContent.IsolationCodeValidator);
     }
     else {
-        $("#isolation-code-validation").html("");
-        $("#update-isolation-code").attr("disabled", false);
+        if (isEnabled) {
+            if (ValidateIsolationCode($("#isolation-code").val(), "#isolation-code")) {
+                $("#isolation-code-validation").html("");
+                $("#update-isolation-code").attr("disabled", false);
+            }
+        }
     }
 }
+
+var inputFields = [
+    "#dashboards-limitation-textbox",
+    "#schedule-limitation-textbox",
+    "#data-source-limitation-textbox",
+    "#slideshow-limitation-textbox",
+    "#user-limitation-textbox"
+];
+function validateIntegerInput(inputElement, validationMessageElement) {
+    var value = $(inputElement).val().trim();
+    var isValid = value === '' || value === null || /^\d+$/.test(value);
+
+    if (!isValid) {
+        $(validationMessageElement).html(window.Server.App.LocalizationContent.ResourceLimitationValidator).show();
+        $("#update-resource-limitation").prop("disabled", true);
+        $(inputElement).addClass("has-error");
+        return false;
+    } else {
+        $(validationMessageElement).html("").hide();
+        $(inputElement).removeClass("has-error");
+        $("#update-resource-limitation").prop("disabled", false);
+        return true;
+    }
+}
+
+function toggleInputFields() {
+    var isEnabled = $("#resource-limitation-enable-switch").is(":checked");
+
+    inputFields.forEach(function (field) {
+        var value = $(field).val();
+        var limitationValue = value ? value.trim() : '';
+        if (isEnabled) {
+            $(field).removeAttr("disabled");
+        } else {
+            $(field).attr("disabled", "disabled").val("");
+            $(field).removeClass("has-error");
+            $(field).siblings(".validation-message").html("").hide();
+            $(field).val(limitationValue);
+        }
+    });
+}
+
+$("input[type='text']").on("input", function () {
+    var validationMessageElement = $(this).siblings(".validation-message");
+    validateIntegerInput(this, validationMessageElement);
+});
+
+$("#resource-limitation-enable-switch").change(function () {
+    toggleInputFields();
+    updateInfoMessage();
+});
+
+$("#update-resource-limitation").on("click", function () {
+    var isValid = true;
+    var isEnabled = $("#resource-limitation-enable-switch").is(":checked");
+    var tenantInfoId =  $("#resource-limitation-enable-switch").attr("data-tenant-id");
+    if (isEnabled){
+        isValid = false;
+        inputFields.forEach(function (field) {
+            var validationMessageElement = $(field).siblings(".validation-message");
+            isValid = validateIntegerInput(field, validationMessageElement);
+        });
+    }
+    
+    if (isValid){
+        var resourceLimitationSettings = {
+            isEnabled: isEnabled,
+            dashboardsLimitation: $("#dashboards-limitation-textbox").val() ? $("#dashboards-limitation-textbox").val().trim() : "",
+            scheduleLimitation: $("#schedule-limitation-textbox").val() ? $("#schedule-limitation-textbox").val().trim() : "",
+            dataSourcesLimitation: $("#data-source-limitation-textbox").val() ? $("#data-source-limitation-textbox").val().trim() : "",
+            slideShowLimitation: $("#slideshow-limitation-textbox").val() ? $("#slideshow-limitation-textbox").val().trim() : "",
+            userLimitation: $("#user-limitation-textbox").val() ? $("#user-limitation-textbox").val().trim() : "",
+        };
+        showWaitingPopup("content-area");
+        $.ajax({
+            type: "POST",
+            data: { tenantInfoId: tenantInfoId, resourceLimitationSettings: JSON.stringify(resourceLimitationSettings)},
+            url: updateResourceLimitationUrl,
+            success: function (result) {
+                if (result.Status) {
+                    SuccessAlert(window.Server.App.LocalizationContent.SiteSettings, window.Server.App.LocalizationContent.ResourceLimitationSuccess, 7000);
+                } else {
+                    WarningAlert(window.Server.App.LocalizationContent.SiteSettings, window.Server.App.LocalizationContent.ResourceLimitationFailed, 7000);
+                }
+                hideWaitingPopup("content-area");
+            }
+        });
+    }
+});
+
+function updateInfoMessage() {
+    var isEnabled = $("#resource-limitation-enable-switch").is(":checked");
+    var infoMessage = document.getElementById('tenant-info-message');
+    if (infoMessage != null){
+        if (isEnabled) {
+            infoMessage.textContent = window.Server.App.LocalizationContent.ResourceEnabledInfoMessage;
+        } else {
+            infoMessage.textContent = window.Server.App.LocalizationContent.ResourceDisabledInfoMessage;
+        }
+    }
+}
+    
+$(document).on("click", "#update-enable-aiservice", function () {
+   var isAiServiceKeyEnabled= $("#aiservice-enable-switch").is(":checked");
+   var isWidgetSummarizationEnabled=  $("#dashboardinsight-enable-switch").is(":checked");
+   var isDashboardInsightEnabled= $("#dashboardinsight-enable-switch").is(":checked");
+   var tenantInfoId =  $("#aiservice-enable-switch").attr("data-tenant-id");
+    showWaitingPopup("content-area");
+    $.ajax({
+        type: "POST",
+        data: { tenantInfoId: tenantInfoId, isAIServiceEnabled: isAiServiceKeyEnabled, isWidgetSummarizationEnabled: isWidgetSummarizationEnabled, isDashboardInsightEnabled: isDashboardInsightEnabled },
+        url: addIsAIServiceKeyEnableUrl,
+        success: function (result) {
+            if (result.Status) {
+                if(isAiServiceKeyEnabled)
+                {
+                    SuccessAlert(window.Server.App.LocalizationContent.SiteSettings, window.Server.App.LocalizationContent.AiServiceEnabledSuccess, 7000);
+                }
+                else
+                {
+                    SuccessAlert(window.Server.App.LocalizationContent.SiteSettings, window.Server.App.LocalizationContent.AiServiceDisabledSuccess, 7000);
+                }
+            } else {
+                if(isAiServiceKeyEnabled)
+                {
+                    WarningAlert(window.Server.App.LocalizationContent.SiteSettings, window.Server.App.LocalizationContent.AiServiceKeyError, 7000);
+                }
+                else
+                {
+                    WarningAlert(window.Server.App.LocalizationContent.SiteSettings, window.Server.App.LocalizationContent.AiServiceDisableError, 7000);
+                }
+            }
+            hideWaitingPopup("content-area");
+        }
+    });
+});
+$(document).on("click", "#update-tenant-settings", function () {
+    var globalSettingsOptions = [];
+    $(".enable-disable").each(function () {
+        if (this.id != "all-settings" && document.getElementById(this.id).ej2_instances[0].checked) {
+            globalSettingsOptions.push(document.getElementById(this.id).ej2_instances[0].value);
+        }
+    });
+
+    showWaitingPopup("content-area");
+    $.ajax({
+        type: "POST",
+        data: { tenantInfoId: tenantInfoId, globalSettingsOptions: globalSettingsOptions },
+        url: updateTenantSettingsUrl,
+        success: function (result) {
+            if (result.Status) {
+                SuccessAlert(window.Server.App.LocalizationContent.SiteSettings, window.Server.App.LocalizationContent.SiteSettingsSucess, 7000);
+            } else {
+                WarningAlert(window.Server.App.LocalizationContent.SiteSettings, window.Server.App.LocalizationContent.SiteSettingsError, 7000);
+            }
+            hideWaitingPopup("content-area");
+        }
+    });
+});
 
 $(document).on("click", "#update-isolation-code", function (e) {
     var isolationCode = $("#isolation-code").val().trim();
     var tenantInfoId = $(".isolation-code-value").attr("data-tenant-id");
     var isIsolationCodeEnabled = $("#isolation-enable-switch").is(":checked");
+    var isRowLevelSecurityEnabled = $("#row-security-enable-switch").prop("checked");
     showWaitingPopup('content-area');
     $.ajax({
         type: "POST",
-        data: { tenantInfoId: tenantInfoId, isolationCode: isolationCode, isIsolationCodeEnabled: isIsolationCodeEnabled },
+        data: { tenantInfoId: tenantInfoId, isolationCode: isolationCode, isIsolationCodeEnabled: isIsolationCodeEnabled, isRowLevelSecurityEnabled: isRowLevelSecurityEnabled },
         url: updateIsolationCodeUrl,
         success: function (result) {
             if (result.Status) {
                 isIsolationCodeUpdated = true;
                 SuccessAlert(window.Server.App.LocalizationContent.IsolationCode, window.Server.App.LocalizationContent.IsolationCodeSucess, 7000);
-                $("#update-isolation-code").attr("disabled", true);
             } else {
                 WarningAlert(window.Server.App.LocalizationContent.IsolationCode, window.Server.App.LocalizationContent.IsolationCodeError, result.Message, 7000);
             }
@@ -999,3 +1301,87 @@ function validateCode() {
 $(document).on("click", "#data-security", function (e) {
     enableIsolationCode();
 });
+
+function initializeEj2CheckBox(id) {
+    var checkbox = new ejs.buttons.CheckBox({ created: onCreateGlobalSettings, cssClass: "e-check-box", change: onChangeGlobalSettings });
+    checkbox.appendTo('#' + id);
+}
+
+function onCreateGlobalSettings() {
+    if (this.element.id == "all-settings" && $("." + this.cssClass).find("#" + this.element.id).attr("indeterminate") == "indeterminate") {
+        this.indeterminate = true;
+    }
+    else {
+        this.checked = $("." + this.cssClass).find("#" + this.element.id).attr("checked") == "checked";
+        this.value = $("." + this.cssClass).find("#" + this.element.id).attr("value");
+    }
+}
+
+function changeIndeterminateState() {
+    var checkedCount = 0;
+    var unCheckedCount = 0;
+    $(".enable-disable").each(function () {
+        if (this.id != "all-settings") {
+            if (document.getElementById(this.id).ej2_instances[0].checked) {
+                checkedCount++;
+            }
+            else {
+                unCheckedCount++
+            }
+        }
+    });
+
+    if (checkedCount > 0 && unCheckedCount > 0) {
+        document.getElementById("all-settings").ej2_instances[0].indeterminate = true;
+    }
+    else if (checkedCount > 0 && unCheckedCount == 0) {
+        document.getElementById("all-settings").ej2_instances[0].indeterminate = false;
+        document.getElementById("all-settings").ej2_instances[0].checked = true;
+    }
+    else {
+        document.getElementById("all-settings").ej2_instances[0].indeterminate = false;
+        document.getElementById("all-settings").ej2_instances[0].checked = false;
+    }
+}
+
+function onChangeGlobalSettings(args) {
+    document.getElementById("all-settings").ej2_instances[0].indeterminate = false;
+    if (this.element.id == "all-settings" && args.checked) {
+        $(".enable-disable").each(function () {
+            if (this.id !== "email" || (this.id === "email" && !canDisableEmailSettingsOption)) {
+                document.getElementById(this.id).ej2_instances[0].checked = true;
+            }
+        });
+    }
+    else if (this.element.id == "all-settings" && !args.checked) {
+        document.getElementById("all-settings").ej2_instances[0].indeterminate = false;
+        $(".enable-disable").each(function () {
+            if (this.id !== "email" || (this.id === "email" && !canDisableEmailSettingsOption)) {
+                document.getElementById(this.id).ej2_instances[0].checked = false;
+            }
+        });
+    }
+    else {
+        changeIndeterminateState();
+    }
+}
+
+$(document).on("click", "#new-user-button", function () {
+    var usersgrid = document.getElementById('users_grid').ej2_instances[0];
+    usersgrid.clearSelection();
+});
+
+$(document).on("click", "#edit-site-attribute", function () {
+    event.preventDefault();
+    editCustomAttribute(this);
+});
+
+$(document).on("click", "#remove-site-attribute", function () {
+    event.preventDefault();
+    deleteConfirmation(this);
+});
+
+$(document).on("click", "#add-custom-attribute", function () {
+    openCustomAttributeDialog();
+});
+

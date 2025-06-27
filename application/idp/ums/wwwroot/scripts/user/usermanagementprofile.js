@@ -2,6 +2,7 @@
 var userDetails;
 //var browser = ej.browserInfo();
 $(document).ready(function () {
+    var isAdmin = $("#current-password").length > 0;
     var custompath;
     var currentDate = $.now();
     var uploadFileName;
@@ -9,6 +10,10 @@ $(document).ready(function () {
     var ruleName;
     var rules;
     addPlacehoder("body");
+    var saveChangePassword = $("#save-changed-password");
+    if (saveChangePassword.length) {
+        saveChangePassword.on("click", onUserChangePasswordClick);
+    }
 
     // Yet to convert from EJ1 to EJ2
     //$("#avatar-upload-box").ejDialog({
@@ -24,11 +29,19 @@ $(document).ready(function () {
     //});
 
     if ($(".security-setting-container").is(":visible")) {
-        if (location.href.match(/2fa/)) {
+        if (location.href.match(/2fa/) || isShow2fa) {
+            $("#2fa").closest("li").addClass("active");
             $("#2fa").tab("show");
+            $("#user-management-options").hide();
+            var query = (window.location.search).toString();
+            if (!query.includes("&view=2fa")) {
+                history.pushState(null, '', query + '&view=2fa');
+            }
         }
         else {
+            $("#change-password").closest("li").addClass("active");
             $("#change-password").tab("show");
+            $("#user-management-options").show();
             var query = (window.location.search).toString();
             if (!query.includes("&view=change-password")) {
                 history.pushState(null, '', query + '&view=change-password');
@@ -36,8 +49,11 @@ $(document).ready(function () {
         }
     }
 
-    $("a[data-toggle='tab']").on('click', function (e) {
+    $("a[data-bs-toggle='tab']").on('click', function (e) {
+        $("ul.nav.nav-tabs li").removeClass("active");
         if ($(this).attr("id") == "change-password") {
+            $(this).closest("li").addClass("active");
+            $("#user-management-options").show();
             var query = (window.location.search).toString();
             if (query.includes("&view=2fa")) {
                 query = query.replace("&view=2fa", "&view=change-password");
@@ -48,6 +64,8 @@ $(document).ready(function () {
             }
         }
         else if ($(this).attr("id") == "2fa") {
+            $(this).closest("li").addClass("active");
+            $("#user-management-options").hide();
             var query = (window.location.search).toString();
             if (query.includes("&view=change-password")) {
                 query = query.replace("&view=change-password", "&view=2fa");
@@ -178,9 +196,13 @@ $(document).ready(function () {
         },
         onfocusout: function (element) { $(element).valid(); $("#success-message").html(""); },
         rules: {
+            "current-password": {
+                required: isAdmin
+            },
             "new-password": {
                 required: true,
-                isValidPassword: true
+                notSameAsCurrent: isAdmin,
+                isValidPassword: true,
             },
             "confirm-password": {
                 required: true,
@@ -193,7 +215,7 @@ $(document).ready(function () {
             passwordBoxHightlight(element);
         },
         unhighlight: function (element) {
-            $(element).closest('div').removeClass('has-error');
+            $(element).closest('div').removeClass("has-error");
             passwordBoxUnhightlight(element);
             $(element).closest('div').find(".validation-message").html("");
         },
@@ -201,8 +223,13 @@ $(document).ready(function () {
             $(element).closest('div').find(".validation-message").html(error.html());
         },
         messages: {
+            "current-password": {
+                required: window.Server.App.LocalizationContent.OldPasswordValidator
+            },
             "new-password": {
                 required: window.Server.App.LocalizationContent.NewPasswordValidator,
+                isValidPassword: window.Server.App.LocalizationContent.InvalidPasswordValidator,
+                notSameAsCurrent: window.Server.App.LocalizationContent.PasswordSameAsCurrent,
             },
             "confirm-password": {
                 required: window.Server.App.LocalizationContent.ConfirmPasswordValidator,
@@ -627,13 +654,20 @@ function onUserChangePasswordClick() {
     }
 
     showWaitingPopup('content-area');
-    doAjaxPost('POST', UpdatePasswordUrl, { newpassword: $("#new-password").val(), confirmpassword: $("#confirm-password").val(), userId: $("#user-id").val() },
+    doAjaxPost('POST', UpdatePasswordUrl, { oldpassword: $("#current-password").val(), newpassword: $("#new-password").val(), confirmpassword: $("#confirm-password").val(), userId: $("#user-id").val() },
         function (result) {
+            $("#current-password").val("");
+            $("#current-password").closest("div").removeClass("e-valid-input").addClass("e-input-focus");
             $("input[type='password']").val("");
             hideWaitingPopup('content-area');
             $("#password_policy_rules").remove();
             $("#confirm-password-section").removeAttr("style");
-            if (!result.Data.status) {
+            if (!result.Data.status && result.Data.key == "password") {
+                hideWaitingPopup('content-area');
+                $("#old-password-validate").html(result.Data.value).css("display", "block")
+                $("#current-password").addClass("e-error");
+            }
+            else if (!result.Data.status) {
                 WarningAlert(window.Server.App.LocalizationContent.UpdatePassword, window.Server.App.LocalizationContent.PasswordFailure, result.Data.Message, 7000);
             }
             else {
@@ -641,7 +675,7 @@ function onUserChangePasswordClick() {
             }
         }
     );
-
+    $(".popover").hide();
 }
 function editUser(fulldata) {
     var specficuserdetails = fulldata;
@@ -675,11 +709,11 @@ function SaveUserdetails() {
     if (isValid) {
         $(".userprofile-validation-messages").css("display", "none");
         var userStatus = $("#user-status").val();
-        if ($("#show-active").hasClass("show")) {
+        if ($("#show-active").hasClass("d-block")) {
             isActive = true;
         }
         else {
-            isActive = $("#container-select").hasClass("show") ? userStatus : false;
+            isActive = $("#container-select").hasClass("d-block") ? userStatus : false;
         }
         showWaitingPopup('content-area');
         doAjaxPost('POST',
@@ -758,7 +792,7 @@ $(document).on("click", "#edit", function (e) {
     $("#save-button,#status-dom").show();
     $("#cancel-button").css("display", "inline");
     $("#group-div,#status-show,#edit,#activation-div").hide();
-    $("#resend-button-click").removeClass("show");
+    $("#resend-button-click").removeClass("d-block");
     $("#status-div").addClass("top-margin");
     $("#show-active,#show-inactive,#show-active-user").find("span").addClass("margin-top");
     $(".edit-user-profile-field").attr("disabled", false).addClass("enable");
@@ -788,7 +822,7 @@ $(document).on("click", "#cancel-button", function (e) {
 });
 
 if ($("#status-user").val == "InActive") {
-    $("#activate-button-click").removeClass("hide");
+    $("#activate-button-click").removeClass("d-none");
 }
 
 $(document).on("click", ".delete-class", function () {
@@ -808,7 +842,9 @@ $(document).on("click", ".remove-admin-class", function () {
 
 function onSingleDeleteDialogOpen() {
     $("#singleuser-delete-confirmation").find("button.e-primary").addClass("critical-action-button");
-    document.getElementById("singleuser-delete-confirmation").ej2_instances[0].show();
+    if (document.getElementById("singleuser-delete-confirmation") != null) {
+        document.getElementById("singleuser-delete-confirmation").ej2_instances[0].show();
+    }
 }
 
 function onMakeAdminDialogOpen() {
@@ -829,7 +865,15 @@ function MakeSingleUserAdmin() {
         success: function (result) {
             hideWaitingPopup('make-admin-confirmation');
             onMakeAdminDialogClose();
-            window.location.reload();
+            setTimeout(function () {
+                window.location.reload();
+            }, 3000);
+            if (result.Status) {
+                SuccessAlert(window.Server.App.LocalizationContent.AssignRole, window.Server.App.LocalizationContent.MakeAdmin, 3000)
+            }
+            else {
+                WarningAlert(window.Server.App.LocalizationContent.AssignRole, window.Server.App.LocalizationContent.MakeAdminError, result.Message, 3000)
+            }
         }
     });
 
@@ -849,7 +893,15 @@ function removeAdmin() {
         success: function (result) {
             hideWaitingPopup("remove-admin-confirmation");
             onRemoveAdminDialogClose();
-            window.location.reload();
+            setTimeout(function () {
+                window.location.reload();
+            }, 3000);
+            if (result.Status) {
+                SuccessAlert(window.Server.App.LocalizationContent.RemoveRole, window.Server.App.LocalizationContent.RemoveAdmin, 3000)
+            }
+            else {
+                WarningAlert(window.Server.App.LocalizationContent.RemoveRole, window.Server.App.LocalizationContent.RemoveAdminError, result.Message, 3000)
+            }
         }
     });
 }
@@ -864,10 +916,14 @@ function deleteSingleUser() {
     doAjaxPost("POST", deleteSingleFromUserListUrl, "UserId=" + userId, function (data) {
         if (data.status) {
             window.location.href = userPageUrl;
+            SuccessAlert(window.Server.App.LocalizationContent.DeleteUser, window.Server.App.LocalizationContent.UserHasDeleted, 3000);
         } else {
+            WarningAlert(window.Server.App.LocalizationContent.DeleteUser, window.Server.App.LocalizationContent.FailedToDeleteUser, data.Message, 3000);
             hideWaitingPopup('singleuser-delete-confirmation');
             onSingleDeleteDialogClose();
-            window.location.reload();
+            setTimeout(function () {
+                window.location.reload();
+            }, 3000);
         }
     });
 }
@@ -959,19 +1015,6 @@ function regenerateRecoveryCode() {
             }
         }
     });
-}
-
-function copyToClip() {
-    value = document.getElementById("copy-recovery").value;
-    navigator.clipboard.writeText(value)
-    setTimeout(function () {
-        $("#recovery-code-copy").attr("data-original-title", window.Server.App.LocalizationContent.Copied);
-        $("#recovery-code-copy").tooltip('show');
-    }, 200);
-    setTimeout(function () {
-        $("#recovery-code-copy").attr("data-original-title", window.Server.App.LocalizationContent.ClickToCopy);
-        $("#recovery-code-copy").tooltip();
-    }, 3000);
 }
 
 

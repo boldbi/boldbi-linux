@@ -49,7 +49,26 @@ var excludedSearchKeys = [
 ];
 
 $(document).ready(function () {
-    setClientLocaleCookie("boldservice.client.locale", 365);
+
+    var copyClientSecret = $("#copy-client-secret");
+    if (copyClientSecret.length) {
+        copyClientSecret.on("click", function () {
+            copyToClipboard('#mySecret', '#copy-client-secret');
+        });
+    }
+
+    var copyClientId = $("#copy-client-id");
+    if (copyClientId.length) {
+        copyClientId.on("click", function () {
+            copyToClipboard('#myId', '#copy-client-id');
+        });
+    }
+    var userIdCopy = $("#user-id-copy");
+    if (userIdCopy.length) {
+        userIdCopy.on("click", function () {
+            copyToClipboard('#user-id','#user-id-copy');
+        });
+    }
     createWaitingPopup('body');
     createWaitingPopup('server-app-container');
     createWaitingPopup('content-area');
@@ -57,13 +76,19 @@ $(document).ready(function () {
     createWaitingPopup('startup-page-container-waiting-element');
     createWaitingPopup('messageBox');
 
-    $('[data-toggle="popover"]').popover();
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    });
     $("body, .login-main, #server-app-container").removeAttr("style");
     $("#layout-body-loader-icon").css("display", "none");
 
     $("form").attr("autocomplete", "off");
     $("input[type=text], input[type=password]").attr("autocomplete", "off");
-    $("[data-toggle='tooltip']").tooltip();
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
     $(document).on("click", ".dropdown-menu #notify_header", function (e) {
         e.stopPropagation();
     });
@@ -100,6 +125,7 @@ $(document).ready(function () {
 
         $.ajaxSetup({
             beforeSend: function (jqXHR) {
+                jqXHR.setRequestHeader("CSRF-TOKEN", extractXSRFTokenFromCookie())
                 $.xhrPool.push(jqXHR);
             },
             complete: function (jqXHR) {
@@ -118,8 +144,9 @@ $(document).ready(function () {
         };
         if (typeof ej != "undefined" && typeof ej.UrlAdaptor != "undefined") {
             ej.UrlAdaptor.prototype.beforeSend = function (dm, request) {
+                request.setRequestHeader("CSRF-TOKEN", extractXSRFTokenFromCookie());
                 $.xhrPool.push(request);
-            }
+            };
             $.ajaxSetup({
                 complete: function (jqXHR) {
                     var i = $.xhrPool.indexOf(jqXHR);
@@ -127,45 +154,62 @@ $(document).ready(function () {
                 }
             });
         }
+        else if (typeof ejs != "undefined" && typeof ejs.data.UrlAdaptor != "undefined") {
+            // Overriding the beforeSend method for UrlAdaptor globally
+            ejs.data.UrlAdaptor.prototype.beforeSend = function (dm, request) {
+                // Set the CSRF token in the request headers
+                request.setRequestHeader("CSRF-TOKEN", extractXSRFTokenFromCookie());
+
+                // Optional: Add request to the pool if you want to manage active AJAX requests
+                if (typeof $.xhrPool !== "undefined") {
+                    $.xhrPool.push(request);
+                }
+            };
+
+            $.ajaxSetup({
+                beforeSend: function (jqXHR) {
+                    jqXHR.setRequestHeader("CSRF-TOKEN", extractXSRFTokenFromCookie())
+                    $.xhrPool.push(jqXHR);
+                }
+            });
+        }
+        else {
+            $.ajaxSetup({
+                beforeSend: function (jqXHR) {
+                    jqXHR.setRequestHeader("CSRF-TOKEN", extractXSRFTokenFromCookie())
+                    $.xhrPool.push(jqXHR);
+                }
+            });
+        }
     }
 
     $('.lazyload').each(function () {
-        if ($(this).attr("data-id") === "footerlogo") {
-            img = document.createElement('img');
+        if ($(this).parent().find("img").length === 0) {
+            var img = document.createElement('img');
             img.onload = imageOnLoad;
             img.src = $(this).attr("data-src");
             img.alt = $(this).attr("data-alt");
             img.id = $(this).attr("data-id");
-            $(img).attr("onerror", $(this).attr("data-default"));
-            img.style = "display: none";
-            $(this).parent().find("p#poweredbysyncfusion").append(img);
-        }
-        else if ($(this).attr("data-id") === "profilelogo" || $(this).attr("data-id") === "profile-logo-sub" || $(this).attr("data-id") === "user-profile-picture") {
-            img = document.createElement('img');
-            img.onload = imageOnLoad;
-            img.src = $(this).attr("data-src-value");
-            img.alt = $(this).attr("data-alt");
-            img.id = $(this).attr("data-id");
-            $(img).attr("onerror", $(this).attr("data-default"));
-            img.style = "display: none";
-            $(this).parent().append(img);
-        }
-        else {
-            img = document.createElement('img');
-            img.onload = imageOnLoad;
-            img.src = $(this).attr("data-src");
-            img.alt = $(this).attr("data-alt");
-            img.id = $(this).attr("data-id");
-            $(img).attr("onerror", $(this).attr("data-default"));
-            img.style = "display: none";
-            $(this).parent().append(img);
-
-            if ($(this).attr("data-id") === "application-logo") {
-                var appLogoSrc = $(this).attr("data-src");
-                if (appLogoSrc !== undefined && appLogoSrc !== '' && appLogoSrc.length > 3) {
-                    var logoFormat = appLogoSrc.substr(appLogoSrc.length - 3, appLogoSrc.length);
-                    if (logoFormat.toLowerCase() === "svg") {
-                        $("#application-logo").addClass("application-logo-svg");
+            var defaultSrc = $(this).attr("data-default");
+            if (defaultSrc) {
+                img.onerror = function () {
+                    this.src = defaultSrc;
+                };
+            }
+            img.style.display = "none";
+            if ($(this).attr("data-id") === "footerlogo") {
+                $(this).parent().find("p#poweredbysyncfusion").append(img);
+            } else if ($(this).attr("data-id") === "profilelogo" || $(this).attr("data-id") === "profile-logo-sub" || $(this).attr("data-id") === "user-profile-picture") {
+                $(this).parent().append(img);
+            } else {
+                $(this).parent().append(img);
+                if ($(this).attr("data-id") === "application-logo") {
+                    var appLogoSrc = $(this).attr("data-src");
+                    if (appLogoSrc !== undefined && appLogoSrc !== '' && appLogoSrc.length > 3) {
+                        var logoFormat = appLogoSrc.substr(appLogoSrc.length - 3, appLogoSrc.length);
+                        if (logoFormat.toLowerCase() === "svg") {
+                            $("#application-logo").addClass("application-logo-svg");
+                        }
                     }
                 }
             }
@@ -185,10 +229,10 @@ $(document).ready(function () {
         content: document.getElementById("download-logs-dialog"),
         showCloseIcon: true,
         width: '500px',
-        height: '284px',
+        height: '300px',
         isModal: true,
         visible: false,
-        beforeOpen: fnBeforeOpen,
+        beforeOpen: fnBeforeDownloadDialogsOpen,
         animationSettings: { effect: 'Zoom' }
     });
 
@@ -206,10 +250,19 @@ $(document).ready(function () {
     });
 
     dropDownList.appendTo("#download-logs-dialog-dropdown");
+    var UserNameElement = $(".top-menu-user-name .top-menu-user-name-style:first").text();
+    var UserEmailElement = $(".top-menu-user-name .top-menu-user-email-style:first").text();
+    if (UserNameElement.length > 21 || UserEmailElement.length > 25) {
+        $(".top-menu-profile-hover").attr("title", "<span class='tooltip-row'>" + UserNameElement + "</span><br><span class='tooltip-row'>" + UserEmailElement + "</span>");
+        $(".top-menu-profile-hover").tooltip({
+            html: true,
+        });
+    }
 });
 
 $(document).on("click", "#download-log", function () {
     downloadLogsDialog.show();
+    document.getElementById("is-include-configuration").checked = false
 });
 
 $(document).on("click", "#download-logs-dialog-cancel", function () {
@@ -223,7 +276,8 @@ $(document).on("click", ".dropdown-backdrop", function () {
 $(document).on("click", "#download-logs-dialog-proceed", function () {
     downloadLogsDialog.hide();
     var val = document.getElementById("download-logs-dialog-dropdown").ej2_instances[0].value;
-    window.location = getDiagnosticLogsUrl + "?span=" + val;
+    var isIncludeConfiguration = $("#is-include-configuration").is(":checked");
+    window.location = getDiagnosticLogsUrl + "?span=" + val + "&isIncludeConfiguration=" + isIncludeConfiguration;
 });
 
 $(document).on("click", "#notification-link, #account-profile, #upload-item-section", function (e) {
@@ -244,6 +298,12 @@ $(document).on("click", "#account-profile .dropdown-menu", function (e) {
     e.stopPropagation();
 });
 
+$(document).on("click", ".mobile-menu-icon", function () {
+    $(".mobile-menu-icon").removeClass("collapsed");
+    $("#menu-area").removeClass("collapse");
+    $("#menu-area").toggleClass("d-block");
+});
+
 $(document).on("keyup", "textarea", function (event) {
     if (event.keyCode != 8 && event.keyCode != 46) {
         var max = $(this).attr("maxlength");
@@ -254,6 +314,10 @@ $(document).on("keyup", "textarea", function (event) {
 });
 
 $(document).on("keyup", "textarea", function (event) {
+    
+    if ($(this).attr("id") === "email-body-container_editable-content") {
+        return; 
+    }
     if (event.keyCode != 8 && event.keyCode != 46) {
         var max = 255;
         if ($(this).attr("maxlength") != undefined) {
@@ -267,20 +331,20 @@ $(document).on("keyup", "textarea", function (event) {
 
 $(document).on("focus", "input[type=text],input[type=password],textarea", function () {
     if (regexIe8.test(userAgent)) {
-        $(this).next(".placeholder").removeClass("show").addClass("hide");
+        $(this).next(".placeholder").removeClass("d-block").addClass("d-none");
     }
 });
 
 $(document).on("focusout", "input[type=text],input[type=password],textarea", function () {
     if (regexIe8.test(userAgent) && $(this).val() === "") {
-        $(this).next(".placeholder").removeClass("hide").addClass("show");
+        $(this).next(".placeholder").removeClass("d-none").addClass("d-block");
     }
 });
 $(document).on("focus", ".placeholder", function () {
     $(this).prev("input").focus();
 });
 
-$(document).on("keyup", "#search-users, #search-tenants, #search-app-users, #add-user-search,#search-tenant-users,#add-tenant-search,#search-event,#search-languages", function (e) {
+$(document).on("keyup", "#search-users, #search-tenants, #search-tenants-allsites, #search-tenants-favorite,#search-app-users, #add-user-search,#search-tenant-users,#add-tenant-search,#search-event,#search-template,#search-languages", function (e) {
     var element = "#" + this.id;
     if ($(element).val() != "") {
         if (element == "#search-home-page" || element == "#search-tenant-users") {
@@ -297,6 +361,9 @@ $(document).on("keyup", "#search-users, #search-tenants, #search-app-users, #add
             $(element).siblings("span.search-schedule").css("display", "none");
             $(element).siblings("span.search").css("display", "none");
             $(element).siblings("span.search-application").css("display", "none");
+            $(element).siblings("span.search-allsites").css("display", "none");
+            $(element).siblings("span.search-favorite").css("display", "none");
+            $(element).siblings("span.search-template").css("display", "none");
         }
     } else {
         if (element == "#search-home-page" || element == "#search-tenant-users") {
@@ -309,6 +376,18 @@ $(document).on("keyup", "#search-users, #search-tenants, #search-app-users, #add
         }
     }
 });
+
+$(document).on("click", "#close-button,#close-info-dialog", function () {
+    closeWarningToastDialog();
+});
+
+$(document).ready(function () {
+    $("#application-logo").on("error", function () {
+        $(this).attr("href", 'Url.Content("~/images/${GlobalAppSettings.Branding}/application/${IconFileNames.DefaultErrorSquareImage}")');
+});
+});
+
+
 
 $(document).on("click", "#clear-search,.clear-search,#add-user-clear-search,#add-tenant-clear-search", function () {
     var currentElement = $(this).prevAll("input");
@@ -330,12 +409,12 @@ $(document).on("click", "#clear-search,.clear-search,#add-user-clear-search,#add
             $(".search-area").removeClass("add-background");
             $(".placeholder, #clear-search").hide();
             if ($(".all-items").hasClass("active") && !$("#category-list").is(":visible")) {
-                setTimeout(function () { $(".search-area").prevAll().show().parent().removeClass("pull-right"); $("#category-section-name").show(); }, 300);
+                setTimeout(function () { $(".search-area").prevAll().show().parent().removeClass("float-end"); $("#category-section-name").show(); }, 300);
             }
             else {
-                setTimeout(function () { $(".search-area").prevAll(":not(#back-icon)").show().parent().removeClass("pull-right"); $("#category-section-name").show(); }, 300);
+                setTimeout(function () { $(".search-area").prevAll(":not(#back-icon)").show().parent().removeClass("float-end"); $("#category-section-name").show(); }, 300);
             }
-            setTimeout(function () { $(".search-home-section:visible").removeClass("show"); }, 300);
+            setTimeout(function () { $(".search-home-section:visible").removeClass("d-block"); }, 300);
         }
         else {
             $("#clear-search").siblings("span.su-search").css("display", "block");
@@ -373,7 +452,7 @@ $(document).on("click", "#clear-search,.clear-search,#add-user-clear-search,#add
     }
 });
 
-$(document).on("keydown", "#search-users, #search-tenants, #search-app-users, #add-user-search,#search-tenant-users,#add-tenant-search,#search-event,#search-languages", function (e) {
+$(document).on("keydown", "#search-users, #search-tenants, #search-tenants-allsites, #search-tenants-favorite, #search-app-users, #add-user-search,#search-tenant-users,#add-tenant-search,#search-event,#search-template, #search-languages", function (e) {
     $.xhrPool.abortAll();
     var currentKeyCode = parseInt(e.which);
     var element = "#" + this.id;
@@ -408,6 +487,16 @@ function PerformSearch(currentId) {
         gridObj.pageSettings.currentPage = 1;
         gridObj.refresh();
     }
+    else if (currentId == "#search-tenants-allsites") {
+        gridObj = document.getElementById('AllSitesGrid').ej2_instances[0];
+        gridObj.pageSettings.currentPage = 1;
+        gridObj.refresh();
+    }
+    else if (currentId == "#search-tenants-favorite") {
+        gridObj = document.getElementById('FavoriteGrid').ej2_instances[0];
+        gridObj.pageSettings.currentPage = 1;
+        gridObj.refresh();
+    }
     else if (currentId === "#search-app-users") {
         gridObj = document.getElementById('users_grid').ej2_instances[0];
         gridObj.pageSettings.currentPage = 1;
@@ -431,13 +520,17 @@ function PerformSearch(currentId) {
         gridObj = document.getElementById('emailActivityLogGrid').ej2_instances[0];
         gridObj.refresh();
     }
+    else if (currentId == "#search-template") {
+        gridObj = document.getElementById('specificEmailTemplateListGrid').ej2_instances[0];
+        gridObj.refresh();
+    }
     else if (currentId == "#search-languages") {
         gridObj = document.getElementById('Localization_grid').ej2_instances[0];
         gridObj.refresh();
     }
 }
 
-function fnBeforeOpen() {
+function fnBeforeDownloadDialogsOpen() {
     document.getElementById('download-logs-dialog').style.visibility = 'visible';
 }
 
@@ -609,6 +702,16 @@ function doAjaxPost(type, url, data, onSuccess, onError, onComplete, element, pr
     });
 };
 
+function extractXSRFTokenFromCookie() {
+    var xsrfToken = document.cookie.split("; ").find(row => row.startsWith("BOLD-UMS-XSRF-TOKEN="));
+    if (xsrfToken) {
+        return xsrfToken.split("=")[1];
+    }
+    return null;
+}
+function addHeaders(args) {
+    args.currentRequest.setRequestHeader('CSRF-TOKEN', extractXSRFTokenFromCookie());
+}
 function getFnObj(obj) {
     if (typeof obj === "function") return obj;
     if (typeof obj === "string" && window[obj])
@@ -739,7 +842,7 @@ function getMaxZIndex() {
 }
 
 function IsEmail(email) {
-    var filter = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,63}|[0-9]{1,3})(\]?)$/;
+    var filter = /^([\wÀ-ÖØ-öø-ÿŒœŸÿ€ß.+-]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\wÀ-ÖØ-öø-ÿŒœŸÿ€ß-]+\.)+))([a-zA-Z]{2,63}|[0-9]{1,3})(\]?)$/u;
     if (filter.test(email)) {
         return true;
     }
@@ -749,7 +852,7 @@ function IsEmail(email) {
 }
 
 function UsernameValidation(username) {
-    var filter = /^[a-zA-Z0-9]([._-](?![._-])|[a-zA-Z0-9]){1,252}[a-zA-Z0-9]$/;
+    var filter = /^(?:(?!\.{2}|_{2}|-{2})[\p{L}\p{N}0-9_À-ÖØ-öø-ÿŒœŸÿ€ß'.`+\-]+@[\p{L}\p{N}\-]+(\.[\p{L}\-]+)*|[\p{L}\p{N}0-9_À-ÖØ-öø-ÿŒœŸÿ€ß'.`+\-]+)$/u;
     if (filter.test(username)) {
         return true;
     }
@@ -763,7 +866,7 @@ function IsValidUsername(username) {
 }
 
 function IsValidUsernameLength(username) {
-    var filter = /^.{3,254}$/;
+    var filter = /^.{2,254}$/;
     if (filter.test(username)) {
         return true;
     }
@@ -771,6 +874,21 @@ function IsValidUsernameLength(username) {
         return false;
     }
 }
+
+function IsValideCopyRightInfo(inputString) {
+    var regex = /<(?!\/?a(?=\s|>))[^>]+>/gi;
+    return !regex.test(inputString);
+}
+
+$(document).on("click", "#license-warning-icon", function () {
+    var messageContent = window.Server.App.LocalizationContent.LicenseWarningContent1
+        + "<div class='license-warning-content'>"
+        + window.Server.App.LocalizationContent.LicenseWarningContent2 + window.Server.App.LocalizationContent.LicenseWarningContent3.toLowerCase() + "<a class='text-decoration-none' href='" + idpUrl + "/ums/administration/license-settings'>" + window.Server.App.LocalizationContent.LicenseWarningContent4 + "</a>" + window.Server.App.LocalizationContent.LicenseWarningContent5
+        + "</div>";
+    messageBox("", window.Server.App.LocalizationContent.LicenseWarningHeader, messageContent, "success", function () {
+        onCloseMessageBox();
+    });
+});
 
 function IsValidContactNumber(contactNumber) {
     var regex = /^(?:|[0-9\-\+]{9,15})$/;
@@ -797,25 +915,25 @@ function messageBox(messageIcon, messageHeader, messageText, type, successCallba
     $("#messageBox").find(".message-content").text("");
     $("#messageBox").find(".e-footer-content").html("");
     $(".message-box-close").html("");
-    $("#messageBox").find(".e-dlg-header").html("<span class='su " + messageIcon + "'></span> <span class='modal-title' data-toggle='tooltip' data-placement='bottom' data-container='body' title='" + messageHeader + "'  >" + messageHeader + "</h2>");
+    $("#messageBox").find(".e-dlg-header").html("<span class='su " + messageIcon + "'></span> <span class='modal-title' data-bs-toggle='tooltip' data-bs-placement='bottom' data-bs-container='body' title='" + messageHeader + "'  >" + messageHeader + "</h2>");
     $("#messageBox").find(".message-content").html(messageText);
-    $("#messageBox").find(".message-content").removeClass("text-left");
+    $("#messageBox").find(".message-content").removeClass("text-start");
     if (type == "error") {
         var successButton;
         var closeIcon;
         var errorButton;
         if (successCallback != undefined) {
-            successButton = $("<input type='button' class='critical-action-button pull-right' value='" + window.Server.App.LocalizationContent.YesButton + "'></input>");
+            successButton = $("<input type='button' class='critical-action-button float-end' value='" + window.Server.App.LocalizationContent.YesButton + "'></input>");
             successButton.bind("click", $.proxy(getFnObj(successCallback), window));
         }
         if (errorCallback != undefined) {
-            errorButton = $("<input type='button' class='secondary-button pull-right' value='" + window.Server.App.LocalizationContent.NoButton + "'></input>");
+            errorButton = $("<input type='button' class='secondary-button float-end' value='" + window.Server.App.LocalizationContent.NoButton + "'></input>");
             errorButton.bind("click", $.proxy(getFnObj(errorCallback), window));
             closeIcon = $('<span class="su su-close"></span>');
             closeIcon.bind("click", $.proxy(getFnObj(errorCallback), window));
         }
         else {
-            errorButton = $("<input type='button' class='secondary-button pull-right' value='" + window.Server.App.LocalizationContent.NoButton + "'></input>");
+            errorButton = $("<input type='button' class='secondary-button float-end' value='" + window.Server.App.LocalizationContent.NoButton + "'></input>");
             closeIcon = $('<span class="su su-close"></span>');
             errorButton.click(function () {
                 onCloseMessageBox();
@@ -858,7 +976,10 @@ function messageBox(messageIcon, messageHeader, messageText, type, successCallba
         });
     }
 
-    $('[data-toggle="tooltip"]').tooltip();
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
     document.getElementById("messageBox").ej2_instances[0].show();
     $("#messageBox").focus();
     var sizeobj = document.getElementById("messageBox").ej2_instances[0];
@@ -902,10 +1023,10 @@ function messageBox(messageIcon, messageHeader, messageText, type, successCallba
 function IsValidName(validationType, inputString) {
     var regex;
     if (validationType.toLowerCase() === "username") {
-        regex = new RegExp(/[*\[\\\]\|\/\:\<\>\%\+\#\&\?\'\"\@\;\,]/);
+        regex = new RegExp(/[*\[\\\]\|\/\:\<\>\%\#\&\?\"\@\;\,]/);
     }
     else {
-        regex = new RegExp(/[*\[\\\]\|\/\:\<\>\%\+\#\?\'\"\;\,]/);
+        regex = new RegExp(/[*\[\\\]\|\/\:\<\>\%\#\?\"\;\,]/);
     }
     return !regex.test(inputString);
 }
@@ -953,7 +1074,7 @@ function WarningAlert(header, content, error, duration) {
     $("#container #text-error-area").val(error);
     parent.$("#warning-alert").css("display", "table");
 
-    if (error != null) {
+    if (error != null && error != "") {
         $("#view").show();
     }
 
@@ -1042,15 +1163,12 @@ function getUrlQueryVariable(url, variable) {
     return null;
 }
 
-function setClientLocaleCookie(name, exdays) {
-    var value = {
-        Locale: navigator.language,
-        TimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-    };
-    var exdate = new Date();
-    exdate.setDate(exdate.getDate() + exdays++);
-    var cookie_value = escape(JSON.stringify(value)) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
-    document.cookie = name + "=" + cookie_value + ";path=/";
+function SetHttpOnlyCookie(cookieName, cookieValue, expires, isCookiePathRequired) {
+    $.ajax({
+        type: "POST",
+        url: setCookieHttpOnlyUrl,
+        data: { cookieName: cookieName, cookieValue: cookieValue, expires: expires, isCookiePathRequired: isCookiePathRequired }
+    });
 }
 
 function profileDisplayNameSelection() {
@@ -1123,6 +1241,10 @@ function copyToClipboard(inputId, buttonId) {
         if (buttonId == "#api-copy-client-secret" || buttonId == "#copy-client-secret") {
             copyText.attr("type", "password");
         }
+
+        if (inputId === "#copy-recovery") {
+            $("#copy-recovery").css("display", "none");
+        }
     }
     else {
         var copyText = $(inputId);
@@ -1131,13 +1253,17 @@ function copyToClipboard(inputId, buttonId) {
         if (buttonId == "#api-copy-client-secret" || buttonId == "#copy-client-secret") {
             copyText.attr("type", "password");
         }
+
+        if (inputId === "#copy-recovery") {
+            $("#copy-recovery").css("display", "none");
+        }
     }
     setTimeout(function () {
-        $(buttonId).attr("data-original-title", window.Server.App.LocalizationContent.Copied);
+        $(buttonId).attr("data-bs-original-title", window.Server.App.LocalizationContent.Copied);
         $(buttonId).tooltip('show');
     }, 200);
     setTimeout(function () {
-        $(buttonId).attr("data-original-title", window.Server.App.LocalizationContent.ClickToCopy);
+        $(buttonId).attr("data-bs-original-title", window.Server.App.LocalizationContent.ClickToCopy);
         $(buttonId).tooltip();
     }, 3000);
 }
@@ -1205,11 +1331,27 @@ $(document).on("click", ".view-less", function () {
     $("#view").html(window.Server.App.LocalizationContent.ViewMore);
 });
 
-$('[data-toggle="tooltip"]').tooltip();
+var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl);
+});
 $(document).on("click", "#copy-error-area", function (e) {
     $("#text-error-area").select();
     document.execCommand('copy');
-    $("#copy-error-area").attr("data-original-title", window.Server.App.LocalizationContent.Copied);
-    $("#copy-error-area").tooltip("hide").attr("data-original-title", window.Server.App.LocalizationContent.Copied).tooltip("fixTitle").tooltip("show");
-    setTimeout(function () { $("#copy-error-area").attr("data-original-title", window.Server.App.LocalizationContent.LinkCopy); $("#copy-error-area").tooltip(); }, 3000);
+    $("#copy-error-area").attr("data-bs-original-title", window.Server.App.LocalizationContent.Copied);
+    var oldTooltip = bootstrap.Tooltip.getInstance($("#copy-error-area"));
+    oldTooltip.dispose();
+    var tooltip = new bootstrap.Tooltip($("#copy-error-area"));
+    setTimeout(function () {
+        $("#copy-error-area").attr("data-bs-original-title", window.Server.App.LocalizationContent.LinkCopy);
+        tooltip.dispose();
+        var newTooltip = new bootstrap.Tooltip($("#copy-error-area"));
+    }, 3000);
 });
+
+$('body').on('click', 'a', function () {
+    if (enableSameTabLinkTarget && $(this).attr('href') !== undefined && !($(this).attr("href").includes("redirect.boldbi.com"))) {
+        $(this).attr("target", "_self");
+    }
+});
+

@@ -3,6 +3,7 @@
     "cdn/css/layout.css": [
       "wwwroot/Styles/EssentialJS/ej.theme.min.css",
       "wwwroot/Styles/EssentialJS/ej.widgets.core.min.css",
+      "wwwroot/Styles/EssentialJS2/ej2.dropdowntree.min.css",
       "wwwroot/Styles/EssentialJS2/fusion-theme-compatability/ej.theme.css",
       "wwwroot/Styles/Bootstrap/bootstrap.min.css",
       "wwwroot/Styles/Fonts/font-Server.css",
@@ -10,6 +11,7 @@
       "wwwroot/Styles/scss/pages/NewMaster.css",
       "wwwroot/Styles/scss/pages/Layout.css",
       "wwwroot/Styles/scss/pages/general/navigation.css",
+      "wwwroot/Styles/scss/pages/general/TopMenu.css",
       "wwwroot/Styles/scss/pages/Dialogs.css",
       "wwwroot/Styles/scss/pages/Accounts/footer.css",
       "wwwroot/Styles/scss/pages/notification/notification-banner.css",
@@ -20,7 +22,7 @@
   },
   {
     "cdn/scripts/layout.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/Bootstrap/respond.min.js",
       "wwwroot/Scripts/AngularJS/angular.min.js",
@@ -54,7 +56,7 @@
   },
   {
     "cdn/scripts/layout-mobile.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/Bootstrap/respond.min.js",
       "wwwroot/Scripts/AngularJS/angular.min.js",
       "wwwroot/Scripts/AngularJS/angular-filter.min.js",
@@ -74,7 +76,7 @@
   },
   {
     "cdn/scripts/connector-page-layout.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/Bootstrap/respond.min.js",
       "wwwroot/Scripts/AngularJS/angular.min.js",
@@ -113,11 +115,11 @@
   },
   {
     "cdn/scripts/iframe.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/respond.min.js",
       "wwwroot/Scripts/AngularJS/angular.min.js",
       "wwwroot/Scripts/Core/Server.Common.js",
@@ -160,7 +162,7 @@
   },
   {
     "cdn/scripts/datasource-page.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.data.min.js",
@@ -182,24 +184,26 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/DataSource/DataSource.js",
       "wwwroot/Scripts/Items/Items.js",
       "wwwroot/Scripts/Items/items.add.js",
       "wwwroot/Scripts/DataSourceDesigner/ConnectionDialog.js",
       "wwwroot/Scripts/DataSourceDesigner/DataPreviewDialog.js",
+      "wwwroot/Scripts/DataSourceDesigner/RowLevelSecurityDialog.js",
       "wwwroot/Scripts/DataSourceDesigner/MergeDataSourceDialog.js",
       "wwwroot/Scripts/launcher/launcher.js",
       "wwwroot/Scripts/Items/items.share-permission.js",
       "wwwroot/Scripts/Scheduler/ScheduleHistory.js",
-      "wwwroot/Scripts/Items/items.info.js"
+      "wwwroot/Scripts/Items/items.info.js",
+      "wwwroot/Scripts/Items/ItemVersion.js"
 
     ]
   },
   {
     "cdn/scripts/datasource-page-mobile.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -222,7 +226,7 @@
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
       "wwwroot/Scripts/EssentialJS/ej.tooltip.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/DataSource/DataSource.js",
       "wwwroot/Scripts/Items/ItemsMobile.js",
@@ -232,9 +236,9 @@
   },
   {
     "cdn/scripts/add-datasource.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/DataSource/AddDataSource.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -243,7 +247,7 @@
   },
   {
     "cdn/scripts/view-linked-dashboards.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -266,7 +270,7 @@
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
       "wwwroot/Scripts/EssentialJS/ej.tooltip.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/DataSourceDesigner/ConnectionDialog.js",
       "wwwroot/Scripts/DataSourceDesigner/MergeDataSourceDialog.js",
@@ -276,9 +280,9 @@
   },
   {
     "cdn/scripts/edit-datasource.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/DataSource/EditDataSource.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -287,9 +291,9 @@
   },
   {
     "cdn/scripts/update-datasource.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Core/Server.Common.js",
       "wwwroot/Scripts/Core/Server.Core.js",
@@ -312,7 +316,7 @@
   {
     "cdn/scripts/widget-page.js": [
       "wwwroot/Scripts/EssentialJS/ej.button.min.js",
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -335,7 +339,7 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Widget/Widget.js",
       "wwwroot/Scripts/Items/Items.js",
@@ -345,18 +349,18 @@
   },
   {
     "cdn/scripts/add-widget.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Widget/AddWidget.js"
     ]
   },
   {
     "cdn/scripts/edit-widget.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Widget/EditWidget.js"
     ]
@@ -373,7 +377,7 @@
   },
   {
     "cdn/scripts/files-page.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -397,7 +401,7 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Core/Server.Common.js",
       "wwwroot/Scripts/Core/Server.Core.js",
@@ -408,7 +412,7 @@
   },
   {
     "cdn/scripts/files-page-mobile.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -433,7 +437,7 @@
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
       "wwwroot/Scripts/EssentialJS/ej.tooltip.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/File/File.js",
       "wwwroot/Scripts/Items/ItemsMobile.js",
@@ -464,9 +468,9 @@
   },
   {
     "cdn/scripts/add-files.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/File/AddFile.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -480,9 +484,9 @@
   },
   {
     "cdn/scripts/edit-files.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Core/Server.Common.js",
       "wwwroot/Scripts/Core/Server.Core.js",
@@ -540,32 +544,13 @@
   },
   {
     "cdn/css/upload-iframe.css": [
-      "wwwroot/Styles/EssentialJS/ej.theme.min.css",
-      "wwwroot/Styles/EssentialJS/ej.widgets.core.min.css",
-      "wwwroot/Styles/EssentialJS2/fusion-theme-compatability/ej.theme.css",
-      "wwwroot/Styles/Bootstrap/bootstrap.min.css",
-      "wwwroot/Styles/Bootstrap/bootstrap-select.css",
-      "wwwroot/Styles/Fonts/font-Server.css",
-      "wwwroot/Styles/scss/global.css",
-      "wwwroot/Styles/scss/pages/NewMaster.css",
-      "wwwroot/Styles/scss/pages/Layout.css",
-      "wwwroot/Styles/scss/pages/general/navigation.css",
-      "wwwroot/Styles/scss/pages/Dialogs.css",
-      "wwwroot/Styles/scss/pages/Accounts/footer.css",
-      "wwwroot/Styles/scss/pages/notification/notification-banner.css",
-      "wwwroot/Styles/scss/pages/notification/user-notification.css",
-      "wwwroot/Styles/scss/pages/Components/Toast.css",
-      "wwwroot/Styles/scss/pages/general/create-item-menu.css",
-      "wwwroot/Styles/scss/pages/Items.css",
-      "wwwroot/Styles/scss/pages/TileDashboards.css",
-      "wwwroot/Styles/scss/pages/CategoryDialog.css",
-      "wwwroot/Styles/scss/pages/Components/Buttons.css"
+      "wwwroot/Styles/scss/pages/Items.css"
     ]
   },
   {
     "cdn/scripts/upload-dashboard.js": [
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/AngularJS/angular.min.js",
@@ -590,8 +575,8 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
       "wwwroot/Scripts/Core/Server.Common.js",
       "wwwroot/Scripts/Core/Server.Core.js",
       "wwwroot/Scripts/Category/AddCategory.js",
@@ -616,7 +601,6 @@
       "wwwroot/Scripts/Items/items.public.js",
       "wwwroot/Scripts/Items/items.delete.js",
       "wwwroot/Scripts/Items/items.share-permission.js",
-      "wwwroot/Scripts/Items/items.transform.js",
       "wwwroot/Scripts/Items/items.update-dashboard.js",
       "wwwroot/Scripts/Items/items.update-datasource.js",
       "wwwroot/Scripts/Items/items.version.js",
@@ -625,13 +609,41 @@
       "wwwroot/Scripts/Items/items.schedule.js",
       "wwwroot/Scripts/Items/items.info.js",
       "wwwroot/Scripts/Scheduler/Scheduler.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Dashboards/TileDashboards.js",
       "wwwroot/Scripts/Category/Category.js",
       "wwwroot/Scripts/launcher/launcher.js",
       "wwwroot/Scripts/Dashboards/UpdateDataSource.js",
-      "wwwroot/Scripts/DataSourceDesigner/ConnectionDialog.js"
+      "wwwroot/Scripts/DataSourceDesigner/ConnectionDialog.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.data.min.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.draggable.min.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.globalize.min.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.scroller.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.grid.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.pager.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.radiobutton.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.dropdownlist.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.dialog.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.button.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.autocomplete.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.checkbox.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.excelfilter.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.datepicker.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.datetimepicker.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
+      "wwwroot/Scripts/EssentialJS/i18n/ej.cultures.en-US.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.timepicker.min.js",
+      "wwwroot/Scripts/Items/ItemVersion.js"
+    ]
+  },
+  {
+    "cdn/scripts/items-partial-page.js": [
+      "wwwroot/Scripts/Items/items.transform.js"
     ]
   },
   {
@@ -643,7 +655,7 @@
   },
   {
     "cdn/scripts/dashboards-page.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -672,7 +684,7 @@
       "wwwroot/Scripts/Items/Items.js",
       "wwwroot/Scripts/Items/items.add.js",
       "wwwroot/Scripts/Scheduler/Scheduler.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Dashboards/Dashboards.js",
       "wwwroot/Scripts/Category/Category.js",
@@ -693,11 +705,11 @@
   },
   {
     "cdn/scripts/add-dashboards.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/AngularJS/angular.min.js",
       "wwwroot/Scripts/AngularJS/angular-sanitize.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Dashboards/AddDashboard.js"
     ]
@@ -714,9 +726,9 @@
   },
   {
     "cdn/scripts/edit-dashboards.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Dashboards/EditDashboard.js"
     ]
@@ -735,33 +747,6 @@
     ]
   },
   {
-    "cdn/scripts/itemversion.js": [
-      "wwwroot/Scripts/Items/ItemVersion.js",
-      "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
-      "wwwroot/Scripts/EssentialJS/common/ej.data.min.js",
-      "wwwroot/Scripts/EssentialJS/common/ej.draggable.min.js",
-      "wwwroot/Scripts/EssentialJS/common/ej.globalize.min.js",
-      "wwwroot/Scripts/EssentialJS/common/ej.scroller.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.grid.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.pager.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.radiobutton.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.dropdownlist.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.dialog.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.button.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.autocomplete.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.checkbox.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.excelfilter.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.datepicker.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.datetimepicker.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/EssentialJS/i18n/ej.cultures.en-US.min.js",
-      "wwwroot/Scripts/EssentialJS/ej.timepicker.min.js"
-    ]
-  },
-  {
     "cdn/scripts/item-user-group-suggestion.js": [
       "wwwroot/Scripts/AutoComplete/AccessibleUserGroup.js"
     ]
@@ -776,7 +761,7 @@
   },
   {
     "cdn/scripts/permissionpage.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -798,7 +783,7 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/AngularJS/ej.widget.angular.min.js",
       "wwwroot/Scripts/EssentialJS/ej.tooltip.min.js",
@@ -871,7 +856,7 @@
   },
   {
     "cdn/scripts/grouppermission.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -893,7 +878,7 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/AngularJS/ej.widget.angular.min.js"
     ]
@@ -912,7 +897,7 @@
   },
   {
     "cdn/scripts/scheduleslisting.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -931,12 +916,13 @@
       "wwwroot/Scripts/EssentialJS/ej.checkbox.min.js",
       "wwwroot/Scripts/EssentialJS/ej.datepicker.min.js",
       "wwwroot/Scripts/EssentialJS/ej.datetimepicker.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.daterangepicker.min.js",
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
       "wwwroot/Scripts/EssentialJS/i18n/ej.cultures.en-US.min.js",
       "wwwroot/Scripts/EssentialJS/ej.timepicker.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Scheduler/ScheduleListing.js",
       "wwwroot/Scripts/Scheduler/Scheduler.js",
@@ -951,7 +937,7 @@
   },
   {
     "cdn/scripts/scheduleslisting-mobile.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -976,36 +962,71 @@
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
       "wwwroot/Scripts/EssentialJS/i18n/ej.cultures.en-US.min.js",
       "wwwroot/Scripts/EssentialJS/ej.timepicker.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
-      "wwwroot/Scripts/Scheduler/schedulelisting.js",
+      "wwwroot/Scripts/Scheduler/ScheduleListing.js",
       "wwwroot/Scripts/Scheduler/Scheduler.js",
       "wwwroot/Scripts/Items/ItemsMobile.js"
     ]
   },
   {
     "cdn/scripts/profile.js": [
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
+      "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
+      "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.data.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.draggable.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.globalize.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.scroller.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.grid.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.pager.min.js",
       "wwwroot/Scripts/EssentialJS/ej.dialog.min.js",
       "wwwroot/Scripts/EssentialJS/ej.button.min.js",
       "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js",
-      "wwwroot/Scripts/Jcrop/Jcrop.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.radiobutton.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.dropdownlist.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.autocomplete.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.checkbox.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.datepicker.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.datetimepicker.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.daterangepicker.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.treeview.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.timepicker.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
+      "wwwroot/Scripts/Jcrop/Jcrop.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
+      "wwwroot/Scripts/Administration/SystemSettings.js",
+      "wwwroot/Scripts/Administration/addrules.js",
+      "wwwroot/Scripts/Password/ShowHidePassword.js",
+      "wwwroot/Scripts/User/UserImportDatabase.js",
+      "wwwroot/Scripts/Editor/easymde.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.tooltip.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.uploadbox.min.js",
       "wwwroot/Scripts/User/EditProfile.js",
-      "wwwroot/Scripts/User/UserNotificationSettings.js"
+      "wwwroot/Scripts/User/UserNotificationSettings.js",
+      "wwwroot/Scripts/User/GetToken.js",
+      "wwwroot/Scripts/User/GenerateApiKey.js"
     ]
   },
   {
     "cdn/css/profile.css": [
+      "wwwroot/Styles/Bootstrap/bootstrap-select.css",
+      "wwwroot/Styles/scss/pages/Components/Switch.css",
+      "wwwroot/Styles/scss/pages/Components/PageWrapper.css",
+      "wwwroot/Styles/scss/pages/Admin/SystemSettings.css",
+      "wwwroot/Styles/scss/pages/Admin/send-test-mail.css",
+      "wwwroot/Styles/scss/pages/Components/Radiobutton.css",
+      "wwwroot/Styles/Editor/easymde.min.css",
+      "wwwroot/Styles/scss/pages/Grid.css",
       "wwwroot/Styles/Jcrop/Jcrop.min.css",
       "wwwroot/Styles/Bootstrap/bootstrap-select.css",
-      "wwwroot/Styles/scss/pages/Components/PageWrapper.css",
       "wwwroot/Styles/scss/pages/Profile.css",
+      "wwwroot/Styles/scss/pages/GenerateApiKey.css",
       "wwwroot/Styles/scss/pages/Components/Switch.css"
     ]
   },
@@ -1021,7 +1042,7 @@
     "cdn/scripts/change-password.js": [
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
       "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/Password/PasswordPolicy.js",
       "wwwroot/Scripts/Password/ChangePassword.js",
@@ -1041,7 +1062,7 @@
   },
   {
     "cdn/scripts/user-active-directory.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -1063,7 +1084,7 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/User/ActiveDirectoryUserImport.js"
     ]
@@ -1080,7 +1101,7 @@
   },
   {
     "cdn/scripts/group-active-directory.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -1102,7 +1123,7 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Group/ActiveDirectoryGroupImport.js"
     ]
@@ -1119,7 +1140,7 @@
   },
   {
     "cdn/scripts/authentication-group-import.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -1141,7 +1162,7 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Group/AuthenticationGroupImport.js"
     ]
@@ -1159,7 +1180,7 @@
   },
   {
     "cdn/scripts/user-management.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -1181,14 +1202,44 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/User/AddUser.js",
       "wwwroot/Scripts/User/UserManagement.js",
       "wwwroot/Scripts/System/CheckMailSettings.js",
       "wwwroot/Scripts/Password/PasswordPolicy.js",
       "wwwroot/Scripts/Password/ShowHidePassword.js"
+    ]
+  },
+  {
+    "cdn/scripts/bulk-import-result.js": [
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
+      "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
+      "wwwroot/Scripts/jQuery/jsrender.min.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.data.min.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.draggable.min.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.globalize.min.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.scroller.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.grid.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.pager.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.radiobutton.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.dropdownlist.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.dialog.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.button.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.autocomplete.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.checkbox.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.datepicker.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.datetimepicker.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
+      "wwwroot/Scripts/jQuery/jquery.validate.min.js",
+      "wwwroot/Scripts/User/BulkImportResult.js"
     ]
   },
   {
@@ -1203,7 +1254,7 @@
   },
   {
     "cdn/scripts/user-database-import.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -1226,8 +1277,8 @@
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
       "wwwroot/Scripts/EssentialJS/ej.treeview.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/User/UserImportDatabase.js"
     ]
@@ -1254,7 +1305,7 @@
   },
   {
     "cdn/scripts/synchronize-users.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -1276,7 +1327,7 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/User/SynchronizeUsers.js"
@@ -1284,7 +1335,7 @@
   },
   {
     "cdn/scripts/synchronize-groups.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -1306,7 +1357,7 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/Group/SynchronizeGroups.js"
@@ -1321,7 +1372,7 @@
   },
   {
     "cdn/scripts/user-permissions.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -1344,7 +1395,7 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js"
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js"
     ]
   },
   {
@@ -1362,7 +1413,7 @@
   },
   {
     "cdn/scripts/user-management-profile.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -1385,7 +1436,7 @@
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
       "wwwroot/Scripts/Jcrop/Jcrop.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/Password/PasswordPolicy.js",
@@ -1412,7 +1463,7 @@
   },
   {
     "cdn/scripts/groups.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -1434,7 +1485,7 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/AngularJS/ej.widget.angular.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
@@ -1450,7 +1501,7 @@
   {
     "cdn/scripts/storage-page.js": [
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Administration/Storage.js"
     ]
@@ -1461,15 +1512,17 @@
       "wwwroot/Styles/scss/pages/Components/Switch.css",
       "wwwroot/Styles/scss/pages/Components/PageWrapper.css",
       "wwwroot/Styles/scss/pages/Admin/SystemSettings.css",
+      "wwwroot/Styles/scss/pages/Admin/EmailConfigure.css",
       "wwwroot/Styles/scss/pages/Admin/send-test-mail.css",
       "wwwroot/Styles/scss/pages/Components/Radiobutton.css",
       "wwwroot/Styles/Editor/easymde.min.css",
-      "wwwroot/Styles/scss/pages/Grid.css"
+      "wwwroot/Styles/scss/pages/Grid.css",
+      "wwwroot/Styles/scss/pages/AiService.css"
     ]
   },
   {
     "cdn/scripts/site-settings.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -1492,20 +1545,53 @@
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
       "wwwroot/Scripts/EssentialJS/ej.treeview.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Administration/SystemSettings.js",
+      "wwwroot/Scripts/Administration/addrules.js",
       "wwwroot/Scripts/Password/ShowHidePassword.js",
       "wwwroot/Scripts/User/UserImportDatabase.js",
       "wwwroot/Scripts/Editor/easymde.min.js",
       "wwwroot/Scripts/EssentialJS/ej.tooltip.min.js",
       "wwwroot/Scripts/EssentialJS/ej.uploadbox.min.js",
-      "wwwroot/Scripts/administration/send-test-mail.js"
+      "wwwroot/Scripts/Administration/send-test-mail.js",
+      "wwwroot/Scripts/Administration/aiservice.js"
     ]
   },
   {
     "cdn/scripts/emailActivityLog.js": [
       "wwwroot/Scripts/Administration/EmailActivityLog.js"
+    ]
+  },
+  {
+    "cdn/scripts/generateApiKey.js": [
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery.validate.min.js",
+      "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
+      "wwwroot/Scripts/jQuery/jsrender.min.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.data.min.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.draggable.min.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.globalize.min.js",
+      "wwwroot/Scripts/EssentialJS/common/ej.scroller.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.grid.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.pager.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.dialog.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.button.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.autocomplete.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.checkbox.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.radiobutton.min.js",
+      "wwwroot/Scripts/EssentialJS/ej.dropdownlist.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
+      "wwwroot/Scripts/User/GenerateApiKey.js"
+    ]
+  },
+  {
+    "cdn/scripts/userActivityLog.js": [
+      "wwwroot/Scripts/Administration/UserActivityLog.js"
     ]
   },
   {
@@ -1520,7 +1606,7 @@
   },
   {
     "cdn/scripts/bootstrap.js": [
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js"
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js"
     ]
   },
   {
@@ -1574,8 +1660,8 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Administration/ScheduleSynchronization.js"
     ]
@@ -1593,7 +1679,7 @@
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
       "wwwroot/Scripts/EssentialJS/ej.checkbox.min.js",
       "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Administration/NotificationSettings.js"
     ]
   },
@@ -1615,7 +1701,7 @@
       "wwwroot/Scripts/EssentialJS/common/ej.globalize.min.js",
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/Administration/LicenseSettings.js",
@@ -1631,7 +1717,7 @@
   },
   {
     "cdn/scripts/credentials.js": [
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Administration/credentials.js"
     ]
   },
@@ -1648,7 +1734,7 @@
   },
   {
     "cdn/scripts/dashboard-settings.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.data.min.js",
@@ -1663,7 +1749,7 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Administration/DashboardSettings.js",
       "wwwroot/Scripts/Administration/DeploymentDashboards.js",
@@ -1679,7 +1765,7 @@
   },
   {
     "cdn/scripts/embed-settings.js": [
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Administration/embed.settings.js"
     ]
   },
@@ -1696,7 +1782,7 @@
   },
   {
     "cdn/scripts/update-card.js": [
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/Payment/UpdateCard.js"
@@ -1723,7 +1809,7 @@
       "wwwroot/Scripts/EssentialJS/ej.button.min.js",
       "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js",
       "wwwroot/Scripts/EssentialJS/ej.autocomplete.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Items/Items.js",
       "wwwroot/Scripts/Items/items.add.js",
@@ -1747,9 +1833,9 @@
   },
   {
     "cdn/scripts/addgroup.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Core/Server.Common.js",
       "wwwroot/Scripts/Core/Server.Core.js",
       "wwwroot/Scripts/Group/Group.js"
@@ -1767,7 +1853,7 @@
   },
   {
     "cdn/scripts/viewgroup.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -1789,7 +1875,7 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/AngularJS/ej.widget.angular.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
@@ -1838,10 +1924,11 @@
   {
     "cdn/scripts/schedulerdialog.js": [
       "wwwroot/Scripts/Bootstrap/custom-bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Core/Server.Common.js",
       "wwwroot/Scripts/Core/Server.Core.js",
-      "wwwroot/Scripts/Scheduler/Scheduler.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js"
+      "wwwroot/Scripts/Scheduler/Scheduler.js"
     ]
   },
   {
@@ -1853,8 +1940,8 @@
   },
   {
     "cdn/scripts/datasourcerecurrencedependency.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Core/Server.Common.js",
       "wwwroot/Scripts/Core/Server.Core.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
@@ -1883,7 +1970,8 @@
       "wwwroot/Scripts/EssentialJS/ej.datepicker.min.js",
       "wwwroot/Scripts/EssentialJS/ej.timepicker.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
-      "wwwroot/Scripts/DataSource/DatasourceRecurrenceType.js"
+      "wwwroot/Scripts/DataSource/DatasourceRecurrenceType.js",
+      "wwwroot/Scripts/DataSource/ScheduleEmailSubscription.js"
     ]
   },
   {
@@ -1907,7 +1995,8 @@
   },
   {
     "cdn/scripts/schedulerrecipients.js": [
-      "wwwroot/Scripts/Scheduler/scheduleRecipients.js"
+      "wwwroot/Scripts/Scheduler/scheduleRecipients.js",
+      "wwwroot/Scripts/DataSource/ScheduleEmailSubscription.js"
     ]
   },
   {
@@ -1917,8 +2006,14 @@
     ]
   },
   {
+    "cdn/scripts/configureemail.js": [
+      "wwwroot/Scripts/Editor/marked.min.js",
+      "wwwroot/Scripts/Administration/EmailConfigure.js"
+    ]
+  },
+  {
     "cdn/scripts/customexpressioneditor.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.draggable.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.globalize.min.js",
@@ -1926,7 +2021,7 @@
       "wwwroot/Scripts/EssentialJS/ej.dialog.min.js",
       "wwwroot/Scripts/EssentialJS/ej.button.min.js",
       "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/Scheduler/Scheduler.js",
       "wwwroot/Scripts/Scheduler/Datachanges.js",
@@ -1938,6 +2033,7 @@
   {
     "cdn/css/schedulerdialog.css": [
       "wwwroot/Styles/scss/pages/Dialogs.css",
+      "wwwroot/Styles/EssentialJS2/ej2.dropdowntree.min.css",
       "wwwroot/Styles/scss/pages/Components/Buttons.css",
       "wwwroot/Styles/scss/pages/Components/Switch.css",
       "wwwroot/Styles/Bootstrap/bootstrap-select.css",
@@ -1982,7 +2078,7 @@
   },
   {
     "cdn/scripts/notification-listing.js": [
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
       "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js",
       "wwwroot/Scripts/Notification/user-notification.js"
@@ -1990,9 +2086,9 @@
   },
   {
     "cdn/scripts/comments-page.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/Bootstrap/respond.min.js",
       "wwwroot/Scripts/Core/Server.Common.js",
@@ -2079,15 +2175,15 @@
   },
   {
     "cdn/scripts/update-template-dashboard.js": [
-      "wwwroot/Scripts/jQuery/jquery.signalR-2.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery.signalR-2.4.3.min.js",
       "wwwroot/Scripts/Dashboards/TemplateDashboard.js"
     ]
   },
   {
     "cdn/scripts/homepage-viewer-page.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/Homepages/PinWidget.js",
@@ -2124,7 +2220,7 @@
       "wwwroot/Scripts/EssentialJS/ej.button.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/jQuery/jquery-ui.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js"
     ]
   },
@@ -2153,9 +2249,9 @@
   },
   {
     "cdn/scripts/viewer/homepage-add-item-v1-dependency.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -2197,7 +2293,7 @@
   },
   {
     "cdn/scripts/save-view.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.draggable.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.globalize.min.js",
@@ -2205,7 +2301,7 @@
       "wwwroot/Scripts/EssentialJS/ej.dialog.min.js",
       "wwwroot/Scripts/EssentialJS/ej.button.min.js",
       "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/Core/Server.Common.js",
       "wwwroot/Scripts/Core/Server.Core.js",
@@ -2214,7 +2310,7 @@
   },
   {
     "cdn/scripts/save-view-v2.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.draggable.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.globalize.min.js",
@@ -2222,7 +2318,7 @@
       "wwwroot/Scripts/EssentialJS/ej.dialog.min.js",
       "wwwroot/Scripts/EssentialJS/ej.button.min.js",
       "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/Core/Server.Common.js",
       "wwwroot/Scripts/Core/Server.Core.js",
@@ -2253,8 +2349,8 @@
   },
   {
     "cdn/scripts/error-page.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Core/Server.Common.js",
       "wwwroot/Scripts/Core/Server.Core.js"
     ]
@@ -2262,6 +2358,11 @@
   {
     "cdn/css/tenant-registration-page.css": [
       "wwwroot/Styles/scss/serverconfiguration/tenantregistration.css"
+    ]
+  },
+  {
+    "cdn/css/license-activation.css": [
+      "wwwroot/Styles/scss/serverconfiguration/licenseactivation.css"
     ]
   },
   {
@@ -2274,7 +2375,7 @@
   },
   {
     "cdn/scripts/create-datasource.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js"
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js"
     ]
   },
   {
@@ -2308,7 +2409,7 @@
       "wwwroot/Scripts/AngularJS/angular-sanitize.min.js",
       "wwwroot/Scripts/AngularJS/serverApp.js",
       "wwwroot/Scripts/Bootstrap/custom-bootstrap.min.js",
-      "wwwroot/Scripts/jQuery/jquery.signalR-2.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery.signalR-2.4.3.min.js",
       "wwwroot/Scripts/Dashboards/DesignerNotification.js",
       "wwwroot/Scripts/Core/Server.Common.js",
       "wwwroot/Scripts/Dashboards/DashboardDesigner.js"
@@ -2322,7 +2423,7 @@
   },
   {
     "cdn/scripts/multi-tabbed-dashboard.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/DashboardViewerV2/multi-tabbed-dashboard.js"
     ]
   },
@@ -2368,6 +2469,7 @@
       "wwwroot/Scripts/AngularJS/angular-sanitize.min.js",
       "wwwroot/Scripts/AngularJS/serverApp.js",
       "wwwroot/Scripts/Bootstrap/custom-bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Core/Server.Common.js",
       "wwwroot/Scripts/DashboardViewerV2/DashboardComment.js",
       "wwwroot/Scripts/DashboardViewerV2/DashboardViewerV2.js",
@@ -2382,6 +2484,7 @@
       "wwwroot/Scripts/AngularJS/angular-sanitize.min.js",
       "wwwroot/Scripts/AngularJS/serverApp.js",
       "wwwroot/Scripts/Bootstrap/custom-bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Core/Server.Common.js",
       "wwwroot/Scripts/DashboardViewerV2/multi-tabbed-dashboard-viewer.js",
       "wwwroot/Scripts/DashboardViewerV2/dashboard-viewer-common.js",
@@ -2394,11 +2497,13 @@
       "wwwroot/Scripts/AngularJS/angular-filter.min.js",
       "wwwroot/Scripts/AngularJS/angular-sanitize.min.js",
       "wwwroot/Scripts/Bootstrap/custom-bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/AngularJS/serverApp.js",
       "wwwroot/Scripts/Core/Server.Common.js",
       "wwwroot/Scripts/DashboardViewerV2/DashboardComment.js",
       "wwwroot/Scripts/DashboardViewerV2/DashboardViewerV2.js",
       "wwwroot/Scripts/DashboardViewerV2/dashboard-viewer-common.js",
+      "wwwroot/Scripts/DashboardViewerV2/PinWidget.js",
       "wwwroot/Scripts/Dashboards/DashboardMobile.js"
     ]
   },
@@ -2408,6 +2513,7 @@
       "wwwroot/Scripts/AngularJS/angular-filter.min.js",
       "wwwroot/Scripts/AngularJS/angular-sanitize.min.js",
       "wwwroot/Scripts/Bootstrap/custom-bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/AngularJS/serverApp.js",
       "wwwroot/Scripts/Core/Server.Common.js",
       "wwwroot/Scripts/DashboardViewerV2/DashboardComment.js",
@@ -2467,8 +2573,8 @@
   },
   {
     "cdn/scripts/slideshow.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/EssentialJS/ej.rotator.min.js",
       "wwwroot/Scripts/Slideshow/SlideshowPreview.js",
       "wwwroot/Scripts/Slideshow/SlideshowScaling.js"
@@ -2501,7 +2607,7 @@
   },
   {
     "cdn/scripts/slideshow-listing.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -2523,13 +2629,14 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Items/items.add.js",
       "wwwroot/Scripts/Items/items.schedule.js",
       "wwwroot/Scripts/DataSourceDesigner/ConnectionDialog.js",
       "wwwroot/Scripts/Slideshow/SlideshowListing.js",
       "wwwroot/Scripts/Items/items.share-permission.js",
-      "wwwroot/Scripts/Items/items.info.js"
+      "wwwroot/Scripts/Items/items.info.js",
+      "wwwroot/Scripts/Items/ItemVersion.js"
 
     ]
   },
@@ -2571,7 +2678,7 @@
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
       "wwwroot/Scripts/EssentialJS/ej.checkbox.min.js",
       "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Support/ConciergeSupport.js"
     ]
   },
@@ -2585,12 +2692,12 @@
   },
   {
     "cdn/scripts/view-incident.js": [
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js"
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js"
     ]
   },
   {
     "cdn/scripts/list-tickets.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -2612,7 +2719,7 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js"
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js"
     ]
   },
   {
@@ -2623,7 +2730,7 @@
   },
   {
     "cdn/scripts/connected-accounts.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -2645,7 +2752,7 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/User/ConnectedAccount.js"
     ]
   },
@@ -2706,7 +2813,7 @@
   },
   {
     "cdn/scripts/create-dashboard.js": [
-      "wwwroot/Scripts/jQuery/jquery.signalR-2.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery.signalR-2.4.3.min.js",
       "wwwroot/Scripts/Items/CreateDashboard.js"
     ]
   },
@@ -2727,7 +2834,8 @@
       "wwwroot/Scripts/AngularJS/angular-sanitize.min.js",
       "wwwroot/Scripts/AngularJS/serverApp.js",
       "wwwroot/Scripts/Bootstrap/custom-bootstrap.min.js",
-      "wwwroot/Scripts/jQuery/jquery.signalR-2.2.1.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
+      "wwwroot/Scripts/jQuery/jquery.signalR-2.4.3.min.js",
       "wwwroot/Scripts/Dashboards/DesignerNotification.js",
       "wwwroot/Scripts/DataSourceDesigner/DataSourceDesigner.js",
       "wwwroot/Scripts/Core/Server.Common.js"
@@ -2746,28 +2854,40 @@
       "wwwroot/Scripts/AngularJS/angular-sanitize.min.js",
       "wwwroot/Scripts/AngularJS/serverApp.js",
       "wwwroot/Scripts/Bootstrap/custom-bootstrap.min.js",
-      "wwwroot/Scripts/jQuery/jquery.signalR-2.2.1.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
+      "wwwroot/Scripts/jQuery/jquery.signalR-2.4.3.min.js",
       "wwwroot/Scripts/DataSourceDesigner/Connection.js"
     ]
   },
   {
     "cdn/scripts/designer/datapreview-designer.js": [
       "wwwroot/Scripts/Bootstrap/custom-bootstrap.min.js",
-      "wwwroot/Scripts/jQuery/jquery.signalR-2.2.1.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
+      "wwwroot/Scripts/jQuery/jquery.signalR-2.4.3.min.js",
       "wwwroot/Scripts/DataSourceDesigner/DataPreview.js"
+    ]
+  },
+  {
+    "cdn/scripts/designer/row-level-security-datasource.js": [
+      "wwwroot/Scripts/Bootstrap/custom-bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
+      "wwwroot/Scripts/jQuery/jquery.signalR-2.4.3.min.js",
+      "wwwroot/Scripts/DataSourceDesigner/RowLevelSecurity.js"
     ]
   },
   {
     "cdn/scripts/designer/edittableorcolumn-designer.js": [
       "wwwroot/Scripts/Bootstrap/custom-bootstrap.min.js",
-      "wwwroot/Scripts/jQuery/jquery.signalR-2.2.1.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
+      "wwwroot/Scripts/jQuery/jquery.signalR-2.4.3.min.js",
       "wwwroot/Scripts/DataSourceDesigner/EditTableOrColumn.js"
     ]
   },
   {
     "cdn/scripts/designer/merge-datasource.js": [
       "wwwroot/Scripts/Bootstrap/custom-bootstrap.min.js",
-      "wwwroot/Scripts/jQuery/jquery.signalR-2.2.1.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
+      "wwwroot/Scripts/jQuery/jquery.signalR-2.4.3.min.js",
       "wwwroot/Scripts/DataSourceDesigner/MergeDataSource.js"
     ]
   },
@@ -2778,7 +2898,7 @@
   },
   {
     "cdn/scripts/embed-login.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
       "wwwroot/Scripts/Embed/Embed.js"
     ]
   },
@@ -2822,11 +2942,18 @@
   },
   {
     "cdn/scripts/tenant-registration.js": [
-      "wwwroot/Scripts/jQuery/jquery-3.2.1.min.js",
-      "wwwroot/Scripts/jQuery/jquery.signalR-2.2.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery.signalR-2.4.3.min.js",
       "wwwroot/Scripts/serverconfiguration/circle-progress.min.js",
       "wwwroot/Scripts/serverconfiguration/deployment-progress.js",
       "wwwroot/Scripts/Core/Server.Common.js"
+    ]
+  },
+  {
+    "cdn/scripts/license-activation.js": [
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery.signalR-2.4.3.min.js",
+      "wwwroot/Scripts/serverconfiguration/licenseactivation.js"
     ]
   },
   {
@@ -2839,7 +2966,7 @@
   },
   {
     "cdn/scripts/connector-page.js": [
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Administration/DataConnector.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
       "wwwroot/Scripts/EssentialJS/ej.waitingpopup.min.js"
@@ -2886,7 +3013,7 @@
   },
   {
     "cdn/scripts/published-items.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -2908,8 +3035,8 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
       "wwwroot/Scripts/Publish/published-items.js",
       "wwwroot/Scripts/Publish/publish-info.js"
     ]
@@ -2920,7 +3047,12 @@
     ]
   },
   {
-    "cdn/css/connected-sites.css" : [
+    "cdn/scripts/deleteDownloadedDashboard.js": [
+      "wwwroot/Scripts/Items/deleteDownloadedDashboard.js"
+    ]
+  },
+  {
+    "cdn/css/connected-sites.css": [
       "wwwroot/Styles/scss/pages/Components/PageWrapper.css",
       "wwwroot/Styles/scss/pages/Grid.css",
       "wwwroot/Styles/scss/pages/publishdashboard/external-sites.css"
@@ -2928,7 +3060,7 @@
   },
   {
     "cdn/scripts/connected-sites.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -2950,14 +3082,15 @@
       "wwwroot/Scripts/EssentialJS/ej.editor.min.js",
       "wwwroot/Scripts/EssentialJS/ej.toolbar.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/Password/ShowHidePassword.js",
       "wwwroot/Scripts/Items/external.sites.js"
     ]
   },
   {
     "cdn/scripts/webhooks.js": [
-      "wwwroot/Scripts/jQuery/jquery.easing-1.3.min.js",
+      "wwwroot/Scripts/jQuery/jquery-3.7.1.min.js",
+      "wwwroot/Scripts/jQuery/jquery.easing-1.4.min.js",
       "wwwroot/Scripts/jQuery/jquery.globalize.min.js",
       "wwwroot/Scripts/jQuery/jsrender.min.js",
       "wwwroot/Scripts/EssentialJS/common/ej.core.min.js",
@@ -2972,12 +3105,12 @@
       "wwwroot/Scripts/EssentialJS/ej.button.min.js",
       "wwwroot/Scripts/EssentialJS/ej.autocomplete.min.js",
       "wwwroot/Scripts/EssentialJS/ej.menu.min.js",
-      "wwwroot/Scripts/Bootstrap/bootstrap.min.js",
+      "wwwroot/Scripts/Bootstrap/bootstrap.bundle.min.js",
       "wwwroot/Scripts/EssentialJS/ej.checkbox.min.js",
       "wwwroot/Scripts/EssentialJS/ej.radiobutton.min.js",
       "wwwroot/Scripts/EssentialJS/ej.dropdownlist.min.js",
-      "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/Bootstrap/bootstrap-select.min.js",
+      "wwwroot/Scripts/jQuery/jquery.validate.min.js",
       "wwwroot/Scripts/User/Webhooks.js"
     ]
   },

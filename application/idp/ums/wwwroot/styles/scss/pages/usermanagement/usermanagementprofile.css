@@ -16,7 +16,8 @@
   margin-right: 20px;
   letter-spacing: 0.3px;
   float: right;
-  display: inline-block !important; }
+  display: inline-block !important;
+  background-color: var(--background) !important; }
 #view-user-profile .admin-page-header .dropdown {
   display: inline-block !important;
   float: right; }
@@ -46,7 +47,8 @@
   margin-top: 0px;
   margin-bottom: 16px;
   text-align: center;
-  width: 64px; }
+  width: 64px;
+  position: relative; }
   #view-user-profile .admin-page-body .img-view-holder #first-letter {
     font-size: 18px !important;
     font-weight: 400 !important;
@@ -55,7 +57,8 @@
 #view-user-profile .admin-page-body #profile-details {
   margin-top: 20px;
   margin-left: 10px;
-  width: 750px; }
+  width: 750px;
+  position: relative; }
   #view-user-profile .admin-page-body #profile-details form {
     display: table;
     width: 60%; }
@@ -99,7 +102,7 @@
         line-height: 20px;
         padding-bottom: 20px; }
       #view-user-profile .admin-page-body #profile-details form div.form-element-label label {
-        color: var(--grey-500);
+        color: var(--grey-700);
         width: 70px; }
       #view-user-profile .admin-page-body #profile-details form div.form-element-label input, #view-user-profile .admin-page-body #profile-details form div.form-element-label .user-status {
         padding-left: 39px;
@@ -226,6 +229,18 @@
   display: none; }
 #change-password .confirm-password {
   margin-bottom: 32px; }
+#change-password .password-notification {
+  width: 632px;
+  border-radius: 4px;
+  margin-top: 0px;
+  margin-bottom: 32px;
+  padding: 12px;
+  letter-spacing: 0.26px;
+  background-color: var(--warning-bg-normal-color);
+  border: 1px solid var(--warning-border-normal-color); }
+
+.change-password-position {
+  position: relative !important; }
 
 #profile-navigation {
   margin-top: -20px;
@@ -409,7 +424,7 @@
     margin-top: 5px; }
   #change-password #change-password-content .change-password-form .form-control {
     height: 32px !important; }
-  #change-password #change-password-content .change-password-form #new-password-validate, #change-password #change-password-content .change-password-form #confirm-password-validate {
+  #change-password #change-password-content .change-password-form #new-password-validate, #change-password #change-password-content .change-password-form #confirm-password-validate, #change-password #change-password-content .change-password-form #old-password-validate {
     font-size: 12px !important; }
 
   #avatar-upload-box .modal-dialog .modal-content .modal-body .image-path #image-path {
@@ -439,7 +454,7 @@
   letter-spacing: 0.3px; }
   #recovery-code-box .recovery-code-containers .bg-info {
     border-radius: 4px;
-    background-color: var(--warning-bg-normal-color);
+    background-color: var(--warning-bg-normal-color) !important;
     border: 1px solid var(--warning-border-normal-color);
     margin: 4px 0px 16px 0px; }
     #recovery-code-box .recovery-code-containers .bg-info p {
@@ -455,7 +470,8 @@
       height: 23px;
       width: 23px;
       float: right;
-      padding: 10px 0px; }
+      padding: 10px 0px;
+      cursor: pointer; }
     #recovery-code-box .recovery-code-containers .recovery-code-content .recovery-code {
       width: 350px; }
       #recovery-code-box .recovery-code-containers .recovery-code-content .recovery-code td {
@@ -486,3 +502,10 @@
         color: var(--red);
         text-decoration-color: var(--red);
         text-decoration-style: dotted; }
+
+.dropdown .assign-role {
+  cursor: pointer !important; }
+.dropdown .delete-user {
+  cursor: pointer !important; }
+.dropdown .unlock-user {
+  cursor: pointer !important; }

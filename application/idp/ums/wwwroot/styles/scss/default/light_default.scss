@@ -41,6 +41,9 @@ $warning-700:  #ff3b30;
 $place-holder: #b3b3b3;
 $input-box-border: #cccccc;
 
+// blue variant
+$blue-000: #F3F7FA;
+
 :root {
     /*Background color*/
     --background: #{$background};
@@ -75,11 +78,14 @@ $input-box-border: #cccccc;
     --input-box-border: #{$input-box-border};
     --place-holder: #{$place-holder};
     --section-backgroud: #{$surface};
+    --multi-tab-badge: var(--grey-100);
     // Warning colors
     --warning-900: #{$warning-900};
     --warning-800: #{$warning-800};
     --warning-700: #{$warning-700};
     --red-900: #{$red-900};
+    //resource-page-bg-normal-color
+    --resource-page-bg-normal-color: #{$blue-000};
     ////primary branding color
     --primary-branding-bg-color: var(--primary-branding-color);
     --primary-branding-border-common-color: var(--primary-branding-border-color);
@@ -100,9 +106,13 @@ $input-box-border: #cccccc;
     --danger-btn-hover: #{lighten($alert, 4.12)};
     //selected text color
     --selector-color: #{lighten($primary, 4.12)};
+    //top profilesection
+    --top-header-bg-color: var(--background);
     //LogoSection
     --logo-section-border-color: var(--grey-400);
     --logo-section-description-color: var(--secondary-text-color);
+    --logo-section-bg-color: var(--grey-000);
+    
     // Link colors
     --global-link-text-normal-color: var(--hyper-link-normal-color);
     --global-link-text-hover-color: var(--hyper-link-hover-color);

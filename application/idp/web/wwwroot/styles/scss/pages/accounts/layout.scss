@@ -35,8 +35,8 @@ body {
                 margin-bottom: 20px;
 
                 img {
-                    height: 95px;
-                    width: 300px;
+                    max-height: 70px;
+                    max-width: 200px;
                 }
 
                 a {
@@ -197,4 +197,8 @@ input::-ms-reveal {
             }
         }
     }
+}
+
+.tooltip .tooltip-inner {
+    font-size: 12px;
 }

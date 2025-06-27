@@ -1274,7 +1274,7 @@ msgstr ""
 msgid "Site settings value is empty."
 msgstr ""
 
-msgid "Username should be between 3 to 254 characters."
+msgid "Username should be between 2 to 254 characters."
 msgstr ""
 
 msgid "Copy right information cannot exceed 100 characters."
@@ -2378,22 +2378,31 @@ msgstr ""
 msgid "User Activation"
 msgstr ""
 
+msgid "Time Driven Dashboard Export"
+msgstr ""
+
+msgid "Alert Driven Dashboard Export"
+msgstr ""
+
 msgid "Inherit from browser time zone"
 msgstr ""
 
 msgid "Inherit from global settings"
 msgstr ""
 
-msgid "Settings has been updated successfully."
+msgid "Settings have been updated successfully."
 msgstr ""
 
-msgid "Dashboard Settings has been updated successfully."
+msgid "Dashboard settings have been updated successfully."
 msgstr ""
 
-msgid "Error in getting Next Schedule."
+msgid "Error in getting next schedule."
 msgstr ""
 
 msgid "{0} Users, {1} Groups, and {2} External Recipients"
+msgstr ""
+
+msgid "Copyright information cannot exceed 100 characters."
 msgstr ""
 
 msgid "User Profile has been updated successfully."
@@ -2402,13 +2411,13 @@ msgstr ""
 msgid "User updated successfully."
 msgstr ""
 
-msgid "User profile updation failed."
+msgid "User profile update failed."
 msgstr ""
 
-msgid "User profile has been failed to update."
+msgid "User profile has failed to update."
 msgstr ""
 
-msgid "Login options has been updated successfully."
+msgid "Login options have been updated successfully."
 msgstr ""
 
 msgid "Failed to update the login options."
@@ -2420,7 +2429,7 @@ msgstr ""
 msgid "Group name already exists"
 msgstr ""
 
-msgid "Group creation has been failed."
+msgid "Group creation has failed."
 msgstr ""
 
 msgid "Group has been created successfully."
@@ -2435,16 +2444,16 @@ msgstr ""
 msgid "Please enable the isolation code in dashboard settings."
 msgstr ""
 
-msgid "Isolation code has been failed to update."
+msgid "Isolation code has failed to update."
 msgstr ""
 
 msgid "Group has been updated successfully."
 msgstr ""
 
-msgid "There is an error in updating this group."
+msgid "There was an error in updating this group."
 msgstr ""
 
-msgid "The AD settings is not configured."
+msgid "The AD settings are not configured."
 msgstr ""
 
 msgid "Group name should not contain special characters {0}"
@@ -2465,28 +2474,55 @@ msgstr ""
 msgid "Item has been published successfully."
 msgstr ""
 
-msgid "Error occured while validating the domain."
+msgid "Please enter a valid subdomain as part of the URL. Example: '{0}' or '{1}'."
 msgstr ""
 
-msgid "Error occured while adding the domain."
+msgid "Error occurred while adding the domain."
 msgstr ""
 
-msgid "Error occured while deleting the domain."
+msgid "Error occurred while deleting the domain."
+msgstr ""
+
+msgid "A {0} record is not mapped from {1} to {2}."
 msgstr ""
 
 msgid "Multi-Tabbed Dashboard"
 msgstr ""
 
-msgid "Multi-tabbed dashboard name already exists"
+msgid "Multitabbed dashboard name already exists."
 msgstr ""
 
-msgid "You do not have permission to create multi-tabbed dashboard."
+msgid "Tab name already exists"
 msgstr ""
 
-msgid "Multi-tabbed dashboard has been added successfully."
+msgid "You do not have permission to create multitabbed dashboard."
 msgstr ""
 
-msgid "Multi-tabbed dashboard has been updated successfully."
+msgid "Multitabbed dashboard has been added successfully."
+msgstr ""
+
+msgid "Multitabbed dashboard has been updated successfully."
+msgstr ""
+
+msgid "Tab Security"
+msgstr ""
+
+msgid "Tab security changes have been saved successfully."
+msgstr ""
+
+msgid "Failed to save tab security changes."
+msgstr ""
+
+msgid "Tab security has been enabled."
+msgstr ""
+
+msgid "Tab security has been disabled."
+msgstr ""
+
+msgid "Tab security has already been enabled."
+msgstr ""
+
+msgid "Tab security has already been disabled."
 msgstr ""
 
 msgid "Access denied"
@@ -2495,25 +2531,28 @@ msgstr ""
 msgid "Access Denied"
 msgstr ""
 
-msgid "Failed to update the multi-tabbed dashboard child details."
+msgid "Failed to update the multitabbed dashboard child details."
 msgstr ""
 
-msgid "Failed to create multi-tabbed dashboard."
+msgid "Failed to create multitabbed dashboard."
 msgstr ""
 
-msgid "Failed to add the multi-tabbed dashboard."
+msgid "Failed to add the multitabbed dashboard."
 msgstr ""
 
-msgid "Failed to update the Multi-tabbed dashboard."
+msgid "Failed to update the Multitabbed dashboard."
 msgstr ""
 
-msgid "You do not have permission to edit multi-tabbed dashboard."
+msgid "You do not have permission to edit multitabbed dashboard."
 msgstr ""
 
 msgid "You do not have permission to create dashboards in any category or there is no category to move."
 msgstr ""
 
 msgid "You do not have permission to create dashboards in a category."
+msgstr ""
+
+msgid "You do not have permission to download this dashboard."
 msgstr ""
 
 msgid "So you could not copy dashboards in any category."
@@ -2528,13 +2567,13 @@ msgstr ""
 msgid "deployment dashboard details already added."
 msgstr ""
 
-msgid "deployment dashboard details has been added successfully."
+msgid "deployment dashboard details have been added successfully."
 msgstr ""
 
-msgid "deployment dashboard details has been removed successfully."
+msgid "deployment dashboard details have been removed successfully."
 msgstr ""
 
-msgid "A file with the same name already exists"
+msgid "A file with the same name already exists."
 msgstr ""
 
 msgid "Clone Data Source"
@@ -2588,7 +2627,10 @@ msgstr ""
 msgid "The dashboard security settings have been updated."
 msgstr ""
 
-msgid "Sample Dashboards has been added successfully."
+msgid "Sample dashboards have been added successfully."
+msgstr ""
+
+msgid "Sample Dashboards"
 msgstr ""
 
 msgid "Data refresh triggered successfully."
@@ -2603,6 +2645,21 @@ msgstr ""
 msgid "Datasource Deleted"
 msgstr ""
 
+msgid "Refresh settings have been configured."
+msgstr ""
+
+msgid "Refresh settings have been enabled."
+msgstr ""
+
+msgid "Refresh settings have been disabled."
+msgstr ""
+
+msgid "Refresh settings have been disabled by the system due to 5 consecutive failures."
+msgstr ""
+
+msgid "Moved"
+msgstr ""
+
 msgid "View slideshow"
 msgstr ""
 
@@ -2615,7 +2672,7 @@ msgstr ""
 msgid "Slideshow has been updated successfully."
 msgstr ""
 
-msgid "You do not have permission to create slideshow."
+msgid "You do not have permission to create a slideshow."
 msgstr ""
 
 msgid "Failed to create slideshow."
@@ -2657,25 +2714,55 @@ msgstr ""
 msgid "Slideshow deleted"
 msgstr ""
 
+msgid "The selected dashboard has already been added to the slideshow"
+msgstr ""
+
+msgid "The selected dashboard has already been added to the multi-tab dashboard"
+msgstr ""
+
+msgid "The selected dashboard view has already been added to the slideshow"
+msgstr ""
+
+msgid "All dashboards from the selected category have already been added to the slideshow"
+msgstr ""
+
 msgid "Site is unavailable."
 msgstr ""
 
 msgid "Site URL - {0}"
 msgstr ""
 
-msgid "External site details has been added successfully."
+msgid "External site details have been added successfully."
 msgstr ""
 
 msgid "External site name is duplicated"
 msgstr ""
 
+msgid "The specified external site already exists."
+msgstr ""
+
+msgid "The site URL you provided is invalid or the site is unavailable."
+msgstr ""
+
 msgid "Failed to add the external site details."
+msgstr ""
+
+msgid "Failed to edit the external site details."
 msgstr ""
 
 msgid "Failed to get server token."
 msgstr ""
 
-msgid "Embed Settings has been updated successfully."
+msgid "Please enter valid {0} site details"
+msgstr ""
+
+msgid "The destination site does not have any users with the required permissions to publish a dashboard. Please ensure that at least one user has the necessary permissions to create dashboards, data sources, and categories."
+msgstr ""
+
+msgid "The destination site does not have any users with the required permissions to publish a datasource. Please ensure that at least one user has the necessary permissions to create dashboards, data sources, and categories."
+msgstr ""
+
+msgid "Embed settings have been updated successfully."
 msgstr ""
 
 msgid "Failed to enable the embed authentication."
@@ -2711,6 +2798,9 @@ msgstr ""
 msgid "Client ID or client secret is invalid."
 msgstr ""
 
+msgid "Provided client ID or client secret is invalid."
+msgstr ""
+
 msgid "Server access token is empty"
 msgstr ""
 
@@ -2726,10 +2816,25 @@ msgstr ""
 msgid "Please reload the page and try again"
 msgstr ""
 
+msgid "Please reload the page."
+msgstr ""
+
+msgid "Failed"
+msgstr ""
+
+msgid "Started"
+msgstr ""
+
 msgid "On Demand"
 msgstr ""
 
+msgid "Schedule"
+msgstr ""
+
 msgid "Schedule {0} has been started successfully."
+msgstr ""
+
+msgid "Dashboard export schedule has failed because the dashboard linked with this schedule has been deleted."
 msgstr ""
 
 msgid "System"
@@ -2742,6 +2847,12 @@ msgid "Mail settings not configured"
 msgstr ""
 
 msgid "Failed to delete the connected account."
+msgstr ""
+
+msgid "Updated"
+msgstr ""
+
+msgid "Deleted"
 msgstr ""
 
 msgid "Moved to Trash"
@@ -2768,10 +2879,16 @@ msgstr ""
 msgid "Please avoid special characters"
 msgstr ""
 
+msgid "Please avoid {0} tags {1} and {2}"
+msgstr ""
+
 msgid "Password must meet the following requirements. It must contain,"
 msgstr ""
 
 msgid "at least 6 characters"
+msgstr ""
+
+msgid "at least {0} characters"
 msgstr ""
 
 msgid "1 uppercase"
@@ -2822,7 +2939,10 @@ msgstr ""
 msgid "Please select at least one day"
 msgstr ""
 
-msgid "Please enter the name"
+msgid "Please enter valid schedule recurrence."
+msgstr ""
+
+msgid "Please enter the name."
 msgstr ""
 
 msgid "Invalid {0} Service endpoint"
@@ -2834,16 +2954,16 @@ msgstr ""
 msgid "Invalid custom endpoint"
 msgstr ""
 
-msgid "Please enter the Storage Account name"
+msgid "Please enter the storage account name."
 msgstr ""
 
 msgid "Please enter the {0} Service endpoint"
 msgstr ""
 
-msgid "Please enter the Access key"
+msgid "Please enter the access key."
 msgstr ""
 
-msgid "Please enter the Container name"
+msgid "Please enter the container name."
 msgstr ""
 
 msgid "Please enter {0}"
@@ -2852,13 +2972,16 @@ msgstr ""
 msgid "Please enter the valid {0}"
 msgstr ""
 
-msgid "Subdomain name should match with the Account name"
+msgid "The subdomain name should match the account name."
 msgstr ""
 
 msgid "Browse file path"
 msgstr ""
 
 msgid "Category name already exists"
+msgstr ""
+
+msgid "Delete"
 msgstr ""
 
 msgid "Collapse"
@@ -2871,6 +2994,15 @@ msgid "Heading"
 msgstr ""
 
 msgid "Quote"
+msgstr ""
+
+msgid "Session Timeout"
+msgstr ""
+
+msgid "Your session has expired. Please log in or refresh the page and try again."
+msgstr ""
+
+msgid "You may have unsaved changes in the dashboard. Please continue from the draft."
 msgstr ""
 
 msgid "Generic List"
@@ -2891,10 +3023,10 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-msgid "Unable to update favorite."
+msgid "Unable to update favorites."
 msgstr ""
 
-msgid "Username should not contain white space"
+msgid "Username should not contain blank spaces."
 msgstr ""
 
 msgid "Yes"
@@ -2906,22 +3038,31 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
+msgid "Finish"
+msgstr ""
+
+msgid "Know more"
+msgstr ""
+
+msgid "Know less"
+msgstr ""
+
 msgid "Delete profile picture"
 msgstr ""
 
 msgid "Please choose a valid {0} file to upload"
 msgstr ""
 
-msgid "Dashboard with the same name already exists"
+msgid "A dashboard with the same name already exists."
 msgstr ""
 
 msgid "Click to copy"
 msgstr ""
 
-msgid "Please enter the data source name"
+msgid "Copied"
 msgstr ""
 
-msgid "Data source name already exists"
+msgid "Please enter the data source name"
 msgstr ""
 
 msgid "You do not have permission to create a dashboard in this category."
@@ -2933,13 +3074,28 @@ msgstr ""
 msgid "Group Name"
 msgstr ""
 
-msgid "Invalid Username or Email Address"
+msgid "Invalid username or email address."
 msgstr ""
 
-msgid "Duplicated Username or Email Address"
+msgid "Duplicated username or email address."
 msgstr ""
 
 msgid "Status"
+msgstr ""
+
+msgid "Success"
+msgstr ""
+
+msgid "Refresh Missed"
+msgstr ""
+
+msgid "Another refresh is running"
+msgstr ""
+
+msgid "The data source refresh could not be initiated during the specified time due to an unknown reason, which may include the app service or other dependent services being down."
+msgstr ""
+
+msgid "The data source refresh could not be initiated during the specified time because another refresh was already in progress."
 msgstr ""
 
 msgid "Select All"
@@ -2966,13 +3122,16 @@ msgstr ""
 msgid "Unable to add a widget to the pinboard. Widget upload limit exceeded."
 msgstr ""
 
-msgid "Add Dashboard to the Pinboard"
+msgid "Add dashboard to the pinboard."
 msgstr ""
 
-msgid "Add Widget to the Pinboard"
+msgid "Add widget to the pinboard."
 msgstr ""
 
 msgid "Please enter pinboard name"
+msgstr ""
+
+msgid "Pinboard name already exists."
 msgstr ""
 
 msgid "Dashboard has been pinned successfully."
@@ -2999,7 +3158,7 @@ msgstr ""
 msgid "{0} permission for {1} has been added successfully."
 msgstr ""
 
-msgid "Permission Entity already exists"
+msgid "Permission entity already exists."
 msgstr ""
 
 msgid "Checks whether the filtered value changes."
@@ -3053,7 +3212,10 @@ msgstr ""
 msgid "Please enter the database name"
 msgstr ""
 
-msgid "Please enter the Port number"
+msgid "Please enter the service name"
+msgstr ""
+
+msgid "Please enter the port number."
 msgstr ""
 
 msgid "{0} duplicate user(s) exists."
@@ -3071,7 +3233,7 @@ msgstr ""
 msgid "Profile picture has been saved successfully."
 msgstr ""
 
-msgid "Failed to update the Profile picture, try again later."
+msgid "Failed to update the profile picture, try again later."
 msgstr ""
 
 msgid "Are you sure you want to delete the profile picture?"
@@ -3095,7 +3257,7 @@ msgstr ""
 msgid "Password has been updated successfully."
 msgstr ""
 
-msgid "Failed to update the Password, try again later."
+msgid "Failed to update the password, try again later."
 msgstr ""
 
 msgid "Click to mark as default"
@@ -3116,7 +3278,7 @@ msgstr ""
 msgid "Unlisted"
 msgstr ""
 
-msgid "Unlisted dashboards can not be shared."
+msgid "Unlisted dashboards cannot be shared."
 msgstr ""
 
 msgid "Please enter username or email address"
@@ -3128,10 +3290,16 @@ msgstr ""
 msgid "Service Unavailable"
 msgstr ""
 
-msgid "Database name is already exist"
+msgid "Database name already exists."
 msgstr ""
 
-msgid "Schedule Synchronization Settings"
+msgid "Dashboard Settings"
+msgstr ""
+
+msgid "Notification Settings"
+msgstr ""
+
+msgid "Schedule synchronization settings."
 msgstr ""
 
 msgid "Please enter schedule time"
@@ -3164,10 +3332,22 @@ msgstr ""
 msgid "Data Connectors Configuration"
 msgstr ""
 
+msgid "Widgets Configuration"
+msgstr ""
+
+msgid "Site Settings"
+msgstr ""
+
+msgid "Email Settings"
+msgstr ""
+
+msgid "Accounts Settings"
+msgstr ""
+
 msgid "I have read and accept the login disclaimer."
 msgstr ""
 
-msgid "By logging in you accept our login disclaimer."
+msgid "By logging in, you accept our login disclaimer."
 msgstr ""
 
 msgid "Please enter the login disclaimer title"
@@ -3179,7 +3359,7 @@ msgstr ""
 msgid "Please enter the consent content"
 msgstr ""
 
-msgid "Entered disclaimer message has more than 4000 characters."
+msgid "Entered disclaimer message has more than 4,000 characters."
 msgstr ""
 
 msgid "Please enter the copy right information text"
@@ -3218,19 +3398,28 @@ msgstr ""
 msgid "Update Category"
 msgstr ""
 
-msgid "Access denied to update category."
+msgid "You do not have permission to update category."
 msgstr ""
 
-msgid "Error while updating category."
+msgid "Error encountered while updating the category."
+msgstr ""
+
+msgid "Update"
 msgstr ""
 
 msgid "Add Category"
 msgstr ""
 
-msgid "Access denied to add category."
+msgid "You do not have permission to add a category."
 msgstr ""
 
-msgid "Error while adding category."
+msgid "Error encountered while adding category."
+msgstr ""
+
+msgid "Create Category"
+msgstr ""
+
+msgid "Comment"
 msgstr ""
 
 msgid "Comment should not be blank"
@@ -3258,6 +3447,9 @@ msgid "4000 characters maximum"
 msgstr ""
 
 msgid "Save"
+msgstr ""
+
+msgid "View Status"
 msgstr ""
 
 msgid "Cancel"
@@ -3317,7 +3509,7 @@ msgstr ""
 msgid "Failed to unwatch this item, please try again later."
 msgstr ""
 
-msgid "Image File Format not supported."
+msgid "Image file format not supported."
 msgstr ""
 
 msgid "Actions"
@@ -3419,13 +3611,16 @@ msgstr ""
 msgid "Payment for the current billing cycle has failed and your site will be suspended on {0}. Click {1}here{2} to update payment details to avoid suspension of the site."
 msgstr ""
 
-msgid "Your Dashboards has been suspended due to failed payments. Please update your payment details to continue using the site."
+msgid "Your dashboards have been suspended due to failed payments. Please update your payment details to continue using the site."
 msgstr ""
 
-msgid "Update your Payment details"
+msgid "Update your payment details"
 msgstr ""
 
 msgid "Please upload dashboard file"
+msgstr ""
+
+msgid "Dashboard file uploaded successfully."
 msgstr ""
 
 msgid "New Category"
@@ -3479,7 +3674,7 @@ msgstr ""
 msgid "Pinboard has been added successfully."
 msgstr ""
 
-msgid "Error while adding a pinboard."
+msgid "Error encountered while adding a pinboard."
 msgstr ""
 
 msgid "Drag your widgets here to customize layout"
@@ -3515,7 +3710,7 @@ msgstr ""
 msgid "close"
 msgstr ""
 
-msgid "This dashboard has been deleted/updated."
+msgid "This dashboard has been deleted or updated."
 msgstr ""
 
 msgid "Drag and Drop"
@@ -3542,13 +3737,31 @@ msgstr ""
 msgid "Pin Widget"
 msgstr ""
 
-msgid "Currently this dashboard is not supported."
+msgid "Currently, this dashboard is not supported."
 msgstr ""
 
-msgid "Currently this widget is not supported."
+msgid "Currently, this widget is not supported."
 msgstr ""
 
 msgid "Search pinboards"
+msgstr ""
+
+msgid "Oops! The widget you are trying to access is restricted from viewing from the current {0} address:"
+msgstr ""
+
+msgid "A data source refresh is currently in progress."
+msgstr ""
+
+msgid "The data source refresh was successfully completed at {0}."
+msgstr ""
+
+msgid "The data source refresh failed at {0}. Click the Failed status to learn more."
+msgstr ""
+
+msgid "Check status"
+msgstr ""
+
+msgid "Refresh status"
 msgstr ""
 
 msgid "Add a widget to the pinboard"
@@ -3563,7 +3776,7 @@ msgstr ""
 msgid "Preview Item"
 msgstr ""
 
-msgid "Error while getting tabs for multi-tabbed dashboards."
+msgid "Error while getting tabs for multitabbed dashboards."
 msgstr ""
 
 msgid "Error while pinning dashboard to the pinboard."
@@ -3608,7 +3821,7 @@ msgstr ""
 msgid "Resend Activation Code"
 msgstr ""
 
-msgid "Activation code has been generated successfully. As email settings are not configured we are not able to send activation email to the user."
+msgid "Activation code has been generated successfully. As email settings are not configured, we are not able to send activation email to the user."
 msgstr ""
 
 msgid "Please click here to configure the email settings."
@@ -3617,7 +3830,13 @@ msgstr ""
 msgid "Activation code has been sent successfully."
 msgstr ""
 
+msgid "Active"
+msgstr ""
+
 msgid "Inactive"
+msgstr ""
+
+msgid "Select webhook"
 msgstr ""
 
 msgid "User account has been activated successfully."
@@ -3692,10 +3911,16 @@ msgstr ""
 msgid "Username, First name, Last name are not required as the user already exists in {0}."
 msgstr ""
 
-msgid "Username should be between 3 to 254 characters"
+msgid "Username should be between 2 to 254 characters."
+msgstr ""
+
+msgid "Failed to add user."
 msgstr ""
 
 msgid "Add User in Group"
+msgstr ""
+
+msgid "Failed to add all the selected users in the group since some of the users removed from this site already."
 msgstr ""
 
 msgid "Users have been successfully added to this group."
@@ -3728,6 +3953,9 @@ msgstr ""
 msgid "Name should not contain special characters {0}"
 msgstr ""
 
+msgid "Name cannot exceed 254 characters"
+msgstr ""
+
 msgid "First name should not be empty"
 msgstr ""
 
@@ -3755,6 +3983,21 @@ msgstr ""
 msgid "Password must contain at least six characters with one uppercase letter, one lowercase letter, one number, and one special character."
 msgstr ""
 
+msgid "Password must contain at least {0} characters"
+msgstr ""
+
+msgid "one uppercase letter"
+msgstr ""
+
+msgid "one lowercase letter"
+msgstr ""
+
+msgid "one number"
+msgstr ""
+
+msgid "one special character"
+msgstr ""
+
 msgid "Password cannot exceed 85 characters"
 msgstr ""
 
@@ -3776,6 +4019,9 @@ msgstr ""
 msgid "Email address is duplicated in the connected database"
 msgstr ""
 
+msgid "Please select a CSV file with user count of {0} or less."
+msgstr ""
+
 msgid "Please select a {0} file with a valid format"
 msgstr ""
 
@@ -3783,6 +4029,45 @@ msgid "Email addresses, Names and Passwords with special characters {0} will not
 msgstr ""
 
 msgid "Email addresses and Names with special characters {0} will not be displayed in the list below."
+msgstr ""
+
+msgid "Remove User"
+msgstr ""
+
+msgid "Delete bulk users import job"
+msgstr ""
+
+msgid "Error while importing users."
+msgstr ""
+
+msgid "Are you sure you want to delete the bulk users import job - {0}?"
+msgstr ""
+
+msgid "Are you sure you want to suspend the bulk users import job - {0}?"
+msgstr ""
+
+msgid "Import users’ job has been deleted successfully."
+msgstr ""
+
+msgid "Failed to delete import users’ job."
+msgstr ""
+
+msgid "Import users’ job has been suspended successfully."
+msgstr ""
+
+msgid "Failed to suspend import users’ job"
+msgstr ""
+
+msgid "Suspend bulk users import job"
+msgstr ""
+
+msgid "Bulk users import job has already been deleted. Please refresh the page."
+msgstr ""
+
+msgid "Bulk users import job has already been suspended. Please refresh the page."
+msgstr ""
+
+msgid "Assign Group"
 msgstr ""
 
 msgid "Password must be 6 characters including 1 uppercase letter, 1 lowercase letter, 1 numeric and 1 special character."
@@ -3803,7 +4088,55 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
+msgid "First Name"
+msgstr ""
+
+msgid "Last Name"
+msgstr ""
+
+msgid "Bulk User Import"
+msgstr ""
+
+msgid "Bulk Group Import"
+msgstr ""
+
+msgid "A background job for importing users has been created. The importing process will begin either within 3 minutes of the job creation time or after the completion of any other import tasks in the queue. Please check the import job status."
+msgstr ""
+
+msgid "A background job for importing groups has been created. The importing process will begin either within 3 minutes of the job creation time or after the completion of any other import tasks in the queue. Please check the import job status."
+msgstr ""
+
+msgid "User Import Status"
+msgstr ""
+
+msgid "Currently, there are 5 bulk import jobs waiting in the queue for processing. Kindly wait for some of these to finish before starting another import job."
+msgstr ""
+
+msgid "Total Users"
+msgstr ""
+
+msgid "Failed Users"
+msgstr ""
+
+msgid "Imported Users"
+msgstr ""
+
+msgid "Yet to start"
+msgstr ""
+
+msgid "In progress"
+msgstr ""
+
+msgid "Suspended"
+msgstr ""
+
 msgid "Email Address"
+msgstr ""
+
+msgid "Display Name"
+msgstr ""
+
+msgid "Error Message"
 msgstr ""
 
 msgid "Left table condition"
@@ -3828,6 +4161,9 @@ msgid "Please map any column to the IsActive field since  the IsActive value dep
 msgstr ""
 
 msgid "Synchronizing users with {0} has been failed."
+msgstr ""
+
+msgid "Database Synchronization"
 msgstr ""
 
 msgid "Synchronizing users with existing database has been failed."
@@ -3915,6 +4251,9 @@ msgid "Please select a database"
 msgstr ""
 
 msgid "The below table(s) are already exists in the selected database. Please change the prefix or choose some other database."
+msgstr ""
+
+msgid "Bold ETL"
 msgstr ""
 
 msgid "Please enter expression name."
@@ -4103,7 +4442,22 @@ msgstr ""
 msgid "This Week"
 msgstr ""
 
+msgid "Last Week"
+msgstr ""
+
+msgid "Two Weeks Ago"
+msgstr ""
+
+msgid "Three Weeks Ago"
+msgstr ""
+
 msgid "This Month"
+msgstr ""
+
+msgid "Last Month"
+msgstr ""
+
+msgid "Older"
 msgstr ""
 
 msgid "Last {0} Days"
@@ -4124,10 +4478,16 @@ msgstr ""
 msgid "Not refreshed yet"
 msgstr ""
 
-msgid "Refresh Data"
+msgid "Yet to complete"
 msgstr ""
 
-msgid "The schedule has been disabled"
+msgid "Status unknown"
+msgstr ""
+
+msgid "Refresh Disabled"
+msgstr ""
+
+msgid "Refresh Data"
 msgstr ""
 
 msgid "The refresh has been disabled"
@@ -4169,13 +4529,13 @@ msgstr ""
 msgid "Occurs every day effective from {0} until {1}"
 msgstr ""
 
-msgid "Occurs every {0} days ago effective from {1}"
+msgid "Occurs every {0} days, effective from {1}"
 msgstr ""
 
-msgid "Occurs every {0} days ago effective from {1} and ends after {2} occurrences"
+msgid "Occurs every {0} days, effective from {1} and ends after {2} occurrence(s)"
 msgstr ""
 
-msgid "Occurs every {0} days ago effective from {1} until {2}"
+msgid "Occurs every {0} days, effective from {1} until {2}"
 msgstr ""
 
 msgid "Occurs every weekday effective from {0}"
@@ -4463,7 +4823,7 @@ msgstr ""
 msgid "Schedule has been deleted successfully."
 msgstr ""
 
-msgid "Access denied to delete schedule"
+msgid "You do not have permission to delete this schedule."
 msgstr ""
 
 msgid "Schedule name already exists"
@@ -4472,7 +4832,7 @@ msgstr ""
 msgid "Select dashboard"
 msgstr ""
 
-msgid "Select Widget"
+msgid "Select widget"
 msgstr ""
 
 msgid "Email message should not be blank"
@@ -4490,7 +4850,7 @@ msgstr ""
 msgid "Choose the subscribers and export format"
 msgstr ""
 
-msgid "Create a data driven or a time-based schedule"
+msgid "Create a data-driven or a time-based schedule."
 msgstr ""
 
 msgid "Enter the alert message to be added in the scheduled email"
@@ -4505,13 +4865,34 @@ msgstr ""
 msgid "Select category"
 msgstr ""
 
+msgid "Value Changes"
+msgstr ""
+
+msgid "Increases"
+msgstr ""
+
+msgid "Continuously Increases"
+msgstr ""
+
+msgid "Decreases"
+msgstr ""
+
+msgid "Continuously Decreases"
+msgstr ""
+
 msgid "Create an expression to add a column with a custom value"
 msgstr ""
 
 msgid "Custom Expression"
 msgstr ""
 
+msgid "The schedule has been disabled"
+msgstr ""
+
 msgid "Move Dashboard"
+msgstr ""
+
+msgid "Move"
 msgstr ""
 
 msgid "Dashboard has been moved successfully."
@@ -4523,7 +4904,61 @@ msgstr ""
 msgid "Copy Dashboard"
 msgstr ""
 
-msgid "Dashboard has been copied successfully."
+msgid "Copy"
+msgstr ""
+
+msgid "Clone"
+msgstr ""
+
+msgid "PREVIEW"
+msgstr ""
+
+msgid "Download Dashboard"
+msgstr ""
+
+msgid "Prepare Download"
+msgstr ""
+
+msgid "The dashboard is being prepared for download. Please check the file preparation status under the {0} tab on the Publish page."
+msgstr ""
+
+msgid "The latest version of this dashboard was already prepared and is available for download under the {0} tab on the Publish page."
+msgstr ""
+
+msgid "Offline Files"
+msgstr ""
+
+msgid "Requested Date"
+msgstr ""
+
+msgid "Completed Date"
+msgstr ""
+
+msgid "Contains Sensitive Data"
+msgstr ""
+
+msgid "Selected ({0})"
+msgstr ""
+
+msgid "No dashboard download requests are available to display"
+msgstr ""
+
+msgid "Processing Request"
+msgstr ""
+
+msgid "Initiating fetching of data source."
+msgstr ""
+
+msgid "Data source yet to be started"
+msgstr ""
+
+msgid "Multitabbed dashboards do not support downloads."
+msgstr ""
+
+msgid "Error occurred while processing your request"
+msgstr ""
+
+msgid "Dashboard has been copied successfully"
 msgstr ""
 
 msgid "There is an error in copying the dashboard."
@@ -4538,7 +4973,7 @@ msgstr ""
 msgid "Data source copied successfully."
 msgstr ""
 
-msgid "There is an error in copying the datasource."
+msgid "There was an error in copying the data source."
 msgstr ""
 
 msgid "Data Source Copied"
@@ -4550,7 +4985,7 @@ msgstr ""
 msgid "Dashboard has been cloned successfully."
 msgstr ""
 
-msgid "There is an error in cloning the dashboard."
+msgid "There was an error in cloning the dashboard."
 msgstr ""
 
 msgid "Dashboard Limit Exceeded"
@@ -4562,6 +4997,9 @@ msgstr ""
 msgid "Are you sure you want to delete this permission?"
 msgstr ""
 
+msgid "Permission"
+msgstr ""
+
 msgid "Add Permission"
 msgstr ""
 
@@ -4571,13 +5009,19 @@ msgstr ""
 msgid "Failed to add permission, please try again later."
 msgstr ""
 
-msgid "You do not have access to add permissions."
+msgid "You do not have the authority to add permissions."
 msgstr ""
 
-msgid "You do not have access to remove permissions."
+msgid "You do not have the authority to remove permissions."
 msgstr ""
 
 msgid "Upload Dashboard"
+msgstr ""
+
+msgid "{0} (1 of 2: Dashboard Info)"
+msgstr ""
+
+msgid "{0} (2 of 2: Configure Data Source)"
 msgstr ""
 
 msgid "Upload File"
@@ -4586,10 +5030,16 @@ msgstr ""
 msgid "Make Public"
 msgstr ""
 
+msgid "Make Private"
+msgstr ""
+
 msgid "Remove Public"
 msgstr ""
 
 msgid "Embed Code"
+msgstr ""
+
+msgid "Category"
 msgstr ""
 
 msgid "Category Added"
@@ -4599,6 +5049,12 @@ msgid "Category Deleted."
 msgstr ""
 
 msgid "Category {0} has been added successfully."
+msgstr ""
+
+msgid "Added"
+msgstr ""
+
+msgid "Dashboard"
 msgstr ""
 
 msgid "Dashboard Deleted."
@@ -4670,6 +5126,9 @@ msgstr ""
 msgid "An error occurred while retrieving categories."
 msgstr ""
 
+msgid "All"
+msgstr ""
+
 msgid "default"
 msgstr ""
 
@@ -4677,6 +5136,24 @@ msgid "Modified Date"
 msgstr ""
 
 msgid "Recently Updated"
+msgstr ""
+
+msgid "Dashboard Name (A-Z)"
+msgstr ""
+
+msgid "Dashboard Name (Z-A)"
+msgstr ""
+
+msgid "Name - Descending"
+msgstr ""
+
+msgid "Name - Ascending"
+msgstr ""
+
+msgid "Modified - Descending"
+msgstr ""
+
+msgid "Modified - Ascending"
 msgstr ""
 
 msgid "Favorites"
@@ -4692,6 +5169,9 @@ msgid "Shared with me"
 msgstr ""
 
 msgid "Drafts"
+msgstr ""
+
+msgid "Upload Drafts"
 msgstr ""
 
 msgid "Usage Analytics"
@@ -4748,7 +5228,7 @@ msgstr ""
 msgid "Expand All"
 msgstr ""
 
-msgid "Synchronize Published Dashboard"
+msgid "Synchronize published dashboard"
 msgstr ""
 
 msgid "No published resources are available to display."
@@ -4778,6 +5258,9 @@ msgstr ""
 msgid "Item Type"
 msgstr ""
 
+msgid "Last Modified"
+msgstr ""
+
 msgid "Action"
 msgstr ""
 
@@ -4790,7 +5273,7 @@ msgstr ""
 msgid "Failed to remove the published dashboard."
 msgstr ""
 
-msgid "The dashboard has been already published to this site. You can synchronize the published dashboard changes in the published resource page."
+msgid "The dashboard has already been published to this site. You can synchronize the published dashboard changes in the published resource page."
 msgstr ""
 
 msgid "The data source has already been published on this site. You can manage the published data sources from the published resource page."
@@ -4817,12 +5300,6 @@ msgstr ""
 msgid "Failed to remove the published data source."
 msgstr ""
 
-msgid "Remove Published Dashboard"
-msgstr ""
-
-msgid "Remove Published Data Source"
-msgstr ""
-
 msgid "Are you sure you want to remove the published dashboard?"
 msgstr ""
 
@@ -4836,6 +5313,75 @@ msgid "Removing the published data source does not remove the data source from t
 msgstr ""
 
 msgid "No linked data sources available to display"
+msgstr ""
+
+msgid "Are you sure you want to synchronize the dashboard and the data source changes with other sites?"
+msgstr ""
+
+msgid "Synchronize published items"
+msgstr ""
+
+msgid "Are you sure you want to lock editing in the published dashboard in {0}?"
+msgstr ""
+
+msgid "Are you sure you want to unlock editing in the published dashboard in {0}?"
+msgstr ""
+
+msgid "Are you sure you want to lock editing in the published data source in {0}?"
+msgstr ""
+
+msgid "Are you sure you want to unlock editing in the published data source in {0}?"
+msgstr ""
+
+msgid "Lock edit"
+msgstr ""
+
+msgid "Unlock edit"
+msgstr ""
+
+msgid "Please refresh the page published item details not found."
+msgstr ""
+
+msgid "Editing has been locked successfully in the published dashboard."
+msgstr ""
+
+msgid "Editing has been unlocked successfully in the published dashboard."
+msgstr ""
+
+msgid "Editing has been locked successfully in the published data source."
+msgstr ""
+
+msgid "Editing has been unlocked successfully in the published data source."
+msgstr ""
+
+msgid "Failed to lock editing in the published dashboard."
+msgstr ""
+
+msgid "Failed to unlock editing in the published dashboard."
+msgstr ""
+
+msgid "Failed to lock editing in the published data source."
+msgstr ""
+
+msgid "Failed to unlock editing in the published data source."
+msgstr ""
+
+msgid "Failed to update published item details in destination site."
+msgstr ""
+
+msgid "Failed to update published item details in source site."
+msgstr ""
+
+msgid "The dashboard edit has been locked."
+msgstr ""
+
+msgid "The dashboard edit has been unlocked."
+msgstr ""
+
+msgid "The data source edit has been locked."
+msgstr ""
+
+msgid "The data source edit has been unlocked."
 msgstr ""
 
 msgid "Share View"
@@ -4898,6 +5444,9 @@ msgstr ""
 msgid "Edit Group"
 msgstr ""
 
+msgid "You can't add users from the same directory. If you want to do so, add the user to the group in {0} and synchronize."
+msgstr ""
+
 msgid "Add Group"
 msgstr ""
 
@@ -4919,22 +5468,25 @@ msgstr ""
 msgid "Server Group(s)"
 msgstr ""
 
-msgid "Active Directory Group(s)"
-msgstr ""
-
-msgid "Azure AD Group(s)"
+msgid "{0} Group(s)"
 msgstr ""
 
 msgid "Server Group(s) and"
 msgstr ""
 
-msgid "Active Directory Group(s) and "
+msgid "{0} Group(s) and "
 msgstr ""
 
 msgid " Delete Groups"
 msgstr ""
 
-msgid "Failed to delete Group(s), please try again later."
+msgid "Failed to delete group(s), please try again later."
+msgstr ""
+
+msgid "New Group"
+msgstr ""
+
+msgid "Existing Group"
 msgstr ""
 
 msgid "Synchronization Group - Status"
@@ -4959,6 +5511,9 @@ msgid "View Name already exists"
 msgstr ""
 
 msgid "Delete View"
+msgstr ""
+
+msgid "View has been deleted successfully"
 msgstr ""
 
 msgid "Save View"
@@ -4991,7 +5546,7 @@ msgstr ""
 msgid "By this action, the existing Default view will be overwritten by this View to the respective Dashboard."
 msgstr ""
 
-msgid "Based on your Dashboard Settings, these filters will be applied by default when next time render the Dashboard."
+msgid "Based on your dashboard settings, these filters will be applied by default next time the dashboard renders."
 msgstr ""
 
 msgid "Please upload data source file"
@@ -5007,6 +5562,9 @@ msgid "This dashboard was already added to the deployment dashboard list."
 msgstr ""
 
 msgid "Failed to add the dashboard as deployment dashboard."
+msgstr ""
+
+msgid "Add"
 msgstr ""
 
 msgid "Dashboard name already exists."
@@ -5061,6 +5619,9 @@ msgid " and the recipients will be notified when the condition has been satisfie
 msgstr ""
 
 msgid "Dashboard has been scheduled successfully."
+msgstr ""
+
+msgid "Dashboard widget has been scheduled successfully."
 msgstr ""
 
 msgid "Schedule has been updated successfully."
@@ -5204,6 +5765,9 @@ msgstr ""
 msgid "No changes were made"
 msgstr ""
 
+msgid "Payments"
+msgstr ""
+
 msgid "Payment details for your subscription have been added successfully."
 msgstr ""
 
@@ -5217,6 +5781,9 @@ msgid "Others editing this dashboard"
 msgstr ""
 
 msgid "Note: Your changes will be saved separately as a new version if their changes have already been saved."
+msgstr ""
+
+msgid "Subscription"
 msgstr ""
 
 msgid "Subscription updated successfully."
@@ -5321,7 +5888,7 @@ msgstr ""
 msgid "Please enter the slideshow name"
 msgstr ""
 
-msgid "Select View"
+msgid "Select view"
 msgstr ""
 
 msgid "No Dashboards"
@@ -5333,16 +5900,19 @@ msgstr ""
 msgid "No Widgets"
 msgstr ""
 
-msgid "All tabs"
+msgid "All Dashboards"
 msgstr ""
 
-msgid "has been successfully created."
+msgid "All tabs"
 msgstr ""
 
 msgid "Remove"
 msgstr ""
 
 msgid "Rearrange"
+msgstr ""
+
+msgid "Slideshow"
 msgstr ""
 
 msgid "Please enter the duration"
@@ -5364,6 +5934,18 @@ msgid "Edit Slideshow"
 msgstr ""
 
 msgid "Tab"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "Views"
+msgstr ""
+
+msgid "Get Embed code"
+msgstr ""
+
+msgid "Widget"
 msgstr ""
 
 msgid "Fullscreen"
@@ -5390,19 +5972,16 @@ msgstr ""
 msgid "The multi-tabbed dashboard"
 msgstr ""
 
-msgid "Please enter Multi-Tabbed Dashboard name"
-msgstr ""
-
-msgid "Multi-Tabbed Dashboard name already exists"
+msgid "Please enter multitabbed dashboard name."
 msgstr ""
 
 msgid "Please select category"
 msgstr ""
 
-msgid "No dashboards are available to create a multi-tabbed dashboard"
+msgid "No dashboards are available to create a multitabbed dashboard."
 msgstr ""
 
-msgid "No owned dashboards are available to create a multi-tabbed dashboard"
+msgid "No owned or shared dashboards with write permission are available to create a multitabbed dashboard."
 msgstr ""
 
 msgid "Thank you for your feedback!"
@@ -5444,7 +6023,7 @@ msgstr ""
 msgid "Allow support team to access my account."
 msgstr ""
 
-msgid "Please check with your System Administrator to enable this access."
+msgid "Please check with your system administrator to enable this access."
 msgstr ""
 
 msgid "Syncfusion currently has permission to access and manage resources on your site. You can manage this permission from"
@@ -5459,7 +6038,10 @@ msgstr ""
 msgid "Bold BI already has access to manage resources on your site."
 msgstr ""
 
-msgid "Please check with your System Administrator for managing this access."
+msgid "Please check with your system administrator for managing this access."
+msgstr ""
+
+msgid "Support Settings"
 msgstr ""
 
 msgid "New Incident"
@@ -5591,13 +6173,13 @@ msgstr ""
 msgid "Info"
 msgstr ""
 
+msgid "Refresh"
+msgstr ""
+
 msgid "Open dashboard"
 msgstr ""
 
 msgid "Edit Dashboard"
-msgstr ""
-
-msgid "Edit dashboard"
 msgstr ""
 
 msgid "My Dashboards"
@@ -5660,13 +6242,28 @@ msgstr ""
 msgid "Delete Custom Domain"
 msgstr ""
 
-msgid "Are you sure you want to delete the custom domain?"
+msgid "Are you sure you want to remove your custom domain? Removing your custom domain will result in the following:"
 msgstr ""
 
 msgid "The custom domain has been deleted successfully."
 msgstr ""
 
 msgid "Failed to delete the custom domain."
+msgstr ""
+
+msgid "Your custom domain will be reverted to the default domain URL {0}."
+msgstr ""
+
+msgid "Using your custom domain URL, you will not be able to access the portal and there will be no redirection set up for your default domain URL."
+msgstr ""
+
+msgid "If your custom domain URL is taken by another BI Cloud site, you cannot reclaim it."
+msgstr ""
+
+msgid "All images sent via email using your custom domain URL may appear broken."
+msgstr ""
+
+msgid "We couldn't find the ETL service. Please refer to this {0}documentation{1} and configure an ETL service if one is not configured."
 msgstr ""
 
 msgid "Security"
@@ -5696,6 +6293,9 @@ msgstr ""
 msgid "An error occurred while updating authentication control settings."
 msgstr ""
 
+msgid "Authentication Settings"
+msgstr ""
+
 msgid "Authentication settings have been updated."
 msgstr ""
 
@@ -5718,6 +6318,9 @@ msgid "Reset Secret"
 msgstr ""
 
 msgid "Resetting the secret will break any embed dashboards using the old secret. Are you sure you want to reset the secret?"
+msgstr ""
+
+msgid "Embed Settings"
 msgstr ""
 
 msgid "Embed Secret has been updated successfully."
@@ -5771,7 +6374,7 @@ msgstr ""
 msgid "Publish Dashboard"
 msgstr ""
 
-msgid "Failed to publish the data source to other sites. Learn more."
+msgid "Failed to publish the data source to other sites."
 msgstr ""
 
 msgid "Advanced"
@@ -5801,7 +6404,19 @@ msgstr ""
 msgid "Add External Sites"
 msgstr ""
 
-msgid "Please enter the Client ID"
+msgid "Edit External Sites"
+msgstr ""
+
+msgid "Add External {0} Sites"
+msgstr ""
+
+msgid "Edit External {0} Sites"
+msgstr ""
+
+msgid "Please enter the tenant ID"
+msgstr ""
+
+msgid "Please enter the client ID"
 msgstr ""
 
 msgid "Please enter the client secret"
@@ -5816,7 +6431,16 @@ msgstr ""
 msgid "External site added successfully."
 msgstr ""
 
+msgid "External site edited successfully."
+msgstr ""
+
 msgid "Failed to add external site."
+msgstr ""
+
+msgid "Failed to edit external site."
+msgstr ""
+
+msgid "Only admin and owner can edit or delete the site."
 msgstr ""
 
 msgid "Delete Connected Site"
@@ -5835,9 +6459,6 @@ msgid "External site is unavailable."
 msgstr ""
 
 msgid "Failed to publish the dashboard to the other site."
-msgstr ""
-
-msgid "Failed to publish the data source to other sites."
 msgstr ""
 
 msgid "You can manage the existing sites in the "
@@ -5906,13 +6527,52 @@ msgstr ""
 msgid "Publish"
 msgstr ""
 
+msgid "Settings"
+msgstr ""
+
 msgid "Users"
+msgstr ""
+
+msgid "Generate Token"
+msgstr ""
+
+msgid "Are you sure you want to generate the token?"
+msgstr ""
+
+msgid "An authentication token has been generated successfully."
+msgstr ""
+
+msgid "Store the access token somewhere safe. As soon as you navigate away from this page, we will not be able to retrieve or restore this access token. The generated token will expire in"
+msgstr ""
+
+msgid "days."
+msgstr ""
+
+msgid "An error occurred while generating a token."
+msgstr ""
+
+msgid "Dashboard Schedule"
+msgstr ""
+
+msgid "You are unable to create a schedule, because you don't have permission. Please contact your System Administrator for more details."
+msgstr ""
+
+msgid "There are some unsaved changes, please save them before creating a schedule with this view."
+msgstr ""
+
+msgid "Number of characters exceeds allowed length of {0}."
 msgstr ""
 
 msgid "Slideshow — {0} has been modified successfully."
 msgstr ""
 
 msgid "The multi-tabbed dashboard, {0}, has been modified successfully."
+msgstr ""
+
+msgid "To create Multitabbed Dashboard: Click Add dashboards, select category, select dashboard and then you can add multiple dashboards."
+msgstr ""
+
+msgid "To create Slideshow: Click Add dashboards, select category, select dashboard and then you can add multiple dashboards."
 msgstr ""
 
 msgid "Error while updating the slideshow."
@@ -5963,7 +6623,52 @@ msgstr ""
 msgid "{0} Synchronization settings updated successfully."
 msgstr ""
 
+msgid "You cannot configure the synchronization schedule before configuring the Windows Active Directory Settings."
+msgstr ""
+
+msgid "You cannot configure the synchronization schedule before configuring the Azure Active Directory Settings."
+msgstr ""
+
+msgid "You cannot configure the synchronization schedule before configuring the Database Directory Settings."
+msgstr ""
+
 msgid "Database Synchronization settings updated successfully."
+msgstr ""
+
+msgid "Error occured while processing your request."
+msgstr ""
+
+msgid "You do not have permission to make this item public."
+msgstr ""
+
+msgid "You do not have permission to delete this item."
+msgstr ""
+
+msgid "You do not have permission to share this item."
+msgstr ""
+
+msgid "This item has been deleted or moved."
+msgstr ""
+
+msgid "You do not have permission to run this schedule."
+msgstr ""
+
+msgid "You do not have permission to enable this schedule."
+msgstr ""
+
+msgid "You do not have permission to disable this schedule."
+msgstr ""
+
+msgid "An error occurred while processing data cache settings."
+msgstr ""
+
+msgid "An error occurred while processing data store settings."
+msgstr ""
+
+msgid "Please select any group."
+msgstr ""
+
+msgid "This request is invalid. Please reload the page and try again."
 msgstr ""
 
 msgid "Custom Picker"
@@ -5979,6 +6684,12 @@ msgid "{0} Schedule Synchronization Failure"
 msgstr ""
 
 msgid "Apply"
+msgstr ""
+
+msgid "Form Relation"
+msgstr ""
+
+msgid "Select Relation"
 msgstr ""
 
 msgid "We are unable to load the dashboard view. The dashboard view has been deleted or the URL is invalid."
@@ -6026,6 +6737,45 @@ msgstr ""
 msgid "Occurs every {0} years on {1} {2} of {3} effective {4}"
 msgstr ""
 
+msgid "No schedules to display."
+msgstr ""
+
+msgid "No connected accounts to display."
+msgstr ""
+
+msgid "No connected sites to display."
+msgstr ""
+
+msgid "No email activity logs to display."
+msgstr ""
+
+msgid "Details"
+msgstr ""
+
+msgid "No webhook activity logs to display."
+msgstr ""
+
+msgid "No users to display."
+msgstr ""
+
+msgid "No groups to display."
+msgstr ""
+
+msgid "No permissions to display."
+msgstr ""
+
+msgid "No schedule history to display."
+msgstr ""
+
+msgid "No users available for synchronization"
+msgstr ""
+
+msgid "No groups available for synchronization."
+msgstr ""
+
+msgid "No attributes to display."
+msgstr ""
+
 msgid "item"
 msgstr ""
 
@@ -6036,6 +6786,9 @@ msgid "Columns"
 msgstr ""
 
 msgid "Match Case"
+msgstr ""
+
+msgid "Group"
 msgstr ""
 
 msgid "Sort"
@@ -6077,13 +6830,166 @@ msgstr ""
 msgid "AND"
 msgstr ""
 
+msgid "Webhook has been added successfully"
+msgstr ""
+
+msgid "Webhook has been updated successfully"
+msgstr ""
+
+msgid "Add Webhook"
+msgstr ""
+
+msgid "Edit Webhook"
+msgstr ""
+
+msgid "Failed to a add webhook"
+msgstr ""
+
+msgid "Failed to update webhook"
+msgstr ""
+
+msgid "Webhook could not be found, or you do not have permission to update this webhook. Please reload the webhooks page and try again."
+msgstr ""
+
+msgid "Please enter a webhook name"
+msgstr ""
+
+msgid "Please enter the destination {0}"
+msgstr ""
+
+msgid "Please enter the header key"
+msgstr ""
+
+msgid "Please enter the header value"
+msgstr ""
+
+msgid "Header key already exists"
+msgstr ""
+
+msgid "Please enter the secret key"
+msgstr ""
+
+msgid "Please enter the {0} key"
+msgstr ""
+
+msgid "Please add the custom header values"
+msgstr ""
+
+msgid "Failed to get payload"
+msgstr ""
+
+msgid "Webhook has been deactivated successfully"
+msgstr ""
+
+msgid "Failed to deactivate webhook."
+msgstr ""
+
+msgid "Deactivate Webhook"
+msgstr ""
+
+msgid "Activate Webhook"
+msgstr ""
+
+msgid "Webhook has been activated successfully"
+msgstr ""
+
+msgid "Failed to activate webhook."
+msgstr ""
+
+msgid "Delete Webhook"
+msgstr ""
+
+msgid "Webhook has been deleted successfully"
+msgstr ""
+
+msgid "Webhook name already exists"
+msgstr ""
+
+msgid "Failed to delete {0}."
+msgstr ""
+
+msgid "Notification will send to {0} as {1} content using the {2} method."
+msgstr ""
+
+msgid "Select the content type"
+msgstr ""
+
+msgid "Select event"
+msgstr ""
+
+msgid "Select payload"
+msgstr ""
+
+msgid "Please select a webhook"
+msgstr ""
+
+msgid "All Event"
+msgstr ""
+
+msgid "No webhooks found"
+msgstr ""
+
+msgid "No webhooks available to display"
+msgstr ""
+
+msgid "Select Method"
+msgstr ""
+
+msgid "Enter the list of origins separated by commas"
+msgstr ""
+
+msgid "Enter the list of headers separated by commas"
+msgstr ""
+
+msgid "Enter the list of expose headers separated by commas"
+msgstr ""
+
+msgid "Please enter a valid {0}"
+msgstr ""
+
+msgid "Please enter a valid origin"
+msgstr ""
+
+msgid "Allow Credentials cannot be set to true when Allow Origin is empty."
+msgstr ""
+
+msgid "Please add one or more origins when Allow Credentials is set to true."
+msgstr ""
+
+msgid "Look and feel Settings"
+msgstr ""
+
+msgid "Look and feel Settings has been updated successfully."
+msgstr ""
+
+msgid "Manage Application Theme"
+msgstr ""
+
+msgid "Manage Dashboard Theme"
+msgstr ""
+
+msgid "Please select a {0} file with a valid format."
+msgstr ""
+
+msgid "Please select a valid font file with {0} extension."
+msgstr ""
+
+msgid "Default"
+msgstr ""
+
+msgid "Security  Settings"
+msgstr ""
+
+msgid "Enter the list of {0} separated by commas"
+msgstr ""
+
 msgid "Manage Account Settings"
 msgstr ""
 
-msgid "Accounts Settings"
+msgid "Configuration for managing user accounts."
 msgstr ""
 
-msgid "Configuration for managing user accounts."
+msgid "Accounts settings have been inherited from the UMS settings. Please contact the UMS admin to disable the inheritance."
 msgstr ""
 
 msgid "Account Activation Mode"
@@ -6113,16 +7019,7 @@ msgstr ""
 msgid "When the account activation preference is email, an email address is mandatory for activating the account."
 msgstr ""
 
-msgid "Cancel"
-msgstr ""
-
-msgid "Save"
-msgstr ""
-
 msgid "User Directory Settings"
-msgstr ""
-
-msgid "User Directories"
 msgstr ""
 
 msgid "Configure external user directories."
@@ -6140,28 +7037,13 @@ msgstr ""
 msgid "{0} Schedule Synchronization"
 msgstr ""
 
-msgid "Synchronize users and groups from database on a regular schedule"
+msgid "Synchronize users from database on a regular schedule"
 msgstr ""
 
 msgid "Database Schedule Synchronization"
 msgstr ""
 
 msgid "Database"
-msgstr ""
-
-msgid "Username"
-msgstr ""
-
-msgid "Please enter the username"
-msgstr ""
-
-msgid "Password"
-msgstr ""
-
-msgid "Please enter the password"
-msgstr ""
-
-msgid "Please enter the {0}"
 msgstr ""
 
 msgid "Invalid {0}"
@@ -6185,31 +7067,19 @@ msgstr ""
 msgid "Please enter the Port Number"
 msgstr ""
 
-msgid "Default"
-msgstr ""
-
 msgid "Import users from groups"
 msgstr ""
 
 msgid "Enabling this setting will import and synchronize users when importing and synchronizing groups with {0}. Enable this setting if you need to import users from your {0} groups."
 msgstr ""
 
-msgid "Enabling this setting will cause the look and feel settings to be inherited from the UMS settings."
-msgstr ""
-
 msgid "Test {0} Connection"
-msgstr ""
-
-msgid "Test Connection"
 msgstr ""
 
 msgid "Tenant Name"
 msgstr ""
 
 msgid "Please enter the tenant name"
-msgstr ""
-
-msgid "Please enter the valid {0}"
 msgstr ""
 
 msgid "Client Id"
@@ -6242,19 +7112,16 @@ msgstr ""
 msgid "Existing Database name"
 msgstr ""
 
+msgid "Table names"
+msgstr ""
+
+msgid "Existing table names separated by commas"
+msgstr ""
+
 msgid "Enable this if the database server is {0} configured. It uses {0} encryption for all data transmitted between the client and the server."
 msgstr ""
 
 msgid "Port"
-msgstr ""
-
-msgid "Select Relation"
-msgstr ""
-
-msgid "Apply"
-msgstr ""
-
-msgid "Form Relation"
 msgstr ""
 
 msgid "Left table"
@@ -6269,18 +7136,6 @@ msgstr ""
 msgid "Right table"
 msgstr ""
 
-msgid "Next"
-msgstr ""
-
-msgid "Back"
-msgstr ""
-
-msgid "Create Category"
-msgstr ""
-
-msgid "Close"
-msgstr ""
-
 msgid "Category Name"
 msgstr ""
 
@@ -6290,55 +7145,7 @@ msgstr ""
 msgid "1024 characters maximum"
 msgstr ""
 
-msgid "Add"
-msgstr ""
-
-msgid "Upload Dashboard"
-msgstr ""
-
-msgid "Category"
-msgstr ""
-
-msgid "Select category"
-msgstr ""
-
-msgid "Add new Category"
-msgstr ""
-
-msgid "Please select category"
-msgstr ""
-
-msgid "Please create a category to group the dashboard"
-msgstr ""
-
-msgid "You do not have permission to create a dashboard in this category."
-msgstr ""
-
-msgid "Name"
-msgstr ""
-
-msgid "File"
-msgstr ""
-
-msgid "Browse file path"
-msgstr ""
-
-msgid "Dashboard has been added successfully."
-msgstr ""
-
-msgid "Upload Data Source"
-msgstr ""
-
-msgid "Data Source"
-msgstr ""
-
-msgid "Upload Data Source – Access Denied"
-msgstr ""
-
-msgid "You do not have access to create a Data Source. Please check with your Dashboards administrator to obtain access."
-msgstr ""
-
-msgid "Data Source has been added successfully."
+msgid "You don't have any categories to upload dashboards. Please create a category."
 msgstr ""
 
 msgid "Category name for dashboard deployment"
@@ -6353,9 +7160,6 @@ msgstr ""
 msgid "Please select the category"
 msgstr ""
 
-msgid "Select dashboard"
-msgstr ""
-
 msgid "Please select the dashboard"
 msgstr ""
 
@@ -6368,16 +7172,7 @@ msgstr ""
 msgid "Make dashboard as public in published site."
 msgstr ""
 
-msgid "Add Group"
-msgstr ""
-
 msgid "Group name"
-msgstr ""
-
-msgid "Please enter the group name"
-msgstr ""
-
-msgid "Add Permission"
 msgstr ""
 
 msgid "Select the permission to add to the group"
@@ -6407,9 +7202,6 @@ msgstr ""
 msgid "Clear search"
 msgstr ""
 
-msgid "Search"
-msgstr ""
-
 msgid "No entites available to display"
 msgstr ""
 
@@ -6437,9 +7229,6 @@ msgstr ""
 msgid "Please select at least one entity and access mode."
 msgstr ""
 
-msgid "Sample Dashboards"
-msgstr ""
-
 msgid "Categories"
 msgstr ""
 
@@ -6455,64 +7244,64 @@ msgstr ""
 msgid "Try modifying your search or filters."
 msgstr ""
 
-msgid "Assign Group"
-msgstr ""
-
 msgid "Add the selected users to a Group"
 msgstr ""
 
 msgid "{0} user(s) selected"
 msgstr ""
 
-msgid "Group Name"
-msgstr ""
-
-msgid "Select Group"
-msgstr ""
-
 msgid "Selected user(s)"
 msgstr ""
 
-msgid "New Group"
-msgstr ""
-
-msgid "Existing Group"
-msgstr ""
-
-msgid "Settings"
+msgid "General"
 msgstr ""
 
 msgid "Site"
 msgstr ""
 
-msgid "Dashboards"
+msgid "Look and Feel"
 msgstr ""
 
 msgid "Embed"
 msgstr ""
 
-msgid "Data Store"
+msgid "Site Credentials"
+msgstr ""
+
+msgid "Designer"
+msgstr ""
+
+msgid "Data Process"
 msgstr ""
 
 msgid "Connectors"
 msgstr ""
 
+msgid "Widgets"
+msgstr ""
+
+msgid "User and Authentication"
+msgstr ""
+
+msgid "Groups"
+msgstr ""
+
 msgid "Accounts"
+msgstr ""
+
+msgid "User Directories"
+msgstr ""
+
+msgid "Notification"
 msgstr ""
 
 msgid "Notifications"
 msgstr ""
 
-msgid "Support Settings"
+msgid "Integrations"
 msgstr ""
 
-msgid "Credentials"
-msgstr ""
-
-msgid "Users"
-msgstr ""
-
-msgid "Groups"
+msgid "{0} Policy"
 msgstr ""
 
 msgid "Group Import Settings"
@@ -6530,40 +7319,58 @@ msgstr ""
 msgid "User Pool Id"
 msgstr ""
 
+msgid "Please enter the user pool ID"
+msgstr ""
+
 msgid "{0} Access key Id"
+msgstr ""
+
+msgid "Please enter the access key ID"
 msgstr ""
 
 msgid "{0} Access key Secret"
 msgstr ""
 
+msgid "Please enter the access key secret"
+msgstr ""
+
 msgid "Region"
+msgstr ""
+
+msgid "Please enter the region"
 msgstr ""
 
 msgid "Audience"
 msgstr ""
 
+msgid "Please enter the audience"
+msgstr ""
+
 msgid "Extension {0}"
+msgstr ""
+
+msgid "Please enter the {0} extension"
 msgstr ""
 
 msgid "{0} Token"
 msgstr ""
 
+msgid "Please enter the {0} token"
+msgstr ""
+
 msgid "{0} Client ID"
+msgstr ""
+
+msgid "Please enter the {0} client ID"
 msgstr ""
 
 msgid "{0} Client Secret"
 msgstr ""
 
-msgid "Authentication Settings"
+msgid "Please enter the {0} client secret"
 msgstr ""
 
 msgid "Configure authentication/authorization providers’ information."
-msgstr ""
-
-msgid "General"
-msgstr ""
-
-msgid "Authentication Control"
 msgstr ""
 
 msgid "Enable Global Default Authentication"
@@ -6578,16 +7385,10 @@ msgstr ""
 msgid "Enabling the global {0} settings allows you to display the globally configured {0} provider login button on the login page."
 msgstr ""
 
-msgid "Enable Global External Providers"
-msgstr ""
-
 msgid "Allowed login providers"
 msgstr ""
 
-msgid "Select the login providers that need to be shown in the login page."
-msgstr ""
-
-msgid "Choose login providers"
+msgid "Select the login providers that need to be shown in the login page. These login providers will be displayed in the login page even if they are disabled here, if a user from the respective providers is present in this site."
 msgstr ""
 
 msgid "{0} Login"
@@ -6596,25 +7397,22 @@ msgstr ""
 msgid "Provider Name"
 msgstr ""
 
-msgid "Name of the authentication provider to be displayed in the login page."
+msgid "Please enter the {0} provider name"
 msgstr ""
 
-msgid "Please enter the {0} provider name"
+msgid "Name of the authentication provider to be displayed in the login page."
 msgstr ""
 
 msgid "Provider Logo"
 msgstr ""
 
-msgid "Logo of the authentication provider to be displayed in the login page."
-msgstr ""
-
 msgid "Change logo"
 msgstr ""
 
-msgid "Authorization Endpoint"
+msgid "Logo of the authentication provider to be displayed in the login page."
 msgstr ""
 
-msgid "An authorization {0} where the resource owner grants authorization to the {1} client to access protected resources."
+msgid "Authorization Endpoint"
 msgstr ""
 
 msgid "Please enter the authorization endpoint"
@@ -6623,10 +7421,10 @@ msgstr ""
 msgid "Please enter a valid authorization endpoint"
 msgstr ""
 
-msgid "Token Endpoint"
+msgid "An authorization {0} where the resource owner grants authorization to the {1} client to access protected resources."
 msgstr ""
 
-msgid "A token request {0} where the {1} client exchanges an authorization grant for an access token."
+msgid "Token Endpoint"
 msgstr ""
 
 msgid "Please enter a token endpoint"
@@ -6635,10 +7433,10 @@ msgstr ""
 msgid "Please enter a valid token endpoint"
 msgstr ""
 
-msgid "User Information Endpoint"
+msgid "A token request {0} where the {1} client exchanges an authorization grant for an access token."
 msgstr ""
 
-msgid "{0} to retrieve the user information based on the token."
+msgid "User Information Endpoint"
 msgstr ""
 
 msgid "Please enter the user information endpoint"
@@ -6647,22 +7445,16 @@ msgstr ""
 msgid "Please enter a valid user information endpoint"
 msgstr ""
 
-msgid "Client ID"
+msgid "{0} to retrieve the user information based on the token."
 msgstr ""
 
-msgid "Please enter the client ID"
+msgid "Client ID"
 msgstr ""
 
 msgid "Client Secret"
 msgstr ""
 
-msgid "Please enter the client secret"
-msgstr ""
-
 msgid "Scopes"
-msgstr ""
-
-msgid "Scope is a mechanism in {0} to limit an application's access to a user's account. An application can request one or more scopes. This information is then presented to the user in the consent screen, and the access token issued to the application will be limited to the scopes granted."
 msgstr ""
 
 msgid "Comma separated scopes"
@@ -6671,10 +7463,10 @@ msgstr ""
 msgid "Please enter comma separated scopes"
 msgstr ""
 
-msgid "Logout Endpoint"
+msgid "Scope is a mechanism in {0} to limit an application's access to a user's account. An application can request one or more scopes. This information is then presented to the user in the consent screen, and the access token issued to the application will be limited to the scopes granted."
 msgstr ""
 
-msgid "We support logout endpoints that have static request parameters."
+msgid "Logout Endpoint"
 msgstr ""
 
 msgid "Logout Endpoint (Optional)"
@@ -6683,13 +7475,19 @@ msgstr ""
 msgid "Please enter a valid logout endpoint"
 msgstr ""
 
+msgid "We support logout endpoints that have static request parameters."
+msgstr ""
+
 msgid "Redirect {0}"
 msgstr ""
 
-msgid "Click to copy"
+msgid "Mobile App Redirect {0}"
 msgstr ""
 
-msgid "Mobile App Redirect {0}"
+msgid "Enable User Account Creation"
+msgstr ""
+
+msgid "Create a new user account if doesn't exist."
 msgstr ""
 
 msgid "User data"
@@ -6699,12 +7497,6 @@ msgid "The user information endpoint returns claims about the authenticated user
 msgstr ""
 
 msgid "Please enter the value for email"
-msgstr ""
-
-msgid "First Name"
-msgstr ""
-
-msgid "Last Name"
 msgstr ""
 
 msgid "Configure identity provider info to add users"
@@ -6737,13 +7529,13 @@ msgstr ""
 msgid "Authority"
 msgstr ""
 
-msgid "Endpoint to authenticate the user and grant access to the protected resource. It returns the claims about the authenticated user."
-msgstr ""
-
 msgid "Please enter the Authority {0}"
 msgstr ""
 
 msgid "Please enter a valid Authority {0}"
+msgstr ""
+
+msgid "Endpoint to authenticate the user and grant access to the protected resource. It returns the claims about the authenticated user."
 msgstr ""
 
 msgid "Please enter the Client ID"
@@ -6755,43 +7547,49 @@ msgstr ""
 msgid "Please enter the Identifier"
 msgstr ""
 
-msgid "Full Name"
+msgid "These claims are normally represented by a {0} object that contains a collection of name and value pairs for each claim. Provide the {0} key to identify the unique identity (email) of the user."
 msgstr ""
 
-msgid "All billing-related information will be sent to this email address"
+msgid "Organization Name"
 msgstr ""
 
-msgid "Email address"
+msgid "Name of the organization to be displayed in the login page"
 msgstr ""
 
-msgid "Address1"
+msgid "Please enter the organization name"
 msgstr ""
 
-msgid "Address2"
+msgid "Organization Logo"
 msgstr ""
 
-msgid "City"
+msgid "Logo of the organization to be displayed in the login page."
 msgstr ""
 
-msgid "State"
+msgid "Application id"
 msgstr ""
 
-msgid "Select Country"
+msgid "A unique identifier used to register the {0} web app in {1}."
 msgstr ""
 
-msgid "ZIP Code"
+msgid "Application ID"
 msgstr ""
 
-msgid "Card Number"
+msgid "Please enter the application id"
 msgstr ""
 
-msgid "Name on the card"
+msgid "A dedicated instance of {0} service."
 msgstr ""
 
-msgid "Expiry Date"
+msgid "Sign in Policy"
 msgstr ""
 
-msgid "Three-digit number on the back of your card."
+msgid "The Name of the Sign in/Sign up user flow created in {0}"
+msgstr ""
+
+msgid "Please enter the sign in policy"
+msgstr ""
+
+msgid "User can logout of both the application and {0} using single Logout {1}."
 msgstr ""
 
 msgid "COMMENTS"
@@ -6800,16 +7598,7 @@ msgstr ""
 msgid "Write a comment"
 msgstr ""
 
-msgid "4000 characters maximum"
-msgstr ""
-
 msgid "Post"
-msgstr ""
-
-msgid "Unwatch"
-msgstr ""
-
-msgid "Watch"
 msgstr ""
 
 msgid "Comment(s)"
@@ -6821,13 +7610,10 @@ msgstr ""
 msgid "Oldest"
 msgstr ""
 
-msgid "Copy"
+msgid "Copy the data source"
 msgstr ""
 
-msgid "Clone"
-msgstr ""
-
-msgid "OK"
+msgid "If this option is checked, data sources used in the dashboard will be copied and used in the copied dashboard. This option will be enabled only if this dashboard has data sources."
 msgstr ""
 
 msgid "Select Dashboard Template"
@@ -6857,16 +7643,7 @@ msgstr ""
 msgid "Waiting for authorization..."
 msgstr ""
 
-msgid "Your dashboard is being prepared. We will notify you once the dashboard is ready."
-msgstr ""
-
 msgid "No templates found."
-msgstr ""
-
-msgid "Create Data Source"
-msgstr ""
-
-msgid "Create Dashboard"
 msgstr ""
 
 msgid "Support Request"
@@ -6876,9 +7653,6 @@ msgid "Start from Scratch"
 msgstr ""
 
 msgid "Create a dashboard from scratch"
-msgstr ""
-
-msgid "Multi-Tabbed Dashboard"
 msgstr ""
 
 msgid "Create a multi-tabbed dashboard by adding two or more dashboards"
@@ -6905,19 +7679,10 @@ msgstr ""
 msgid "Having trouble? Contact our dedicated support team now"
 msgstr ""
 
-msgid "Data Sources"
-msgstr ""
-
 msgid "Import your data from popular connectors"
 msgstr ""
 
-msgid "Schedule"
-msgstr ""
-
 msgid "Monitor your data to spot emerging trends"
-msgstr ""
-
-msgid "Slideshow"
 msgstr ""
 
 msgid "Create slideshow"
@@ -6932,31 +7697,19 @@ msgstr ""
 msgid "All dashboards are autosaved as drafts for you to continue where you left off. Publishing a dashboard must be done manually."
 msgstr ""
 
-msgid "Create Slideshow"
-msgstr ""
-
 msgid "Select multitab dashboard category"
 msgstr ""
 
 msgid "Select Category"
 msgstr ""
 
+msgid "Add new Category"
+msgstr ""
+
 msgid "Duration (Min: 5 & Max: 300 secs)"
 msgstr ""
 
 msgid "Add Dashboards"
-msgstr ""
-
-msgid "Select tab"
-msgstr ""
-
-msgid "Select view"
-msgstr ""
-
-msgid "Select widget"
-msgstr ""
-
-msgid "Select Widget"
 msgstr ""
 
 msgid "Create"
@@ -6983,79 +7736,22 @@ msgstr ""
 msgid "Dashboards on your own domain!"
 msgstr ""
 
-msgid "You can use your own domain for your dashboards."
-msgstr ""
-
-msgid "It includes your domain setup and an {0} Certificate."
+msgid "To continue, add a {0} record mapping to the below domain name, for your domain in the {1} settings."
 msgstr ""
 
 msgid "Learn how to do it."
 msgstr ""
 
-msgid "You will be charged {0}/Month{1}"
-msgstr ""
-
-msgid "Buy now"
-msgstr ""
-
-msgid "Billing Address"
-msgstr ""
-
-msgid "Total Payment"
-msgstr ""
-
-msgid "Pay Now"
-msgstr ""
-
-msgid "To continue, add a {0} record mapping to the below domain name, for your domain in the {1} settings."
-msgstr ""
-
 msgid "Do not include {0} or {1}"
 msgstr ""
 
-msgid "Validate and proceed"
-msgstr ""
-
-msgid "Get your free {0} certificate from us."
-msgstr ""
-
-msgid "Coming soon"
-msgstr ""
-
-msgid "{0} Certificate"
-msgstr ""
-
-msgid "Upload {0} certificate to make your website secure."
-msgstr ""
-
-msgid "Browse"
+msgid "Note: Use only a subdomain and not your root domain when adding a {0} record. (For example: if you want use a root domain like {1}, add www as subdomain and update custom domain as {2}."
 msgstr ""
 
 msgid "Your domain has been registered successfully!"
 msgstr ""
 
-msgid "{0} certificate valid until {1}"
-msgstr ""
-
-msgid "Update {0} Certificate"
-msgstr ""
-
-msgid "{0} certificate has been updated successfully."
-msgstr ""
-
-msgid "The {0} certificate is valid until {1}"
-msgstr ""
-
-msgid "Delete Custom Domain"
-msgstr ""
-
 msgid "Are you sure you want to delete the custom domain?"
-msgstr ""
-
-msgid "Yes"
-msgstr ""
-
-msgid "No"
 msgstr ""
 
 msgid "Dashboard security options control which websites, IP addresses, and applications can access or embed the dashboard"
@@ -7067,16 +7763,10 @@ msgstr ""
 msgid "Accept embedding requests from these websites:"
 msgstr ""
 
-msgid "Enter the list of domains separated by commas."
-msgstr ""
-
 msgid "One or more invalid domains"
 msgstr ""
 
 msgid "Allow dashboard access from these IP addresses:"
-msgstr ""
-
-msgid "Enter the list of IP addresses separated by commas."
 msgstr ""
 
 msgid "One or more invalid IP addresses"
@@ -7100,9 +7790,6 @@ msgstr ""
 msgid "No views found."
 msgstr ""
 
-msgid "Delete View"
-msgstr ""
-
 msgid "Are you sure you want to delete the view — {0}?"
 msgstr ""
 
@@ -7116,9 +7803,6 @@ msgid "Comments"
 msgstr ""
 
 msgid "Filters"
-msgstr ""
-
-msgid "Views"
 msgstr ""
 
 msgid "Refresh Settings"
@@ -7136,7 +7820,7 @@ msgstr ""
 msgid "Every"
 msgstr ""
 
-msgid "Please enter minimum 15 minutes"
+msgid "Please enter minimum 5 minutes"
 msgstr ""
 
 msgid "day(s)"
@@ -7146,27 +7830,6 @@ msgid "Every weekday"
 msgstr ""
 
 msgid "week(s)"
-msgstr ""
-
-msgid "Sunday"
-msgstr ""
-
-msgid "Monday"
-msgstr ""
-
-msgid "Tuesday"
-msgstr ""
-
-msgid "Wednesday"
-msgstr ""
-
-msgid "Thursday"
-msgstr ""
-
-msgid "Friday"
-msgstr ""
-
-msgid "Saturday"
 msgstr ""
 
 msgid "Day"
@@ -7250,6 +7913,48 @@ msgstr ""
 msgid "To learn more, click {0}here{1}."
 msgstr ""
 
+msgid "Refresh History"
+msgstr ""
+
+msgid "REFRESH LOGS"
+msgstr ""
+
+msgid "MISSING LOGS"
+msgstr ""
+
+msgid "A refresh cannot be initiated because another refresh is already in progress. Click Check Status to view the current refresh progress."
+msgstr ""
+
+msgid "Failure Info"
+msgstr ""
+
+msgid "Copy to Clipboard"
+msgstr ""
+
+msgid "A data refresh is currently in progress. Another refresh request will not be initiated until the current one is complete, or 12 hours have elapsed since the initial request."
+msgstr ""
+
+msgid "The completion status of the refresh is not being updated by the refreshing service."
+msgstr ""
+
+msgid "The refresh log has either been deleted or is currently not available."
+msgstr ""
+
+msgid "Execution Type"
+msgstr ""
+
+msgid "Started Date"
+msgstr ""
+
+msgid "Logs"
+msgstr ""
+
+msgid "Start Date"
+msgstr ""
+
+msgid "End Date"
+msgstr ""
+
 msgid "Enable Default Authentication"
 msgstr ""
 
@@ -7274,16 +7979,13 @@ msgstr ""
 msgid "Would you like to proceed?"
 msgstr ""
 
-msgid "Delete Group"
-msgstr ""
-
 msgid "Are you sure you want to delete the group {0}?"
 msgstr ""
 
-msgid "Remove Access"
+msgid "Are you sure you want to remove user access?"
 msgstr ""
 
-msgid "Are you sure you want to remove user access?"
+msgid "Data Source"
 msgstr ""
 
 msgid "This dashboard has been used in existing schedules, multi-tabbed dashboards, and slideshows. Deleting this dashboard will make the schedules, multi-tabbed dashboards, and slideshows linked with it no longer work."
@@ -7313,6 +8015,9 @@ msgstr ""
 msgid "Cannot delete {0} as the Category contains dashboards."
 msgstr ""
 
+msgid "This category may contain a dashboard that is not listed here due to its visibility settings."
+msgstr ""
+
 msgid "Unable to delete the report - {0} as it has been scheduled to run at certain times."
 msgstr ""
 
@@ -7322,19 +8027,10 @@ msgstr ""
 msgid "Cannot delete {0} as the Data Source is being used by dashboards."
 msgstr ""
 
-msgid "Delete Permission"
+msgid "Are you sure you want to delete this schedule?"
 msgstr ""
 
-msgid "Are you sure you want to delete this permission?"
-msgstr ""
-
-msgid "Delete Schedule"
-msgstr ""
-
-msgid "Are you sure you want to delete this schedule - {0}?"
-msgstr ""
-
-msgid "Remove"
+msgid "Are you sure you want to delete this webhook?"
 msgstr ""
 
 msgid "Disabled"
@@ -7346,10 +8042,7 @@ msgstr ""
 msgid "Connect to your data available online."
 msgstr ""
 
-msgid "PREV"
-msgstr ""
-
-msgid "START"
+msgid "NEXT"
 msgstr ""
 
 msgid "Visualize"
@@ -7358,7 +8051,7 @@ msgstr ""
 msgid "Drag and drop suitable widgets for better illustration."
 msgstr ""
 
-msgid "NEXT"
+msgid "PREV"
 msgstr ""
 
 msgid "Configure"
@@ -7379,10 +8072,10 @@ msgstr ""
 msgid "Preview the created dashboard."
 msgstr ""
 
-msgid "Publish"
+msgid "Publish the dashboard to share with others."
 msgstr ""
 
-msgid "Publish the dashboard to share with others."
+msgid "START"
 msgstr ""
 
 msgid "Start with configuring a data source"
@@ -7394,7 +8087,28 @@ msgstr ""
 msgid "CONTINUE"
 msgstr ""
 
+msgid "No results matched"
+msgstr ""
+
+msgid "Resource Sorting"
+msgstr ""
+
+msgid "The sorting configuration will determine the arrangement of application resources, including dashboards, views, data sources, schedules, and slideshows."
+msgstr ""
+
+msgid "Select ResourceType"
+msgstr ""
+
+msgid "Select ResourceOrder"
+msgstr ""
+
 msgid "Date and Time"
+msgstr ""
+
+msgid "The application shows the date and time based on these settings. The \"Inherit from browser locale\" option will change the date and time based on the user's system preferences."
+msgstr ""
+
+msgid "These settings are inherited from global configurations and cannot be altered."
 msgstr ""
 
 msgid "Time zone"
@@ -7418,43 +8132,46 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
+msgid "The application UI’s language, including menu items, dialog boxes, toolboxes, and more, can be customized by setting the application language. The dashboard's data format, including date, number, and currency, can be customized by setting the data language."
+msgstr ""
+
+msgid "The application language is inherited from global configurations, it cannot be altered."
+msgstr ""
+
 msgid "Application language"
-msgstr ""
-
-msgid "The language used in the application user interface (such as menu items, dialog boxes, toolboxes, and more)."
-msgstr ""
-
-msgid "Click {0}here{1} to learn how to add new localization in {2}."
 msgstr ""
 
 msgid "Data language"
 msgstr ""
 
-msgid "The language used in date, number, and currency formats."
-msgstr ""
-
 msgid "Disable user language preference"
 msgstr ""
 
-msgid "Update Category"
+msgid "Published Resources"
 msgstr ""
 
-msgid "Update"
+msgid "All files prepared more than 48 hours ago will be deleted automatically. Please click Status to see the progress of the file preparation."
 msgstr ""
 
-msgid "Version comments"
+msgid "Selected (0)"
 msgstr ""
 
-msgid "Dashboard has been uploaded successfully."
+msgid "Download All"
 msgstr ""
 
-msgid "Dashboard has been uploaded successfully. The previous version of the Dashboard used shared Data Sources. Do you want to update Data Sources for the new version?"
+msgid "In Progress"
+msgstr ""
+
+msgid "The dashboard will be prepared for download with its data sources. It will take some time, depending on the data sources. You can track the file preparation status in the {0} tab on the Publish page and you can download the file once it is ready."
+msgstr ""
+
+msgid "Include sensitive information"
+msgstr ""
+
+msgid "Include all sensitive information in an encrypted format. This will be helpful if you want to upload the dashboard into another site without any data source credential changes."
 msgstr ""
 
 msgid "Event"
-msgstr ""
-
-msgid "View"
 msgstr ""
 
 msgid "Date"
@@ -7466,25 +8183,19 @@ msgstr ""
 msgid "Initiated By"
 msgstr ""
 
-msgid "Status"
+msgid "Select variables"
 msgstr ""
 
-msgid "Actions"
+msgid "Please enter the email subject"
+msgstr ""
+
+msgid "Body"
 msgstr ""
 
 msgid "Select Fields"
 msgstr ""
 
-msgid "Details"
-msgstr ""
-
-msgid "Error Message"
-msgstr ""
-
 msgid "Email Message"
-msgstr ""
-
-msgid "Email Settings"
 msgstr ""
 
 msgid "Anonymous authentication"
@@ -7493,19 +8204,28 @@ msgstr ""
 msgid "Basic authentication"
 msgstr ""
 
+msgid "OAuth"
+msgstr ""
+
 msgid "Configuration for sending emails from application."
 msgstr ""
 
-msgid "Logs"
+msgid "SMTP"
+msgstr ""
+
+msgid "Microsoft 365"
+msgstr ""
+
+msgid "Email settings have been inherited from the UMS settings. Please contact the UMS admin to disable the inheritance."
+msgstr ""
+
+msgid "Email Account"
 msgstr ""
 
 msgid "{0} Server"
 msgstr ""
 
 msgid "{0} server"
-msgstr ""
-
-msgid "{0} port"
 msgstr ""
 
 msgid "{0} Port"
@@ -7526,13 +8246,13 @@ msgstr ""
 msgid "Authentication Type"
 msgstr ""
 
+msgid "Tenant ID"
+msgstr ""
+
 msgid "Test Email Settings Connection"
 msgstr ""
 
 msgid "Enter an email address and then click Send to verify that there are no issues with the {0} configuration."
-msgstr ""
-
-msgid "Email Address"
 msgstr ""
 
 msgid "To Email"
@@ -7553,13 +8273,7 @@ msgstr ""
 msgid "Choose a sample dashboard to embed in your application. We will import the sample dashboard into the server and initiate the download."
 msgstr ""
 
-msgid "Dashboard"
-msgstr ""
-
 msgid "Download {0} File"
-msgstr ""
-
-msgid "Embed Settings"
 msgstr ""
 
 msgid "Configuration for the Embedded Dashboards."
@@ -7583,6 +8297,9 @@ msgstr ""
 msgid "Store the secret key somewhere safe. As soon as you navigate away from this page, we will not be able to retrieve or restore this generated secret."
 msgstr ""
 
+msgid "You can use this Embed Secret code to render in {0} based Embedding and Single Sign-On authentication {1} based Embedding"
+msgstr ""
+
 msgid "{0} file will be exported with the details required for basic Dashboard Embedding. You can use this {0} file to run the {1} sample available {2}here{3}."
 msgstr ""
 
@@ -7599,12 +8316,6 @@ msgid "Please enter the site name"
 msgstr ""
 
 msgid "Site URL"
-msgstr ""
-
-msgid "Please enter the site URL"
-msgstr ""
-
-msgid "Get Link"
 msgstr ""
 
 msgid "Link to Dashboard"
@@ -7658,19 +8369,13 @@ msgstr ""
 msgid "This Dashboard has been unlisted, so this Dashboard will not be listed anywhere. Anyone with this link will be able to view the contents of the Dashboard."
 msgstr ""
 
-msgid "My Dashboards"
-msgstr ""
-
-msgid "New Support Request"
-msgstr ""
-
 msgid "Support Incidents"
 msgstr ""
 
 msgid "Edit Profile"
 msgstr ""
 
-msgid "Logout"
+msgid "Sign out"
 msgstr ""
 
 msgid "View all"
@@ -7680,9 +8385,6 @@ msgid "Give us feedback"
 msgstr ""
 
 msgid "We answer all your questions."
-msgstr ""
-
-msgid "Modified Date"
 msgstr ""
 
 msgid "Dashboard Name"
@@ -7706,9 +8408,6 @@ msgstr ""
 msgid "Contains multiple dashboards"
 msgstr ""
 
-msgid "Info"
-msgstr ""
-
 msgid "Item Id"
 msgstr ""
 
@@ -7727,10 +8426,16 @@ msgstr ""
 msgid "Last modified on"
 msgstr ""
 
+msgid "Complete Upload"
+msgstr ""
+
+msgid "Failure at "
+msgstr ""
+
 msgid "Owner"
 msgstr ""
 
-msgid "Last Modified"
+msgid "Data Type"
 msgstr ""
 
 msgid "Data Rows"
@@ -7739,22 +8444,19 @@ msgstr ""
 msgid "Data Refresh Status"
 msgstr ""
 
+msgid "Failed to fetch"
+msgstr ""
+
+msgid "Please edit and save the data source again in order to obtain the data type of this data source."
+msgstr ""
+
 msgid "Draft"
 msgstr ""
 
 msgid "Create dashboard using this Data Source"
 msgstr ""
 
-msgid "Edit Data Source"
-msgstr ""
-
 msgid "Preview Data"
-msgstr ""
-
-msgid "Refresh Data"
-msgstr ""
-
-msgid "Refresh History"
 msgstr ""
 
 msgid "View Linked Dashboards"
@@ -7763,22 +8465,16 @@ msgstr ""
 msgid "Copy Data Source"
 msgstr ""
 
-msgid "Only available for live connections"
-msgstr ""
-
 msgid "Sharing Permissions"
-msgstr ""
-
-msgid "Version History"
 msgstr ""
 
 msgid "Update Dashboard"
 msgstr ""
 
-msgid "Delete"
+msgid "Successful at {0}"
 msgstr ""
 
-msgid "Successful at {0}"
+msgid "Last Successful at {0}"
 msgstr ""
 
 msgid "Failure at {0}"
@@ -7787,13 +8483,7 @@ msgstr ""
 msgid "Last successful at {0}"
 msgstr ""
 
-msgid "Refresh Started"
-msgstr ""
-
-msgid "Refresh schedule not configured"
-msgstr ""
-
-msgid "Not refreshed yet"
+msgid "Refresh Started at {0}"
 msgstr ""
 
 msgid "Combined Data Source"
@@ -7802,37 +8492,16 @@ msgstr ""
 msgid "Live Connection"
 msgstr ""
 
-msgid "Failed to fetch"
-msgstr ""
-
 msgid "Item Actions"
-msgstr ""
-
-msgid "Expand All"
 msgstr ""
 
 msgid "Search data sources"
 msgstr ""
 
-msgid "Remove from favorites"
-msgstr ""
-
-msgid "Mark as favorite"
-msgstr ""
-
 msgid "Open Dashboard in new tab"
 msgstr ""
 
-msgid "Edit"
-msgstr ""
-
 msgid "Open"
-msgstr ""
-
-msgid "Make Public"
-msgstr ""
-
-msgid "Make Private"
 msgstr ""
 
 msgid "Loading..."
@@ -7841,13 +8510,7 @@ msgstr ""
 msgid "View Schedules"
 msgstr ""
 
-msgid "Move"
-msgstr ""
-
 msgid "Create Schedule"
-msgstr ""
-
-msgid "Update Data Source(s)"
 msgstr ""
 
 msgid "Open Widget in new tab"
@@ -7866,9 +8529,6 @@ msgid "Version"
 msgstr ""
 
 msgid "User"
-msgstr ""
-
-msgid "Action"
 msgstr ""
 
 msgid "DASHBOARDS"
@@ -7892,16 +8552,10 @@ msgstr ""
 msgid "{0}Upgrade your plan{1} to add more users."
 msgstr ""
 
-msgid "License limit reached"
-msgstr ""
-
 msgid "You can only choose {0} user(s) to import since there are only {1} remaining license(s)."
 msgstr ""
 
-msgid "Are you sure you want to make the Dashboard - {0} public?"
-msgstr ""
-
-msgid "Note:"
+msgid "Are you sure you want to make this Dashboard public?"
 msgstr ""
 
 msgid "Public dashboards are accessible to anyone with a link to them."
@@ -7917,9 +8571,6 @@ msgid "Public Widgets disabled in {0}dashboard settings{1}."
 msgstr ""
 
 msgid "Public Widgets disabled by the system administrator. Please contact your system administrator to enable this."
-msgstr ""
-
-msgid "Log Out"
 msgstr ""
 
 msgid "Explore"
@@ -7955,19 +8606,13 @@ msgstr ""
 msgid "Profile"
 msgstr ""
 
-msgid "Create Incidents"
+msgid "Create Ticket"
 msgstr ""
 
-msgid "My Incidents"
+msgid "My Tickets"
 msgstr ""
 
 msgid "Subscription and Billing"
-msgstr ""
-
-msgid "Move Dashboard"
-msgstr ""
-
-msgid "Move to Category"
 msgstr ""
 
 msgid "Delete Groups"
@@ -7976,19 +8621,7 @@ msgstr ""
 msgid "Are you sure you want to delete the group(s)?"
 msgstr ""
 
-msgid "Remove User"
-msgstr ""
-
 msgid "Are you sure you want to remove the user(s) from this site?"
-msgstr ""
-
-msgid "close"
-msgstr ""
-
-msgid "No Results Found"
-msgstr ""
-
-msgid "Pinboard1"
 msgstr ""
 
 msgid "Select an existing pinboard or add a new one."
@@ -8001,9 +8634,6 @@ msgid "You are viewing an older version of the dashboard. Only widgets in the la
 msgstr ""
 
 msgid "Click {0}here{1} to open the latest version."
-msgstr ""
-
-msgid "Pinboard"
 msgstr ""
 
 msgid "Existing"
@@ -8039,16 +8669,28 @@ msgstr ""
 msgid "Connected Sites"
 msgstr ""
 
+msgid "Webhooks"
+msgstr ""
+
 msgid "Publish to these sites"
 msgstr ""
 
 msgid "Publish to external sites"
 msgstr ""
 
+msgid "Deselect All"
+msgstr ""
+
+msgid "Nothing selected"
+msgstr ""
+
 msgid "Add external sites"
 msgstr ""
 
 msgid "Category name"
+msgstr ""
+
+msgid "Use source category name."
 msgstr ""
 
 msgid "Dashboard name"
@@ -8114,6 +8756,9 @@ msgstr ""
 msgid "If you want to publish the data source for a specific user, click on {0}Advanced{1} and choose the user you want."
 msgstr ""
 
+msgid "One or more details are invalid"
+msgstr ""
+
 msgid "Select the dashboard owner for the destination site."
 msgstr ""
 
@@ -8136,6 +8781,9 @@ msgid "Select data sources that you want to lock from editing in the destination
 msgstr ""
 
 msgid "Select the linked data sources that you want to lock from editing in the destination site."
+msgstr ""
+
+msgid "Select data sources"
 msgstr ""
 
 msgid "Select linked data sources"
@@ -8162,28 +8810,10 @@ msgstr ""
 msgid "Publish History"
 msgstr ""
 
-msgid "Failed"
-msgstr ""
-
-msgid "In Progress"
-msgstr ""
-
-msgid "Started"
-msgstr ""
-
-msgid "Success"
-msgstr ""
-
-msgid "Failure Info"
-msgstr ""
-
 msgid "Job ID"
 msgstr ""
 
 msgid "Created Date"
-msgstr ""
-
-msgid "Completed Date"
 msgstr ""
 
 msgid "Publishing Info"
@@ -8210,7 +8840,10 @@ msgstr ""
 msgid "Created By"
 msgstr ""
 
-msgid "Are you sure you want to make the Dashboard — {0} private?"
+msgid "Please enter minimum 15 minutes"
+msgstr ""
+
+msgid "Are you sure you want to make this Dashboard private?"
 msgstr ""
 
 msgid "If made private, the dashboard will only be visible to users with the appropriate permissions."
@@ -8222,7 +8855,13 @@ msgstr ""
 msgid "Dashboard— {0} is now private."
 msgstr ""
 
-msgid "Save View"
+msgid "Site {0}"
+msgstr ""
+
+msgid "Please add required {0} site here which will be shown when you configure the {1} widget."
+msgstr ""
+
+msgid "Add new site"
 msgstr ""
 
 msgid "Mark as Default"
@@ -8243,9 +8882,6 @@ msgstr ""
 msgid "Run now"
 msgstr ""
 
-msgid "Run Now"
-msgstr ""
-
 msgid "Disable"
 msgstr ""
 
@@ -8261,9 +8897,6 @@ msgstr ""
 msgid "Search schedules"
 msgstr ""
 
-msgid "Execution Type"
-msgstr ""
-
 msgid "Execution Date"
 msgstr ""
 
@@ -8276,6 +8909,9 @@ msgstr ""
 msgid "Dashboard "
 msgstr ""
 
+msgid "Widget "
+msgstr ""
+
 msgid "Schedule Name"
 msgstr ""
 
@@ -8285,10 +8921,19 @@ msgstr ""
 msgid "Receive email notifications when specified criteria is met; for example, when the total sales value is greater than $10,000."
 msgstr ""
 
+msgid "You cannot add users to the recipients before configuring the email settings."
+msgstr ""
+
 msgid "Select Users"
 msgstr ""
 
+msgid "You cannot add groups to the recipients before configuring the email settings."
+msgstr ""
+
 msgid "Select Groups"
+msgstr ""
+
+msgid "You cannot add External User to the recipients before configuring the email settings."
 msgstr ""
 
 msgid "External Recipients (Email address)"
@@ -8315,6 +8960,9 @@ msgstr ""
 msgid "Please contact your administrator to enable these export formats."
 msgstr ""
 
+msgid "Only export current view."
+msgstr ""
+
 msgid "Format"
 msgstr ""
 
@@ -8336,34 +8984,28 @@ msgstr ""
 msgid "Orientation"
 msgstr ""
 
-msgid "Location Export"
+msgid "Other Destinations"
 msgstr ""
 
-msgid "FTP Location"
+msgid "{0} Location"
 msgstr ""
 
-msgid "Supported protocols are FTP, FTPS, and sFTP"
+msgid "Webhook"
+msgstr ""
+
+msgid "Supported protocols are {0} and {1}"
 msgstr ""
 
 msgid "Host"
+msgstr ""
+
+msgid "Please select an existing webhook or create a new webhook and refresh the dropdown."
 msgstr ""
 
 msgid "Next Schedule"
 msgstr ""
 
 msgid "Enable {0} Scheduled Synchronization"
-msgstr ""
-
-msgid "Select Recurrence Type"
-msgstr ""
-
-msgid "Time"
-msgstr ""
-
-msgid "Share with others"
-msgstr ""
-
-msgid "Public"
 msgstr ""
 
 msgid "Dashboards are accessible to anyone with a link to them. No sign-in is required. If a user is signed in, public dashboards will be included in their dashboards list."
@@ -8387,13 +9029,7 @@ msgstr ""
 msgid "Copy link"
 msgstr ""
 
-msgid "Get Embed code"
-msgstr ""
-
-msgid "Anyone can navigate to this link, but only users with the appropriate permissions will be able to view items in the slideshow."
-msgstr ""
-
-msgid "Select one or more users and groups you would like to share this dashboard with."
+msgid "Anyone can navigate to this link, but only users with appropriate permissions to access dashboards used in the slideshow will be able to view the items in the slideshow."
 msgstr ""
 
 msgid "Select the users and groups with whom you would like to share this dashboard view."
@@ -8409,9 +9045,6 @@ msgid "Select the users and groups with whom you would like to share this catego
 msgstr ""
 
 msgid "Select the users and groups you would like to make owners for this group."
-msgstr ""
-
-msgid "Select Access"
 msgstr ""
 
 msgid "Shared with "
@@ -8432,9 +9065,6 @@ msgstr ""
 msgid "Marked for Delete"
 msgstr ""
 
-msgid "Public dashboards are disabled by the system administrator. Please contact your system administrator to enable this."
-msgstr ""
-
 msgid "Unlist dashboard from listing"
 msgstr ""
 
@@ -8447,13 +9077,25 @@ msgstr ""
 msgid "Learn more about Access modes"
 msgstr ""
 
-msgid "Copy this HTML code to embed the dashboard into any web application."
+msgid "Copy this {0} code to embed the dashboard into any web application."
 msgstr ""
 
-msgid "Copy this HTML code to embed the dashboard view into a web application."
+msgid "Copy this {0} code to embed the dashboard view into a web application."
 msgstr ""
 
-msgid "Copy this HTML code to embed the widget into a web application."
+msgid "Copy this {0} code to embed the widget into a web application."
+msgstr ""
+
+msgid "Copy this {0} code to embed the datasource into any web application."
+msgstr ""
+
+msgid "Mode"
+msgstr ""
+
+msgid "Users can able to change the Mode as Edit or View."
+msgstr ""
+
+msgid "Select {0} provider"
 msgstr ""
 
 msgid "Dashboard Comments"
@@ -8498,9 +9140,6 @@ msgstr ""
 msgid "Authentication Provider"
 msgstr ""
 
-msgid "Select {0} provider"
-msgstr ""
-
 msgid "You can use this code to embed and render this dashboard in your web application. Users need to be logged in and have the appropriate permission to view the dashboard."
 msgstr ""
 
@@ -8525,49 +9164,49 @@ msgstr ""
 msgid "You can use this code to embed and render this widget in your web application. Since the dashboard has have been marked as public, anyone will be able to view it."
 msgstr ""
 
+msgid "You can use this code to embed and render this datasource in your web application. Users need to be logged in and have the appropriate permission to view the datasource."
+msgstr ""
+
 msgid "Embed code copied successfully!"
 msgstr ""
 
-msgid "Changes have been made. Save to keep changes."
-msgstr ""
-
-msgid "Manage Access"
-msgstr ""
-
-msgid "Done"
-msgstr ""
-
-msgid "Share"
-msgstr ""
-
-msgid "Add Owner"
+msgid "Changes have been made. Please save your changes before navigating to another section."
 msgstr ""
 
 msgid "Are you sure you want to remove the user from this site?"
 msgstr ""
 
-msgid "Site Settings"
-msgstr ""
-
 msgid "Rebrand with your company name, logo, domain, time zone, and date-time display formats."
 msgstr ""
 
-msgid "Organization name"
+msgid "Branding and Date and Time settings have been inherited from the UMS settings. Please contact the UMS admin to disable the inheritance."
+msgstr ""
+
+msgid "Branding and Application Language settings have been inherited from the UMS settings. Please contact the UMS admin to disable the inheritance."
+msgstr ""
+
+msgid "Application Language and Date and Time settings have been inherited from the UMS settings. Please contact the UMS admin to disable the inheritance."
+msgstr ""
+
+msgid "Branding, Application Language, and Date and Time settings have been inherited from the UMS settings. Please contact the UMS admin to disable the inheritance."
+msgstr ""
+
+msgid "The organization's name will be employed in the application for both page titles and email content, particularly in the 'regards' section."
 msgstr ""
 
 msgid "Enter your Organization Name"
 msgstr ""
 
-msgid "Enter your URL"
+msgid "Domain"
 msgstr ""
 
-msgid "Branding"
+msgid "Enter your URL"
 msgstr ""
 
 msgid "Delete custom domain"
 msgstr ""
 
-msgid "Domain"
+msgid "Default domain is {0}"
 msgstr ""
 
 msgid "Now, you can use your own domain"
@@ -8576,7 +9215,13 @@ msgstr ""
 msgid "Use custom domain"
 msgstr ""
 
-msgid "{0} Certificate expires on {1}"
+msgid "Branding"
+msgstr ""
+
+msgid "The application's branding elements, including the logo, favicon, \"Powered by\" attribution, and copyright text, can be customized using these settings."
+msgstr ""
+
+msgid "These settings are inherited from global configurations, they cannot be altered."
 msgstr ""
 
 msgid "Login screen logo"
@@ -8636,7 +9281,19 @@ msgstr ""
 msgid "Enter the login disclaimer message"
 msgstr ""
 
-msgid "Template Dashboard"
+msgid "Users {0}"
+msgstr ""
+
+msgid "Groups {0}"
+msgstr ""
+
+msgid "You can use groups to create and assign a set of permissions and custom attributes to multiple users without re-creating them for each user."
+msgstr ""
+
+msgid "Click {0}here{1} to learn how to use groups."
+msgstr ""
+
+msgid "App"
 msgstr ""
 
 msgid "Update data sources connected to the Dashboard - {0}"
@@ -8651,7 +9308,43 @@ msgstr ""
 msgid "Internal server error. Please try again."
 msgstr ""
 
-msgid "Add User"
+msgid "Choose Theme File"
+msgstr ""
+
+msgid "Please ensure your custom theme file is valid by uploading it into this {0}online validation helper{1}."
+msgstr ""
+
+msgid "Theme Name"
+msgstr ""
+
+msgid "Please download the default color definition files for dark and light themes from this {0}link{1}."
+msgstr ""
+
+msgid "You can customize the color code in this definition file and upload it to the application."
+msgstr ""
+
+msgid "Please refer to this {0}link{1} to learn more about how to customize color codes."
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "Font file"
+msgstr ""
+
+msgid "Browse file path {0}"
+msgstr ""
+
+msgid "Font name"
+msgstr ""
+
+msgid "File"
+msgstr ""
+
+msgid "Select File"
+msgstr ""
+
+msgid "Email address"
 msgstr ""
 
 msgid "User name"
@@ -8661,9 +9354,6 @@ msgid "First name"
 msgstr ""
 
 msgid "Last name"
-msgstr ""
-
-msgid "Dashboard Settings"
 msgstr ""
 
 msgid "Autosave filter"
@@ -8703,6 +9393,12 @@ msgid "This value will determine whether the user can be imported or removed dur
 msgstr ""
 
 msgid "SETTINGS"
+msgstr ""
+
+msgid "Your dashboard resource file is ready for download. Please click {0} to go to the downloads page."
+msgstr ""
+
+msgid "An error occurred while processing your dashboard download request. Please click {0} to know more."
 msgstr ""
 
 msgid "You have commented on the dashboard"
@@ -8798,16 +9494,7 @@ msgstr ""
 msgid "{0} in dashboard {1}"
 msgstr ""
 
-msgid "Just now"
-msgstr ""
-
 msgid "Minutes ago"
-msgstr ""
-
-msgid "A minute ago"
-msgstr ""
-
-msgid "An hour ago"
 msgstr ""
 
 msgid "Hours ago"
@@ -8816,16 +9503,10 @@ msgstr ""
 msgid "No more notifications found"
 msgstr ""
 
-msgid "Notification"
-msgstr ""
-
 msgid "When your team starts working on things, notifications will show up here."
 msgstr ""
 
 msgid "Notification settings"
-msgstr ""
-
-msgid "Inherit from global settings"
 msgstr ""
 
 msgid "User preferences are disabled by the system administrator in global notification settings."
@@ -8867,7 +9548,7 @@ msgstr ""
 msgid "System Notifications"
 msgstr ""
 
-msgid "System notifications will appear in the bottom left once the user logs into the application"
+msgid "System notifications will appear in the top right once the user logs into the application"
 msgstr ""
 
 msgid "View My Permissions"
@@ -8891,10 +9572,61 @@ msgstr ""
 msgid "MY PERMISSIONS"
 msgstr ""
 
-msgid "Access Denied"
+msgid "Select Event"
+msgstr ""
+
+msgid "Failure Type"
+msgstr ""
+
+msgid "Webhook {0}"
+msgstr ""
+
+msgid "Status code"
+msgstr ""
+
+msgid "File Content"
+msgstr ""
+
+msgid "Response Message"
+msgstr ""
+
+msgid "Request Message"
+msgstr ""
+
+msgid "Webhook Settings"
+msgstr ""
+
+msgid "Manage all webhooks here."
+msgstr ""
+
+msgid "Deactivate"
+msgstr ""
+
+msgid "Activate"
+msgstr ""
+
+msgid "Event Type"
+msgstr ""
+
+msgid "Modified By"
+msgstr ""
+
+msgid "Modified On"
+msgstr ""
+
+msgid "Failure Logs"
+msgstr ""
+
+msgid "If you enable this option, the application will add an {0} header, {1}, meaning that the page will only be displayed if all frame ancestors and the page origin are the same. By default, this option is disabled."
+msgstr ""
+
+msgid "Please make sure that you are not using {0} embedding, as it will not work when this setting is saved."
 msgstr ""
 
 msgid "Synchronize {0} Groups"
+msgstr ""
+
+msgid "Select groups to synchronize with {0}."
 msgstr ""
 
 msgid "{0} Group Id"
@@ -8904,15 +9636,6 @@ msgid "Group Id"
 msgstr ""
 
 msgid "Add New Group"
-msgstr ""
-
-msgid "{0} Synchronization"
-msgstr ""
-
-msgid "Groups {0}"
-msgstr ""
-
-msgid "Select groups to synchronize with {0}."
 msgstr ""
 
 msgid "Synchronize"
@@ -8927,19 +9650,25 @@ msgstr ""
 msgid "{0} Groups Import"
 msgstr ""
 
-msgid "group id"
-msgstr ""
-
-msgid "Import Groups"
+msgid "Import Groups — {0}"
 msgstr ""
 
 msgid "Select groups to import from {0}."
 msgstr ""
 
-msgid "Import groups"
+msgid "group id"
+msgstr ""
+
+msgid "Import Selected Groups"
 msgstr ""
 
 msgid "Import the selected groups from the list"
+msgstr ""
+
+msgid "Import All Groups"
+msgstr ""
+
+msgid "Import all the groups from the list"
 msgstr ""
 
 msgid "Directory Path"
@@ -8951,19 +9680,7 @@ msgstr ""
 msgid "Modify"
 msgstr ""
 
-msgid "Search groups"
-msgstr ""
-
 msgid "Please search and select the groups from the following list to import"
-msgstr ""
-
-msgid "There is no data in the uploaded file. Please check and try uploading again."
-msgstr ""
-
-msgid "{0} group(s) has been imported successfully."
-msgstr ""
-
-msgid "Duplicate or Invalid data is found. Please change the data accordingly and re-import."
 msgstr ""
 
 msgid "Please select group(s) to import"
@@ -8972,25 +9689,28 @@ msgstr ""
 msgid "{0} Users Import"
 msgstr ""
 
-msgid "Mobile No"
-msgstr ""
-
-msgid "User Id"
-msgstr ""
-
 msgid "Import Users — {0}"
 msgstr ""
 
 msgid "Import users from {0}."
 msgstr ""
 
-msgid "Import"
+msgid "Mobile No"
+msgstr ""
+
+msgid "User Id"
+msgstr ""
+
+msgid "Import Selected Users"
 msgstr ""
 
 msgid "Import the selected users"
 msgstr ""
 
-msgid "Search users"
+msgid "Import All Users"
+msgstr ""
+
+msgid "Import all users and activate their accounts"
 msgstr ""
 
 msgid "Search and select the users from the following list to import"
@@ -9005,13 +9725,112 @@ msgstr ""
 msgid "Please select user(s) to import"
 msgstr ""
 
+msgid "Edit your webhooks here"
+msgstr ""
+
+msgid "Add your webhooks here"
+msgstr ""
+
+msgid "Enter a name here"
+msgstr ""
+
+msgid "Enter the description here"
+msgstr ""
+
+msgid "Please select the event"
+msgstr ""
+
+msgid "Destination {0}"
+msgstr ""
+
+msgid "Content Type"
+msgstr ""
+
+msgid "Please select the content type"
+msgstr ""
+
+msgid "Enable Authentication"
+msgstr ""
+
+msgid "{0} Key"
+msgstr ""
+
+msgid "UserName"
+msgstr ""
+
+msgid "Enter the username here"
+msgstr ""
+
+msgid "{0} encoded credentials (Username:Password) will be sent in the authorization header {1}."
+msgstr ""
+
+msgid "Enter the {0} key here"
+msgstr ""
+
+msgid "{0} encoded {1} key will be sent in Authorization header {2}."
+msgstr ""
+
+msgid "Enable Signing"
+msgstr ""
+
+msgid "Secret Key"
+msgstr ""
+
+msgid "The secret key is used to sign the payload {0}. It generates a signature, which is sent in the header {1} with the {2} encoding. This can be used to verify the integrity of the payload at the receiver’s end {3}."
+msgstr ""
+
+msgid "Custom Header"
+msgstr ""
+
+msgid "Custom headers are used to send extra data to the destination {0}"
+msgstr ""
+
+msgid "Key"
+msgstr ""
+
+msgid "Add Headers"
+msgstr ""
+
+msgid "Include all fields in the payload"
+msgstr ""
+
+msgid "The selected fields are sent as a payload. You can send all of them or just the required fields by selecting the following options."
+msgstr ""
+
+msgid "Payload"
+msgstr ""
+
+msgid "Please select the payload"
+msgstr ""
+
 msgid "Administration"
+msgstr ""
+
+msgid "Import groups"
 msgstr ""
 
 msgid "Update Authentication settings"
 msgstr ""
 
 msgid "Please select the groups from the following list to import"
+msgstr ""
+
+msgid "{0} Cloud Management"
+msgstr ""
+
+msgid "This {0} address has been flagged for suspicious activity and is restricted from accessing our site."
+msgstr ""
+
+msgid "If you believe you have received this message in error, please contact {0}"
+msgstr ""
+
+msgid "Thank you."
+msgstr ""
+
+msgid "{0} is a {1} company and is subject to {2} export laws. Consequently, due to your location, we may not allow access to any material on our site."
+msgstr ""
+
+msgid "If you believe that this is inaccurate, please contact {0}"
 msgstr ""
 
 msgid "Browser Not Supported"
@@ -9023,16 +9842,97 @@ msgstr ""
 msgid "We recommend using the latest version of {0} or {1} for a better application experience."
 msgstr ""
 
-msgid "Manage support team’s access to your resources."
+msgid "Bulk import Result"
 msgstr ""
 
-msgid "Allow"
+msgid "Shows a list of all bulk group import jobs."
 msgstr ""
 
-msgid "Allow support team to access my account."
+msgid "Shows a list of all bulk user import jobs."
 msgstr ""
 
-msgid "Please check our {0}license agreement{1} for this access."
+msgid "The importing process will begin either within 3 minutes of the job creation time or after the completion of other import tasks already in the queue."
+msgstr ""
+
+msgid "Job Id"
+msgstr ""
+
+msgid "Import Type"
+msgstr ""
+
+msgid "Started On"
+msgstr ""
+
+msgid "Suspend"
+msgstr ""
+
+msgid "Type Of import"
+msgstr ""
+
+msgid "Bulk user import Result"
+msgstr ""
+
+msgid "Bulk Import Result"
+msgstr ""
+
+msgid "Shows details about bulk group import jobs."
+msgstr ""
+
+msgid "Shows details about bulk user import jobs."
+msgstr ""
+
+msgid "The group import status will be marked as completed after all the users in the groups have been imported successfully."
+msgstr ""
+
+msgid "The bulk user import status will be marked as completed within 3 minutes after all the users have been imported successfully."
+msgstr ""
+
+msgid "Total Group Count"
+msgstr ""
+
+msgid "Total User Count"
+msgstr ""
+
+msgid "Imported Groups"
+msgstr ""
+
+msgid "Yet To Import"
+msgstr ""
+
+msgid "Failed Groups"
+msgstr ""
+
+msgid "Failed User"
+msgstr ""
+
+msgid "Date Created"
+msgstr ""
+
+msgid "Last Updated"
+msgstr ""
+
+msgid "The import job has been suspended by system due to some unexpected error."
+msgstr ""
+
+msgid "The import has been suspended by system due to 5 consecutive Failure."
+msgstr ""
+
+msgid "Type Of Import"
+msgstr ""
+
+msgid "Failed Import"
+msgstr ""
+
+msgid "Allow concierge access"
+msgstr ""
+
+msgid "Allow support team to access your site to check reported problem in your tenant. Please check our {0}license agreement{1}"
+msgstr ""
+
+msgid " for this access."
+msgstr ""
+
+msgid "Manage the external accounts that you have granted access for data analytics"
 msgstr ""
 
 msgid "Last Authorized"
@@ -9044,16 +9944,10 @@ msgstr ""
 msgid "Created On"
 msgstr ""
 
-msgid "Manage the external accounts that you have granted access for data analytics"
+msgid "Manage all the {0} and {1} connected sites"
 msgstr ""
 
-msgid "Edit Connected Account"
-msgstr ""
-
-msgid "Submit"
-msgstr ""
-
-msgid "Site {0}"
+msgid "{0} Sites"
 msgstr ""
 
 msgid "View the list of connected sites"
@@ -9068,6 +9962,9 @@ msgstr ""
 msgid "Database connection error"
 msgstr ""
 
+msgid "Sorry! Server has encountered an error while establishing the connection to application database."
+msgstr ""
+
 msgid "Sorry! Server has encountered an error while establishing the connection to application database. This error could be occurred due to below possible causes:"
 msgstr ""
 
@@ -9080,19 +9977,76 @@ msgstr ""
 msgid "The database might have been corrupted."
 msgstr ""
 
-msgid "Design Dashboard"
+msgid "Configure {0} settings for your site."
+msgstr ""
+
+msgid "Customize {0} Policy"
+msgstr ""
+
+msgid "You can configure a custom policy for your site. The default policy will be applied if this option is disabled."
+msgstr ""
+
+msgid "Allowed Origins"
+msgstr ""
+
+msgid "The specified origins will be able to access the resource. By default, all origins will be allowed."
+msgstr ""
+
+msgid "Allowed Methods"
+msgstr ""
+
+msgid "The specified methods will be able to access the resource. They will be used in response to a preflight request."
+msgstr ""
+
+msgid "Allowed Headers"
+msgstr ""
+
+msgid "The specified {0} headers can be used when making an actual request. They are used in response to a {1} request."
+msgstr ""
+
+msgid "Allow Credentials"
+msgstr ""
+
+msgid "When Allow Credentials is set to true, browsers are notified whether to expose the response to front-end {0} code."
+msgstr ""
+
+msgid "True"
+msgstr ""
+
+msgid "False"
+msgstr ""
+
+msgid "Expose Headers"
+msgstr ""
+
+msgid "This field value allows a server to specify which response headers should be exposed to browser-based scripts."
+msgstr ""
+
+msgid "This field value specifies the maximum time a preflight request's results can be cached."
+msgstr ""
+
+msgid "Client ID and secret for publishing resources between sites."
+msgstr ""
+
+msgid "Click to view"
+msgstr ""
+
+msgid "Widget Configuration"
+msgstr ""
+
+msgid "Configure any number of widgets for your applications by choosing widgets from the following list."
+msgstr ""
+
+msgid "BI Widgets"
+msgstr ""
+
+msgid "Reports Widgets"
 msgstr ""
 
 msgid "Are you sure you want to close? The current progress will be lost if you continue."
 msgstr ""
 
 msgid "Initializing Dashboard Designer"
-msgstr ""
-
-msgid "Favorites"
-msgstr ""
-
-msgid "All Dashboards"
 msgstr ""
 
 msgid "Public Dashboards"
@@ -9108,12 +10062,6 @@ msgid "All Categories"
 msgstr ""
 
 msgid "Draft Dashboards"
-msgstr ""
-
-msgid "Expand"
-msgstr ""
-
-msgid "Collapse"
 msgstr ""
 
 msgid "Close search"
@@ -9140,9 +10088,6 @@ msgstr ""
 msgid "Learn more"
 msgstr ""
 
-msgid "Schedules"
-msgstr ""
-
 msgid "Manage Schedules"
 msgstr ""
 
@@ -9167,28 +10112,22 @@ msgstr ""
 msgid "View My Profile"
 msgstr ""
 
-msgid "Notification Settings"
-msgstr ""
-
 msgid "Provide Feedback"
 msgstr ""
 
 msgid "Configuration for the Dashboards."
 msgstr ""
 
-msgid "Deployment Dashboards"
-msgstr ""
-
 msgid "Dashboards created in this site can be published to other site deployment."
-msgstr ""
-
-msgid "Attributes"
 msgstr ""
 
 msgid "Configure site-level attributes."
 msgstr ""
 
-msgid "Add Attribute"
+msgid "Attributes"
+msgstr ""
+
+msgid "Deployment Dashboards"
 msgstr ""
 
 msgid "Mark dashboards as public"
@@ -9218,10 +10157,31 @@ msgstr ""
 msgid "Usage analytics"
 msgstr ""
 
+msgid "Enterprise Insights"
+msgstr ""
+
+msgid "This setting allows you to hide or show enterprise insights dashboards in the dashboard listing page."
+msgstr ""
+
 msgid "This setting allows you to hide or show usage analytics dashboards in the dashboard listing page."
 msgstr ""
 
-msgid "Comment"
+msgid "Show get Embed code for Dashboards"
+msgstr ""
+
+msgid "This setting will allow the user to hide or show the Get Embed Code option in the context menu of the dashboard in the listing page and also in the share dialog of the dashboard."
+msgstr ""
+
+msgid "Show get Embed code for Widgets"
+msgstr ""
+
+msgid "This setting will allow the user to hide or show the Get Embed Code option in the context menu of the widget in the dashboard view page."
+msgstr ""
+
+msgid "Lock Resource Synchronization"
+msgstr ""
+
+msgid "This setting will disable synchronization of dashboards and data sources from other sites."
 msgstr ""
 
 msgid "This dashboard contains sample data."
@@ -9240,9 +10200,6 @@ msgid "Import Users — From Database"
 msgstr ""
 
 msgid "Import users from Database."
-msgstr ""
-
-msgid "Import Users"
 msgstr ""
 
 msgid "Import the selected users and activate their accounts"
@@ -9266,34 +10223,25 @@ msgstr ""
 msgid "Data Connectors"
 msgstr ""
 
-msgid "Data connectors Configuration"
-msgstr ""
-
 msgid "Configure any number of connections for your applications by choosing connectors from the list below."
 msgstr ""
 
-msgid "Widgets Configuration"
-msgstr ""
-
-msgid "Widget Configuration"
-msgstr ""
-
-msgid "Configure any number of widgets for your applications by choosing widgets from the following list."
-msgstr ""
-
-msgid "Create and manage data sources to connect your data with a dashboard. They can be databases, web services, or flat files."
-msgstr ""
-
-msgid "My Connections"
-msgstr ""
-
-msgid "Combine Data Source"
+msgid "Data connectors Configuration"
 msgstr ""
 
 msgid "Data Store Settings"
 msgstr ""
 
-msgid "Database configuration for the intermediate data source."
+msgid "Data Process Settings"
+msgstr ""
+
+msgid "Configure the database for storing extracted data and the settings for data caching."
+msgstr ""
+
+msgid "Data Store Configuration"
+msgstr ""
+
+msgid "Data Cache Configuration"
 msgstr ""
 
 msgid "Server Type"
@@ -9326,6 +10274,12 @@ msgstr ""
 msgid "Database Name"
 msgstr ""
 
+msgid "Service Name"
+msgstr ""
+
+msgid "Service name"
+msgstr ""
+
 msgid "Additional Parameters (Optional)"
 msgstr ""
 
@@ -9338,6 +10292,18 @@ msgstr ""
 msgid "Additional Parameters"
 msgstr ""
 
+msgid "Create and manage data sources to connect your data with a dashboard. They can be databases, web services, or flat files."
+msgstr ""
+
+msgid "My Connections"
+msgstr ""
+
+msgid "Combine Data Source"
+msgstr ""
+
+msgid "Total dashboards linked with the data source"
+msgstr ""
+
 msgid "Welcome, {0}! Bring your data, choose your KPIs and go live with your dashboard in minutes."
 msgstr ""
 
@@ -9347,7 +10313,10 @@ msgstr ""
 msgid "Dashboard Samples"
 msgstr ""
 
-msgid "Explore our features and see what the application is capable of achieving with our 50+ sample dashboards."
+msgid "Explore our features and see what the application is capable of achieving with our 100+ sample dashboards."
+msgstr ""
+
+msgid "Welcome, {0}! You do not have any dashboard shared with you, or you have not created any dashboard to display here. Also, you are unable to create a new one because you don't have permission."
 msgstr ""
 
 msgid "Start building your dashboard by adding your first data source."
@@ -9356,10 +10325,19 @@ msgstr ""
 msgid "Create my first Data Source"
 msgstr ""
 
+msgid "You do not have any data source shared with you, or you have not created any data source to display here. Also, you are unable to create a new one because you don't have permission."
+msgstr ""
+
 msgid "Schedule your dashboards to export them and send them through email."
 msgstr ""
 
-msgid "Start building your dashboards to schedule them."
+msgid "Schedule your dashboards to export them and send them through email. Start building your dashboards to schedule them."
+msgstr ""
+
+msgid "You do not have any schedule shared with you, or you have not created any schedule to display here. Also, you are unable to create a new one because you either don't have permission to create a dashboard, or there are no existing dashboards shared with you that can be used to create a schedule."
+msgstr ""
+
+msgid "You do not have any schedule shared with you, or you have not created any schedule to display here. Also, you are unable to create a new one because you don't have permission."
 msgstr ""
 
 msgid "Present dashboards in TV mode and embed them in slides."
@@ -9368,7 +10346,13 @@ msgstr ""
 msgid "Present dashboards in TV mode and by embedding them in slides. Start building your dashboards to create slideshows using them."
 msgstr ""
 
-msgid "Login"
+msgid "You do not have any slideshow shared with you, or you have not created any slideshow to display here. Also, you are unable to create a new one because you either don't have permission to create a dashboard, or there are no existing dashboards shared with you that can be used to create a slideshow."
+msgstr ""
+
+msgid "You do not have any slideshow shared with you, or you have not created any slideshow to display here. Also, you are unable to create a new one because you don't have permission."
+msgstr ""
+
+msgid "Sign in"
 msgstr ""
 
 msgid "Internal Server Error"
@@ -9410,28 +10394,16 @@ msgstr ""
 msgid "Go to home page"
 msgstr ""
 
-msgid "Click to Verify - This site chose {0} for secure e-commerce and confidential communications."
+msgid "Add and manage groups."
 msgstr ""
 
 msgid "Manage Permissions"
-msgstr ""
-
-msgid "You cannot add users to {0} groups."
 msgstr ""
 
 msgid "Add Users"
 msgstr ""
 
 msgid "You cannot delete the administrator group."
-msgstr ""
-
-msgid "You can use groups to create and assign a set of permissions and custom attributes to multiple users without re-creating them for each user."
-msgstr ""
-
-msgid "Click {0}here{1} to learn how to use groups."
-msgstr ""
-
-msgid "Add and manage groups."
 msgstr ""
 
 msgid "Add new group"
@@ -9444,6 +10416,9 @@ msgid "Import groups from {0}"
 msgstr ""
 
 msgid "Import from {0}"
+msgstr ""
+
+msgid "Shows the bulk user import detail"
 msgstr ""
 
 msgid "Synchronize Groups"
@@ -9467,9 +10442,6 @@ msgstr ""
 msgid "Add New Permission"
 msgstr ""
 
-msgid "Pinboards"
-msgstr ""
-
 msgid "Rename"
 msgstr ""
 
@@ -9477,9 +10449,6 @@ msgid "Duplicate"
 msgstr ""
 
 msgid "Set as default pinboard"
-msgstr ""
-
-msgid "Remove default pinboard"
 msgstr ""
 
 msgid "Edit Layout"
@@ -9539,10 +10508,13 @@ msgstr ""
 msgid "Embed authentication is disabled."
 msgstr ""
 
-msgid "The embed dashboard link is invalid or expired."
+msgid "The embed_timestamp value is missing the dashboard signature URL."
 msgstr ""
 
-msgid "You do not have permission to view this dashboard."
+msgid "You must pass the current timestamp value while you setting embed_expirationtime value."
+msgstr ""
+
+msgid "The embed dashboard link is invalid or expired."
 msgstr ""
 
 msgid "Please contact your administrator."
@@ -9560,13 +10532,13 @@ msgstr ""
 msgid "{0}Go to sites page{1} or {2}Create a support{3} ticket with application logs by referring to this {4}link{5}."
 msgstr ""
 
-msgid "{0}Go to sites page{1} or {2}Create a support{3}"
+msgid "{0}Go to sites page{1} or {2}Create a support ticket{3}"
 msgstr ""
 
 msgid "{0}Go to home page{1} or {2}Create a support{3} ticket with application logs by referring to this {4}link{5}."
 msgstr ""
 
-msgid "{0}Go to home page{1} or {2}Create a support{3}"
+msgid "{0}Go to home page{1} or {2}Create a support ticket{3}"
 msgstr ""
 
 msgid "Login Error"
@@ -9612,9 +10584,6 @@ msgid "We can answer all your questions about dashboard creation, sharing, and m
 msgstr ""
 
 msgid "Welcome back, {0}"
-msgstr ""
-
-msgid "Dashboard Templates"
 msgstr ""
 
 msgid "Quick Actions"
@@ -9701,13 +10670,7 @@ msgstr ""
 msgid "Users List"
 msgstr ""
 
-msgid "Active"
-msgstr ""
-
-msgid "Inactive"
-msgstr ""
-
-msgid "Completed"
+msgid "Add and manage your users."
 msgstr ""
 
 msgid "Pending"
@@ -9719,9 +10682,6 @@ msgstr ""
 msgid "You cannot delete the system administrator"
 msgstr ""
 
-msgid "Add and manage your users."
-msgstr ""
-
 msgid "Add new user"
 msgstr ""
 
@@ -9729,9 +10689,6 @@ msgid "New User"
 msgstr ""
 
 msgid "Add user"
-msgstr ""
-
-msgid "Import users from {0}"
 msgstr ""
 
 msgid "Synchronize Users"
@@ -9743,7 +10700,10 @@ msgstr ""
 msgid "Synchronize users with Custom Database"
 msgstr ""
 
-msgid "Database Synchronization"
+msgid "More options"
+msgstr ""
+
+msgid "More Options"
 msgstr ""
 
 msgid "Remove selected users"
@@ -9752,10 +10712,13 @@ msgstr ""
 msgid "Assign a group to selected users"
 msgstr ""
 
+msgid "The import of {0} users from {1} is still in progress"
+msgstr ""
+
 msgid "{0} User"
 msgstr ""
 
-msgid "Please contact your site administrator for help."
+msgid "Sorry, you do not have permission to access this website from your current IP address {0}. Only authorized IP addresses are allowed."
 msgstr ""
 
 msgid "Slideshow Not Found"
@@ -9767,10 +10730,19 @@ msgstr ""
 msgid "User Not Found"
 msgstr ""
 
+msgid "Widget Not Found"
+msgstr ""
+
+msgid "Import users job Not Found"
+msgstr ""
+
 msgid "Group Not Found"
 msgstr ""
 
 msgid "Pinboard Not Found"
+msgstr ""
+
+msgid "Refresh Logs Not Found"
 msgstr ""
 
 msgid "Dashboard Not Found"
@@ -9809,6 +10781,12 @@ msgstr ""
 msgid "Sorry! The user profile you’re looking for isn’t available. The user may have been deleted."
 msgstr ""
 
+msgid "Import users job details not found"
+msgstr ""
+
+msgid "Sorry! The import users job detail you’re looking for isn’t available. The job detail may have been deleted or the job id is invalid. Please refresh the bulk import result page."
+msgstr ""
+
 msgid "Group not found"
 msgstr ""
 
@@ -9819,6 +10797,18 @@ msgid "Pinboard not found"
 msgstr ""
 
 msgid "Sorry! The pinboard you’re looking for isn’t available. The pinboard may have been deleted."
+msgstr ""
+
+msgid "Refresh logs not found"
+msgstr ""
+
+msgid "Sorry! The logs you’re looking for isn’t available. The logs may have been deleted or haven't been logged."
+msgstr ""
+
+msgid "Widget not found"
+msgstr ""
+
+msgid "Sorry! The widget you’re looking for isn’t available."
 msgstr ""
 
 msgid "Dashboard not found"
@@ -9848,6 +10838,48 @@ msgstr ""
 msgid "Please wait..."
 msgstr ""
 
+msgid "Customize the look and feel of the application."
+msgstr ""
+
+msgid "Look and Feel settings have been inherited from the UMS settings. Please contact the UMS admin to disable the inheritance."
+msgstr ""
+
+msgid "Inherit from Global Settings"
+msgstr ""
+
+msgid "Enabling this setting will cause the look and feel to be inherited from the {0} settings."
+msgstr ""
+
+msgid "Fonts"
+msgstr ""
+
+msgid "Upload the font file here."
+msgstr ""
+
+msgid "Add a new font"
+msgstr ""
+
+msgid "Theme Mode"
+msgstr ""
+
+msgid "Light"
+msgstr ""
+
+msgid "Dark"
+msgstr ""
+
+msgid "Custom Theme"
+msgstr ""
+
+msgid "Upload the theme file here."
+msgstr ""
+
+msgid "A custom theme can only be created for either a dark or light mode. A single custom theme will not work for both. Please choose a custom theme based on your current application mode. To reset the custom theme, please select the default value."
+msgstr ""
+
+msgid "Dashboard Theme"
+msgstr ""
+
 msgid "Dashboard cannot be opened."
 msgstr ""
 
@@ -9857,7 +10889,7 @@ msgstr ""
 msgid "User Notification Preference"
 msgstr ""
 
-msgid "Configure how your users will receive notifications for comments on dashboards."
+msgid "Configure how your users will receive notifications for different actions performed in the application."
 msgstr ""
 
 msgid "Notify the owner when someone comments on the dashboard"
@@ -9911,16 +10943,25 @@ msgstr ""
 msgid "Usage analytics dashboards are disabled in {0}dashboard settings{1}."
 msgstr ""
 
+msgid "Enterprise insights dashboards are disabled in {0}dashboard settings{1}."
+msgstr ""
+
+msgid "This dashboard has been configured to show tabs based on individual dashboard permissions. You do not have the permission to view any of the tabs in this dashboard."
+msgstr ""
+
+msgid "You do not have permission to edit or create the dashboard."
+msgstr ""
+
+msgid "You do not have permission to create the datasource."
+msgstr ""
+
+msgid "You do not have permission to edit the datasource."
+msgstr ""
+
 msgid "You do not have permission to view this page."
 msgstr ""
 
 msgid "Use this page to detail your site's privacy policy."
-msgstr ""
-
-msgid "No default Pinboard"
-msgstr ""
-
-msgid "USER PROFILE"
 msgstr ""
 
 msgid "Manage your profile settings and privacy controls"
@@ -9935,6 +10976,12 @@ msgstr ""
 msgid "NOTIFICATIONS"
 msgstr ""
 
+msgid "PERSONAL ACCESS TOKEN"
+msgstr ""
+
+msgid "USER PROFILE"
+msgstr ""
+
 msgid "Edit Account"
 msgstr ""
 
@@ -9944,10 +10991,16 @@ msgstr ""
 msgid "Phone"
 msgstr ""
 
-msgid "Isolation Code"
+msgid "Your preferred application and data language will not be applied here as the user preference for these settings is disabled."
+msgstr ""
+
+msgid "The language used in the application user interface (such as menu items, dialog boxes, toolboxes, and more)."
 msgstr ""
 
 msgid "Update application language details through your account"
+msgstr ""
+
+msgid "The language used in date, number, and currency formats."
 msgstr ""
 
 msgid "Update data language details through your account"
@@ -9959,19 +11012,34 @@ msgstr ""
 msgid "Click {0}here{1} to learn how to set a default pinboard."
 msgstr ""
 
-msgid "Select Pinboard"
+msgid "A personal access token serves the same purpose as an OAuth access token. It enables secure embedding of the dashboard viewer and designer within your application. Additionally, this token grants access to all our REST API endpoints."
 msgstr ""
 
-msgid "Published Resources"
+msgid "Token Expiration"
+msgstr ""
+
+msgid "Authentication token"
 msgstr ""
 
 msgid "PUBLISHED RESOURCES"
 msgstr ""
 
-msgid "Manage the resources that are published to other internal/external sites."
+msgid "You can manage the resources published to other sites online and request to download them for offline migration."
 msgstr ""
 
 msgid "Search resources"
+msgstr ""
+
+msgid "Published Online "
+msgstr ""
+
+msgid "The synchronization process will disregard deleted sites during the bulk sync process. To synchronize the latest changes, please remove dashboards/data sources of the deleted sites and publish it again."
+msgstr ""
+
+msgid "Lock Edit"
+msgstr ""
+
+msgid "Unlock Edit"
 msgstr ""
 
 msgid "Datasource"
@@ -9981,12 +11049,6 @@ msgid "Data source"
 msgstr ""
 
 msgid "Remove Published Dashboard"
-msgstr ""
-
-msgid "Are you sure you want to remove the published dashboard?"
-msgstr ""
-
-msgid "Removing the published dashboard does not remove the dashboard in the published site."
 msgstr ""
 
 msgid "Schedule Synchronization"
@@ -10004,10 +11066,19 @@ msgstr ""
 msgid "Schedule to synchronize users and groups with Database"
 msgstr ""
 
+msgid "Create and manage dashboard schedules to send out dashboard reports either at a specific date and time interval or when data changes."
+msgstr ""
+
 msgid "Next Scheduled Run"
 msgstr ""
 
-msgid "Deleted"
+msgid "Scheduled Dashboard is "
+msgstr ""
+
+msgid "View name"
+msgstr ""
+
+msgid "Data alert"
 msgstr ""
 
 msgid "Schedule-History"
@@ -10016,7 +11087,61 @@ msgstr ""
 msgid "Run History"
 msgstr ""
 
-msgid "Create and manage dashboard schedules to send out dashboard reports either at a specific date and time interval or when data changes."
+msgid "Security Settings"
+msgstr ""
+
+msgid "Configure security-related settings for your site."
+msgstr ""
+
+msgid "You can configure a {0} for your site. {1} will not be applied if this option is disabled."
+msgstr ""
+
+msgid "Click {0}here{1} to learn more."
+msgstr ""
+
+msgid "Style Source"
+msgstr ""
+
+msgid "This directive specifies valid sources for stylesheets."
+msgstr ""
+
+msgid "Enter a list of {0} separated by commas"
+msgstr ""
+
+msgid "Script Source"
+msgstr ""
+
+msgid "This directive specifies valid sources for {0}."
+msgstr ""
+
+msgid "Font Source"
+msgstr ""
+
+msgid "This directive specifies valid sources for fonts."
+msgstr ""
+
+msgid "Image Source"
+msgstr ""
+
+msgid "This directive specifies valid sources for images."
+msgstr ""
+
+msgid "Connect Source"
+msgstr ""
+
+msgid "This directive specifies the sources that can be used to make {0} requests."
+msgstr ""
+
+msgid "Frame Source"
+msgstr ""
+
+msgid "This directive specifies valid sources for the nested document using elements like {0} and {1}."
+msgstr ""
+
+msgid "Frame Ancestors"
+msgstr ""
+
+msgid "This directive specifies valid parent domains that may embed a dashboard or complete application using an {0}. However, the CSP header will not apply this directive if the X-Frame-Options has already been enabled."
 msgstr ""
 
 msgid "SLIDESHOWS"
@@ -10031,9 +11156,6 @@ msgstr ""
 msgid "Site Suspended"
 msgstr ""
 
-msgid "Suspended"
-msgstr ""
-
 msgid "Subscriptions to the dashboard have been suspended."
 msgstr ""
 
@@ -10043,19 +11165,19 @@ msgstr ""
 msgid "Please contact your System Administrator for more details."
 msgstr ""
 
-msgid "User id"
-msgstr ""
-
 msgid "Database User Synchronization"
-msgstr ""
-
-msgid "Users {0}"
 msgstr ""
 
 msgid "Select Users to synchronize with Existing Database."
 msgstr ""
 
+msgid "User id"
+msgstr ""
+
 msgid "Synchronize Users with Existing Database"
+msgstr ""
+
+msgid "Search database users"
 msgstr ""
 
 msgid "Only users imported from the database configured in this organization are listed here."
@@ -10064,10 +11186,10 @@ msgstr ""
 msgid "Select Users to synchronize with {0}."
 msgstr ""
 
-msgid "Only users imported from the {0} configured in this organization are listed here."
+msgid "Search {0} users"
 msgstr ""
 
-msgid "Search {0} users"
+msgid "Only users imported from the {0} configured in this organization are listed here."
 msgstr ""
 
 msgid "Registering your site..."
@@ -10094,15 +11216,6 @@ msgstr ""
 msgid "Get started creating dashboards."
 msgstr ""
 
-msgid "All"
-msgstr ""
-
-msgid "Drafts"
-msgstr ""
-
-msgid "Usage Analytics"
-msgstr ""
-
 msgid "Search Categories"
 msgstr ""
 
@@ -10115,37 +11228,7 @@ msgstr ""
 msgid "dashboards"
 msgstr ""
 
-msgid "Search dashboards"
-msgstr ""
-
-msgid "Sort"
-msgstr ""
-
-msgid "Recently Updated"
-msgstr ""
-
-msgid "Dashboard Name (A-Z)"
-msgstr ""
-
-msgid "Dashboard Name (Z-A)"
-msgstr ""
-
-msgid "Filter"
-msgstr ""
-
-msgid "Owned by me"
-msgstr ""
-
-msgid "Shared with me"
-msgstr ""
-
-msgid "Public dashboards are disabled in {0}dashboard settings{1}."
-msgstr ""
-
 msgid "Multi-Tab"
-msgstr ""
-
-msgid "Security"
 msgstr ""
 
 msgid "No dashboards have been shared with you."
@@ -10166,79 +11249,31 @@ msgstr ""
 msgid "No drafts were found that match your search. Try modifying your search."
 msgstr ""
 
-msgid "Unlock {0} Feature!"
+msgid "No upload drafts available to display."
 msgstr ""
 
-msgid "{0} comes with an additional cost. You can unlock this feature with the {0} plan."
+msgid "No upload drafts were found that match your search. Try modifying your search."
 msgstr ""
 
-msgid "Please {0}upgrade your plan{1} or {2}contact us{1} to unlock this {3} feature."
+msgid "Enabling tab-level security will restrict tab visibility to users with the individual dashboard permission when dashboards are added as tabs. By default, all tabs will be visible to the user if the user has access to a multitab dashboard."
 msgstr ""
 
-msgid "Please {0}contact us{1} to unlock this {0} feature."
+msgid "Enable tab-level security"
 msgstr ""
 
-msgid "Unlock Enterprise Features!"
-msgstr ""
-
-msgid "Enterprise features come with additional pricing. You can unlock the following features with the Enterprise plan"
-msgstr ""
-
-msgid "Custom branding"
-msgstr ""
-
-msgid "Third-party logins"
-msgstr ""
-
-msgid "Please {0}upgrade your plan{1} or {2}contact us{3} to unlock these enterprise features."
-msgstr ""
-
-msgid "Enterprise features come with additional pricing. We will get back to you with a personalized offer."
-msgstr ""
-
-msgid "Yes, I’m interested"
-msgstr ""
-
-msgid "Your request for the enterprise plan has been submitted. Our client relations team will contact you soon."
-msgstr ""
-
-msgid "Great! Our client relations team will contact you soon."
-msgstr ""
-
-msgid "What You Get with the Enterprise Plan"
-msgstr ""
-
-msgid "Brand your dashboard site with your own name, logo."
-msgstr ""
-
-msgid "Custom Domain"
-msgstr ""
-
-msgid "Use your own domain name for your {0} site."
-msgstr ""
-
-msgid "Data Refresh"
-msgstr ""
-
-msgid "Refresh your data extracts every five minutes."
-msgstr ""
-
-msgid "Third Party Logins"
-msgstr ""
-
-msgid "Configure {0} using your organization’s {1}."
+msgid "All tabs will be visible to the dashboard owner and administrators. Public dashboards added as tabs will also be visible."
 msgstr ""
 
 msgid "{0} Import"
 msgstr ""
 
-msgid "Error"
+msgid "Import Users"
 msgstr ""
 
 msgid "Import users from the list below"
 msgstr ""
 
-msgid "Browse file path {0}"
+msgid "Browse"
 msgstr ""
 
 msgid "Please upload a valid {0} file."
@@ -10247,19 +11282,10 @@ msgstr ""
 msgid "Upload {0} File here"
 msgstr ""
 
-msgid "Upload"
-msgstr ""
-
 msgid "Download sample template"
 msgstr ""
 
 msgid "Download Template"
-msgstr ""
-
-msgid "{0} user(s) has been added successfully."
-msgstr ""
-
-msgid "Duplicate or Invalid data is found. Please change the data accordingly and re-upload the file."
 msgstr ""
 
 msgid "User Permissions"
@@ -10277,13 +11303,7 @@ msgstr ""
 msgid "Inherited From"
 msgstr ""
 
-msgid "Manage"
-msgstr ""
-
 msgid "Group Isolation code"
-msgstr ""
-
-msgid "Please enter the valid isolation code"
 msgstr ""
 
 msgid "Select user(s)"
@@ -10292,34 +11312,31 @@ msgstr ""
 msgid "Add selected user(s) to the group"
 msgstr ""
 
-msgid "CanAccess"
-msgstr ""
-
 msgid "DataSources"
 msgstr ""
 
 msgid "Dependent Dashboards"
 msgstr ""
 
+msgid "CanAccess"
+msgstr ""
+
+msgid "Action disabled for unlisted dashboard"
+msgstr ""
+
 msgid "User Profile"
-msgstr ""
-
-msgid "Deactivate User"
-msgstr ""
-
-msgid "Activate User"
-msgstr ""
-
-msgid "Resend Activation Code"
 msgstr ""
 
 msgid "Profile editing is not currently supported for {0} and database accounts."
 msgstr ""
 
+msgid "Only Firstname and Lastname editing is supported for {0} accounts."
+msgstr ""
+
 msgid "You do not have the privilege to edit the admin user’s profile."
 msgstr ""
 
-msgid "Please enter the first name"
+msgid "Modifying another user's profile is not currently permitted. If you would like to update your profile, please navigate to the 'My Profile' section and make the necessary changes."
 msgstr ""
 
 msgid "Please enter the last name"
@@ -10337,23 +11354,32 @@ msgstr ""
 msgid "Please enter the isolation code"
 msgstr ""
 
-msgid "Look and Feel"
+msgid "Refresh logs"
 msgstr ""
 
-msgid "Fonts"
+msgid "Manage all your webhooks here."
 msgstr ""
 
-msgid "Theme Mode"
+msgid "This URI is used to receive the response from the authorization server. When setting up your OAuth 2.0 application, it's essential to register the redirect URI using only lowercase characters."
 msgstr ""
 
-msgid "Dashboard Theme"
+msgid "This URI is used to receive the response from the authorization server. When setting up your OpenID Connect application, it's essential to register the redirect URI using only lowercase characters."
 msgstr ""
 
-msgid "Enable User Account Creation"
+msgid "Data Hub"
 msgstr ""
 
-msgid "Create a new user account if doesn't exist."
+msgid "Not synced with {0}"
 msgstr ""
 
-msgid "Only Firstname and Lastname editing is supported for {0} accounts."
+msgid "Row Level Security"
+msgstr ""
+
+msgid "Row-Level Security applied"
+msgstr ""
+
+msgid "Setup Row Level Security"
+msgstr ""
+
+msgid "Pipeline does not exists in {0}"
 msgstr ""

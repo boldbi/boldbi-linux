@@ -15,29 +15,37 @@ $(function () {
         $("#filename").attr("disabled", "disabled");
     }
 
+    $(document).ready(function () {
+        getLinkCopyLinkobj.tooltip("enable").attr("data-bs-original-title", window.Server.App.LocalizationContent.LinkCopy$).attr("title", window.Server.App.LocalizationContent.LinkCopy$).tooltip("enable");
+    })
+
     $(document).on('click', '#restrict-embed-enabled', function () {
         var key = "IsEmbedEnabled";
         if ($("#restrict-embed-enabled").is(":checked")) {
             $("#get-embed-code").removeAttr("disabled");
+            $("#filename").val(jsonFileName);
             if (getLinkInputObj.val() != "") {
                 getLinkInputObj.removeAttr("disabled");
                 getLinkCopyLinkobj.removeAttr("disabled");
-                getLinkCopyLinkobj.css("cursor", "pointer");
-                getLinkCopyLinkobj.tooltip("enable").attr("data-original-title", window.Server.App.LocalizationContent.LinkCopy$).tooltip("fixTitle").tooltip("enable");
             }
             var isEmbed = "true";
             $(".download-template").show();
-            $("#trigger-file").removeAttr("disabled");
+            $("#trigger-file").removeClass("disabled");
             $("#filename").removeAttr("disabled");
-
+            getLinkCopyLinkobj.css("cursor", "pointer");
+            getLinkCopyLinkobj.tooltip("enable").attr("data-bs-original-title", window.Server.App.LocalizationContent.LinkCopy$).attr("title", window.Server.App.LocalizationContent.LinkCopy$).tooltip("enable");
         } else {
             $("#get-embed-code").attr("disabled", "disabled");
+            $("#filename").val(window.Server.App.LocalizationContent.BrowseJsonFilePath);
+            getLinkInputObj.val("");
+            $(".secret-code-notification").hide();
             getLinkInputObj.attr("disabled", "disabled");
             getLinkCopyLinkobj.attr("disabled", "disabled");
-            getLinkCopyLinkobj.tooltip("disable").attr("data-original-title", window.Server.App.LocalizationContent.LinkCopy$).tooltip("fixTitle").tooltip("disable");
+            getLinkCopyLinkobj.tooltip("disable").attr("data-bs-original-title", window.Server.App.LocalizationContent.LinkCopy$).attr("title", window.Server.App.LocalizationContent.LinkCopy$).tooltip("enable");
             getLinkCopyLinkobj.css("cursor", "default");
             $(".download-template").hide();
             $("#trigger-file").attr("disabled", "disabled");
+            $("#cs-upload").attr("disabled", "disabled");
             $("#filename").attr("disabled", "disabled");
             $("#import-validation-msg").html("");
             var isEmbed = "false";
@@ -67,20 +75,15 @@ $(function () {
         });
     });
 
-    getLinkCopyLinkobj.on("click", function (e) {
-        if (!getLinkInputObj.is(":disabled")) {
-            getLinkCopyLinkobj.tooltip("hide").attr("data-original-title", window.Server.App.LocalizationContent.LinkCopy$).tooltip("fixTitle").tooltip("show");
-            getLinkInputObj.select();
-            if (/Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor)) {
-                getLinkCopyLinkobj.removeClass("su su-copy");
-                getLinkCopyLinkobj.attr("data-original-title", "");
-            }
-            else {
-                document.execCommand('copy');
-                getLinkCopyLinkobj.attr("data-original-title", window.Server.App.LocalizationContent.Copied);
-                getLinkCopyLinkobj.tooltip("hide").attr("data-original-title", window.Server.App.LocalizationContent.Copied).tooltip("fixTitle").tooltip("show");
-                setTimeout(function () { getLinkCopyLinkobj.attr("data-original-title", window.Server.App.LocalizationContent.LinkCopy); getLinkCopyLinkobj.tooltip(); }, 3000);
-            }
+    $(document).on('click', '#restrict-embed-enabled', function () {
+        if (!$('#restrict-embed-enabled').is(":checked")) {
+            $("#secret-code-copy").attr("disabled", true).tooltip("enable").css("cursor", "pointer");
+        }
+    });
+
+    $(document).on('click', '#secret-code-copy', function () {
+        if ($('#secret-code').val() != '') {
+            copyToClipboard('#secret-code', '#secret-code-copy')
         }
     });
 
@@ -109,6 +112,7 @@ function getEmbedSecret() {
                 if (data.status) {
                     secretCodeChange(data);
                     $("#get-embed-code").html(window.Server.App.LocalizationContent.ResetHeader);
+                    $("#secret-code-copy").removeAttr("disabled");
                 }
             }
         });
@@ -135,7 +139,7 @@ function resetEmbedSecret() {
 }
 
 function secretCodeChange(data) {
-    $("#secret-code-copy").tooltip("hide").attr("data-original-title", window.Server.App.LocalizationContent.LinkCopy$).tooltip("fixTitle");
+    $("#secret-code-copy").tooltip("dispose").attr("data-bs-original-title", window.Server.App.LocalizationContent.LinkCopy$).attr("title", window.Server.App.LocalizationContent.LinkCopy$);
     $("#secret-code").removeAttr("disabled");
     $("#secret-code-copy").removeAttr("disabled");
     $("#secret-code").val(data.resetEmbedSecret);
@@ -163,4 +167,16 @@ $(document).on("change", "#csfile", function (e) {
         $(".upload-box").removeClass("e-error");
         $('#csfile').attr('title', value);
     }
+});
+
+$(document).on("click", "#get-embed-code", function () {
+    getEmbedSecret();
+});
+
+$(document).on("click", "#secret-code", function () {
+    this.setSelectionRange(0, this.value.length);
+});
+
+$(document).on("focus", "#filename", function () {
+    this.blur()
 });

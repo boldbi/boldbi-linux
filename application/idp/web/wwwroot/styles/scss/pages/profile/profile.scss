@@ -9,8 +9,11 @@
         height: 100%;
     }
 
+    @include admin-page-template_header();
+
     .admin-page-content-container {
         @include admin-page-template_new();
+        height: calc(100% - 120px);
 
         #is-aduser, #logged-user {
             display: none;
@@ -50,6 +53,7 @@
                 text-align: center;
                 padding-right: 40px;
                 width: 120px;
+                position: relative;
 
                 .profile-pic-tag {
                     color: $primary-text-color;
@@ -102,6 +106,7 @@
                 margin-top: 20px;
                 margin-left: 10px;
                 width: 750px;
+                position: relative;
 
                 form {
                     display: table;
@@ -112,6 +117,8 @@
                         width: 100%;
 
                         .tooltip {
+                            left: auto !important;
+
                             .tooltip-inner {
                                 max-width: unset;
                             }
@@ -131,7 +138,7 @@
                         }
 
                         label {
-                            color: $grey-500;
+                            color: $grey-700;
                             width: 75px;
                         }
 
@@ -151,6 +158,10 @@
                             margin-top: 4px;
                             font-size: 12px;
                             display: inline-block;
+                        }
+
+                        .edit-profile-field::placeholder {
+                            color: #555 !important;
                         }
 
                         .validation-message {
@@ -174,7 +185,7 @@
             border: 1px solid $warning-border-normal-color;
         }
 
-        .mandatory, #cancel-button, #save-button, #language-cancel-link-button {
+        .mandatory, #language-cancel-link-button {
             display: none;
         }
 
@@ -183,6 +194,10 @@
                 display: none;
             }
         }
+    }
+
+    .height-without-button {
+        height: calc(100% - 58px) !important;
     }
 }
 
@@ -256,6 +271,10 @@
         width: 202px;
         height: 202px;
         border-radius: 4px;
+
+        @media (max-width: 995px) {
+            bottom: 263px;
+        }
 
         .image-div {
             text-align: center;

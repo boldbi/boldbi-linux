@@ -3,55 +3,90 @@ var changeSubscriptionDialog;
 $(document).ready(function () {
     if (location.href.match(/boldbi/) != null) {
         history.pushState(null, '', '?product=embedded-bi');
+        $("ul.nav.nav-tabs li").removeClass("active");
+        $("#bold-bi").closest("li").addClass("active");
         $("#bold-bi").tab("show");
+        $("#bold-bi-tab").addClass("active");
+        $("#bold-reports-tab").removeClass("active");
     }
 
     else if (location.href.match(/boldreports/) != null) {
         history.pushState(null, '', '?product=enterprise-reporting');
+        $("ul.nav.nav-tabs li").removeClass("active");
+        $("#bold-reports").closest("li").addClass("active");
         $("#bold-reports").tab("show");
+        $("#bold-reports-tab").addClass("active");
+        $("#bold-bi-tab").removeClass("active");
     }
 
     else if (location.href.match(/embedded-bi/) != null) {
         history.pushState(null, '', '?product=enterprise-bi');
+        $("ul.nav.nav-tabs li").removeClass("active");
+        $("#bold-bi").closest("li").addClass("active");
         $("#bold-bi").tab("show");
+        $("#bold-bi-tab").addClass("active");
+        $("#bold-reports-tab").removeClass("active");
     }
 
     else if (location.href.match(/enterprise-reporting/) != null) {
         history.pushState(null, '', '?product=enterprise-reporting');
+        $("ul.nav.nav-tabs li").removeClass("active");
+        $("#bold-reports").closest("li").addClass("active");
         $("#bold-reports").tab("show");
+        $("#bold-reports-tab").addClass("active");
+        $("#bold-bi-tab").removeClass("active");
     }
 
     else if (location.href.match(/boldbi/) == null && location.href.match(/boldreports/) == null && location.href.match(/boldbi/) == null && location.href.match(/boldbi/) == null) {
-        
+
         if (isBoldBiLicenseAvailable.toLowerCase() == "true" && isBoldReportsLicenseAvailable.toLowerCase() == "true") {
             history.pushState(null, '', '?product=embedded-bi');
+            $("ul.nav.nav-tabs li").removeClass("active");
+            $("#bold-bi").closest("li").addClass("active");
             $("#bold-bi").tab("show");
+            $("#bold-bi-tab").addClass("active");
+            $("#bold-reports-tab").removeClass("active");
         }
-        
+
         else if (isBoldBiLicenseAvailable.toLowerCase() == "true" && isBoldReportsLicenseAvailable.toLowerCase() == "false") {
             history.pushState(null, '', '?product=embedded-bi');
+            $("ul.nav.nav-tabs li").removeClass("active");
+            $("#bold-bi").closest("li").addClass("active");
             $("#bold-bi").tab("show");
+            $("#bold-bi-tab").addClass("active");
+            $("#bold-reports-tab").removeClass("active");
         }
 
         else if (isBoldBiLicenseAvailable.toLowerCase() == "false" && isBoldReportsLicenseAvailable.toLowerCase() == "true") {
             history.pushState(null, '', '?product=enterprise-reporting');
+            $("ul.nav.nav-tabs li").removeClass("active");
+            $("#bold-reports").closest("li").addClass("active");
             $("#bold-reports").tab("show");
+            $("#bold-reports-tab").addClass("active");
+            $("#bold-bi-tab").removeClass("active");
         }
     }
 
-    $("a[data-toggle='tab']").on('click', function (e) {
+    $("a[data-bs-toggle='tab']").on('click', function (e) {
+        $("ul.nav.nav-tabs li").removeClass("active");
         var query = (window.location.search).toString();
 
         switch ($(this).attr("id")) {
             case "bold-bi":
+                $(this).closest("li").addClass("active");
                 if (query !== "?product=embedded-bi" || query !== "?product=boldbi") {
                     history.pushState(null, '', '?product=embedded-bi');
+                    $("#bold-bi-tab").addClass("active");
+                    $("#bold-reports-tab").removeClass("active");
                 }
                 break;
 
             case "bold-reports":
+                $(this).closest("li").addClass("active");
                 if (query !== "?product=enterprise-reporting" || query !== "?product=boldreports") {
                     history.pushState(null, '', '?product=enterprise-reporting');
+                    $("#bold-reports-tab").addClass("active");
+                    $("#bold-bi-tab").removeClass("active");
                 }
                 break;
         }
@@ -72,7 +107,10 @@ $(document).ready(function () {
 
     changeSubscriptionDialog.appendTo('#change-subscription-content');
 
-    $('[data-toggle="tooltip"]').tooltip();
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 
     if (isBoldBILicenseExpired) {
         $("#bold-bi-tab #details-information").css('padding-top', '20px');
@@ -97,7 +135,7 @@ $(document).on("click", "#change-subscription", function () {
     $(".online-change-subscription").attr("license-service-url", $(this).attr("license-service-url") + "&change_subscription=true");
     $(".offline-change-subscription").attr("data-offlinelicense-url", $(this).attr("data-offlinelicense-url")).attr("data-tenant-type", $(this).attr("data-tenant-type"));
     $("#change-subscription-help").attr("href", $(this).attr("data-offlinelicense-url"));
-
+    $("#change-subscription-content_title").html(window.Server.App.LocalizationContent.RefreshLicenseDialogHeader);
     changeSubscriptionDialog.show();
 });
 
@@ -105,7 +143,7 @@ $(document).on("click", ".edit-link", function () {
     $(".online-change-subscription").attr("license-service-url", $(this).attr("license-service-url") + "&change_subscription=true");
     $(".offline-change-subscription").attr("data-offlinelicense-url", $(this).attr("data-offlinelicense-url")).attr("data-tenant-type", $(this).attr("data-tenant-type"));
     $("#change-subscription-help").attr("href", $(this).attr("data-offlinelicense-url"));
-
+    $("#change-subscription-content_title").html(window.Server.App.LocalizationContent.EditSubscriptionDialogHeader);
     changeSubscriptionDialog.show();
 });
 
@@ -145,7 +183,7 @@ function handleApplyLicense(addButtonObj, evt) {
             });
 
         } else if (evt.originalEvent.data.isSuccess === false) {
-            WarningAlert(window.Server.App.LocalizationContent.ManageLicense, window.Server.App.LocalizationContent.LicenseUpdateFailed, 0);
+            WarningAlert(window.Server.App.LocalizationContent.ManageLicense, window.Server.App.LocalizationContent.LicenseUpdateFailed, null, 0);
         }
     }
 }
@@ -174,3 +212,11 @@ function licenseWindow(element, windowHeight, windowWidth) {
     windowRef = window.open(element.attr("license-service-url") + "&origin=" + window.location.origin, "", "height=" + windowHeight, "width=" + windowWidth);
     timer = setInterval($.proxy(checkWindowRef, 500, addButtonObj));
 }
+
+$(document).on("click", "#subscription-copy-bi", function () {
+    copyToClipboard('#subscription-id-bi', '#subscription-copy-bi');
+});
+
+$(document).on("click", "#subscription-copy-reports", function () {
+    copyToClipboard('#subscription-id-reports', '#subscription-copy-reports');
+});

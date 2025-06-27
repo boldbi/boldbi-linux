@@ -1,5 +1,28 @@
 $(document).ready(function () {
+    if (typeof loginDisclaimer !== 'undefined' && loginDisclaimer != null && loginDisclaimer.IsEnabled == true && loginDisclaimer.IsConsentCheckboxEnabled == true) {
+        $("#login-button").attr("disabled", true);
+        $(".link-button").attr("disabled", true);
+    }
 
+    var showDisclaimerDialog = new ej.popups.Dialog({
+        width: "500px",
+        height: "auto",
+        isModal: true,
+        visible: false,
+        showHeader: false,
+        animationSettings: { effect: 'Zoom' },
+        close: LoginDisclaimerDialogClose
+    });
+    showDisclaimerDialog.appendTo("#login-disclaimer-dialog");
+
+    var loginForm = $("#login-form");
+    if (loginForm.length) {
+        loginForm.on("submit", function (event) {
+            if (!FormValidate()) {
+                event.preventDefault();
+            }
+        });
+    }
     var loginEmail = new ejs.inputs.TextBox({
         cssClass: 'e-outline e-custom e-account',
         floatLabelType: 'Always',
@@ -40,7 +63,11 @@ $(document).ready(function () {
         errorElement: "span",
         onkeyup: function (element, event) {
             if (event.keyCode != 9) $(element).valid();
-            else true;
+
+            if (element.name === "userName") {
+                // Remove whitespaces from the email field's value
+                $(element).val($(element).val().replace(/\s/g, ''));
+            }
         },
         onfocusout: function (element) { $(element).valid(); },
         rules: {
@@ -87,8 +114,7 @@ $(document).ready(function () {
 
 $(document).on("click", "#login-button-windows", function () {
     showWaitingPopup('body');
-    if (window.location.href.search("authorization") === -1)
-    {
+    if (window.location.href.search("authorization") === -1) {
         var returnUrl = getParameterByName("ReturnUrl");
     }
     else {
@@ -125,12 +151,11 @@ $(document).on("click", "#login-button-windows", function () {
             },
             200: function (result) {
                 hideWaitingPopup('body');
-                if (result.status && result.data)
-                {
+                if (result.status && result.data) {
                     window.location.href = mfaVerificationPageUrl;
                 }
 
-                if (result.status && result.data == "" ) {
+                if (result.status && result.data == "") {
                     if (window.location.href.search("authorization") === -1) {
                         window.location.href = getParameterByName("ReturnUrl");
                     } else {
@@ -218,50 +243,60 @@ $(document).on("click", "#adfs-login-text", function () {
     $("#windows-login").trigger("click");
 });
 
+$(document).on("click", ".popup-login-button", function () {
+    showWaitingPopup('body');
+    var waitingPopupMessage = window.Server.App.LocalizationContent.WaitingPopupMessage;
+    $(".e-spinner-pane").append('<div class="e-spinner-message" style="font-weight:bold;color: white;font-size: 20px;padding-top: 70px;"><span id="waiting-popup-message"></span></div>');
+    $("#waiting-popup-message").append(waitingPopupMessage);
+    var screenWidth = $(window).width() / 2 - 250,
+        screenHeight = $(window).height() / 2 - 300,
+        popupFeatures = "width=500,height=600,status,resizable,left=" + screenWidth + ",top=" + screenHeight + "screenX=" + screenWidth + ",screenY=" + screenHeight;
+    popup = window.open($(".popup-login-button").attr("data-login-url"), "PopupWindow", popupFeatures);
+    setInterval(openLoginWindow, 300);
+    setTimeout(closeLoginWindow, 10000000);
+});
+
+function openLoginWindow() {
+    if (popup.window.location.href != null) {
+        var currentURL = popup.window.location.href;
+        var base = $('meta[name="base_url"]').attr("content");
+        if (currentURL != null && currentURL.includes(base)) {
+            var redirectingMessage = window.Server.App.LocalizationContent.RedirectingMessage;
+            $("#waiting-popup-message").hide();
+            if ($("#redirect-message").length === 0) {
+                $(".e-spinner-message").append('<span id="redirect-message"></span>');
+                $("#redirect-message").append(redirectingMessage);
+                popup.close();
+                window.location.href = currentURL;
+            }
+        }
+    }
+}
+
+function closeLoginWindow() {
+    popup.close();
+}
+
 function FormValidate() {
     $("#access-denied").css("display", "none");
     if ($("#password-field").css("display") === "none") {
         if ($("#login-form").valid()) {
-            $(".mail-loader-div").removeClass("email-loader");
-            $("#login-button").attr("disabled", "disabled");
-            var userName = $("#login-email").val();
-            $.ajax({
-                type: "POST",
-                url: validateEmailUrl,
-                data: { userName: userName, callBackUri: callBackUri },
-                success: function (result) {
-                    if (result.Value != null && result.Value != undefined) {
-                        window.location.href = result.Value;
-                    } else {
-                        $(".mail-loader-div").addClass("email-loader");
-                        $("#login-button").removeAttr("disabled");
-                        if (result.Status != null) {
-                            if (result.DirectoryTypeName === "oauth2"
-                                || result.DirectoryTypeName === "openidconnect"
-                                || result.DirectoryTypeName === "jwtsso"
-                                || result.DirectoryTypeName === "windowsad") {
-                                $("#external-email").val(userName);
-                                $("#" + result.DirectoryTypeName + "-login").trigger("click");
-                            }
-                            else if (result.DirectoryTypeName === "azuread") {
-                                $("#external-email").val(userName);
-                                $("#azureadfs-login").trigger("click");
-                            }
-                            else {
-                                $("#password-field, .login-options").slideDown();
-                                $("#password-field").children(".e-float-input").removeClass("e-error");
-                                $("#login-button").html(window.Server.App.LocalizationContent.LoginButton);
-                                $("#current-password").focus();
-                                if (showBoldSignUp.toLowerCase() === "true") {
-                                    $(".account-bg").css("height", "710px");
-                                }
-                            }
-                        }
-                    }
-                }
-            });
+            $("#password-field, .login-options").slideDown();
+            $("#password-field").children(".e-float-input").removeClass("e-error");
+            if (loginContent.toString().trim() !== ""){
+                $("#login-button").html(loginContent);
+            }
+            else{
+                $("#login-button").html(window.Server.App.LocalizationContent.LoginButton);
+            }
+            $("#current-password").focus();
+            if (showBoldSignUp.toLowerCase() === "true") {
+                $(".account-bg").css("height", "710px");
+            }
         }
-        return false;
+        else {
+            return false;
+        }
     } else {
 
         if ($("#login-form").valid()) {
@@ -279,4 +314,38 @@ function getParameterByName(name) {
     return urlValue;
 }
 
+$("#open-login-disclaimer").click(function () {
+    LoginDisclaimerDialogOpen();
+});
+function LoginDisclaimerDialogOpen() {
+    document.getElementById("login-disclaimer-dialog").ej2_instances[0].show();
+    var contentCheckElement = document.getElementById("content-check");
+    if (contentCheckElement) {
+        contentCheckElement.disabled = true;
+    }
+}
 
+$(document).on("click", "#close-info-dialog, #close-button", function() {
+    LoginDisclaimerDialogClose();
+});
+
+function LoginDisclaimerDialogClose() {
+    document.getElementById("login-disclaimer-dialog").ej2_instances[0].hide();
+    var contentCheckElement = document.getElementById("content-check");
+    if (contentCheckElement) {
+        contentCheckElement.disabled = false;
+    }
+}
+
+$(document).on('change', "#content-check", function () {
+
+    if ($("#content-check").is(":checked")) {
+        LoginDisclaimerDialogOpen();
+        $(".link-button").removeAttr("disabled");
+        $("#login-button").removeAttr("disabled");
+    }
+    else {
+        $(".link-button").attr("disabled", true);
+        $("#login-button").attr("disabled", true);
+    }
+});

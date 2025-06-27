@@ -3,6 +3,7 @@ var licenseKey;
 var getLicenseUrl;
 var licenseToken;
 var offlineLicenseToken;
+
 $(document).ready(function () {
     String.prototype.format = function () {
         a = this;
@@ -30,7 +31,10 @@ $(document).ready(function () {
         $("#getFile").click();
     });
 
-    $('[data-toggle="popover"]').popover();
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    });
 
     $('input[type="file"]').change(function (event) {
         $(".validation-error-message").html('');
@@ -78,23 +82,37 @@ function checkWindowRef(addButtonObj) {
 function handleApplyLicense(addButtonObj, evt) {
     if (evt.originalEvent.data.isSuccess !== undefined) {
         if (evt.originalEvent.data.isSuccess === true) {
+            var currentUrl = window.location.href;
+            var targetSubappName = "ums";
+            var urlObject = new URL(currentUrl);
+            var path = urlObject.pathname.replace(/^\/|\/$/g, '');
+            var pathSegments = path.split('/');
+
+            var targetIndex = pathSegments.indexOf(targetSubappName);
+            if (targetIndex > 0) {
+                var subappNameOrDomain = pathSegments[targetIndex - 1];
+                currentUrl = window.location.origin + '/' + subappNameOrDomain;
+            }
+            else {
+                currentUrl = window.location.origin;
+            }
 
             var refreshToken = evt.originalEvent.data.refreshtoken != undefined ? evt.originalEvent.data.refreshtoken : "";
             var boldLicenseToken = evt.originalEvent.data.boldLicenseToken != undefined && evt.originalEvent.data.boldLicenseToken != null ? evt.originalEvent.data.boldLicenseToken : "";
             $.ajax({
                 type: "POST",
                 url: updateLicenseKeyUrl,
-                data: { licenseKey: evt.originalEvent.data.licenseKey, refreshToken: refreshToken, licenseType: "1", boldLicenseToken: boldLicenseToken, currentUrl: window.location.origin },
+                data: { licenseKey: evt.originalEvent.data.licenseKey, refreshToken: refreshToken, licenseType: "1", boldLicenseToken: boldLicenseToken, currentUrl: currentUrl },
                 beforeSend: showWaitingPopup('startup-page-container-waiting-element'),
                 success: function (result) {
                     if (result.Status) {
-                        $('meta[name=has-drm-configuration]').attr("content", "true");
+                        $('meta[name=is-ignore-drm-configuration]').attr("content", "true");
                         $("#image-parent-container .startup-image").hide().attr("src", adminSetupImageUrl).fadeIn();
                         $(".startup-content").fadeIn();
                         $("#system-settings-welcome-container").hide();
                         $(".welcome-content").addClass("display-none");
                         $("#system-settings-offline-license-container").hide();
-                        $('#auth-type-dropdown').removeClass("hide").addClass("show");
+                        $('#auth-type-dropdown').removeClass("d-none").addClass("d-block");
                         $("#system-settings-user-account-container").slideDown("slow");
 
                         if (evt.originalEvent.data.userInfo != undefined && evt.originalEvent.data.userInfo != null) {
@@ -244,7 +262,7 @@ function confirmLicenseUpdate() {
             beforeSend: showWaitingPopup('startup-page-container-waiting-element'),
             success: function (result) {
                 if (result.Status) {
-                    $('meta[name=has-drm-configuration]').attr("content", "true");
+                    $('meta[name=is-ignore-drm-configuration]').attr("content", "true");
                     offlineLicenseComplete();
                     $("#image-parent-container .startup-image").removeClass("offline-width")
                     $("#image-parent-container .startup-image").hide().attr("src", adminSetupImageUrl).fadeIn();
@@ -252,7 +270,7 @@ function confirmLicenseUpdate() {
                     $("#system-settings-welcome-container").hide();
                     $(".welcome-content").addClass("display-none");
                     $("#system-settings-offline-license-container").hide();
-                    $('#auth-type-dropdown').removeClass("hide").addClass("show");
+                    $('#auth-type-dropdown').removeClass("d-none").addClass("d-block");
                     $("#system-settings-user-account-container").slideDown("slow");
                     autoFocus("txt-firstname");
                 }
@@ -282,6 +300,7 @@ function returnStartupHome() {
     $("#tenant-status-container").addClass("display-none");
     $(".validation-error-message").addClass("display-none");
     $("#file-name").val('');
+    $("#confirm-license").prop('disabled', true);
     licenseKey = "";
     $("#tenant-type").val("");
     $("#system-settings-offline-license-container").hide();
@@ -299,3 +318,21 @@ function preFillUser(obj) {
     document.getElementById("txt-firstname").ej2_instances[0].value = userInfo.first_name;
     document.getElementById("txt-lastname").ej2_instances[0].value = userInfo.last_name;
 }
+
+$(document).on("click", "#confirm-license", function () {
+    validateStartup(function (result) {
+        if (result) {
+            messageBox("su-login-error", window.Server.App.LocalizationContent.ConfigurationError, window.Server.App.LocalizationContent.ConfigurationErrorMessage, "success", function () {
+                onCloseMessageBox();
+            });
+        }
+        else {
+            confirmLicenseUpdate();
+        }
+    });
+});
+
+$(document).on("click", "#return-startup-home", function () {
+    returnStartupHome();
+});
+

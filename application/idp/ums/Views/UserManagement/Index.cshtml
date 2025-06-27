@@ -3,16 +3,17 @@
 @{
     var idPUrl = GlobalAppSettings.SystemSettings.BaseUrl.TrimEnd('/');
     ViewBag.Title = T["Users"].Value + " - " + GlobalAppSettings.SystemSettings.OrganizationName;
+    var isMobile = DeviceDetection.IsMobile(Context);
 }
 
 @section styles{
-    <link rel="stylesheet" href="~/bundles/css/user-management-module.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/bundles/css/user-management-module.css" integrity="@IntegrityTagHelper.GetIntegrity("bundles/css/user-management-module.css")" crossorigin="anonymous" asp-append-version="true" />
 }
 
 @section scripts{
-    <script src="~/bundles/js/user-management.js" asp-append-version="true"></script>
-
-    <script>
+    <script nonce="@Context.Items["ScriptNonce"]" src="~/bundles/js/user-management.js" integrity="@IntegrityTagHelper.GetIntegrity("bundles/js/user-management.js")" crossorigin="anonymous" asp-append-version="true"></script>
+    <script nonce="@Context.Items["ScriptNonce"]">
+        var baseRootUrl = "@Url.Content("~/")";
         var checkMailSettingUrl = "@Url.Action("checkmailsettingsexist", "Administration")";
         var postactionUrl = "@Url.Action("postaction", "UserManagement")";
         var isPresentUserNameAndEmailId = "@Url.Action("isPresentUserNameAndEmailId", "UserManagement")";
@@ -28,13 +29,7 @@
         var removeAdminUrl = "@Url.Action("RemoveRole", "UserManagement")";
         var getUserSUrl = "@Url.Action("GetAllUserList", "TenantsManagement")";
         var unlockUserUrl = "@Url.Action("UnlockUser", "UserManagement")";
-    </script>
-    <script>
-        window.data = JSON.parse(@Html.Raw(Json.Serialize(ViewBag.users)));
-                var baseRootUrl = "@Url.Content("~/")";
 
-    </script>
-    <script type="text/javascript">
         function selectItems(e) {
             var parentRow = $(e.event.currentTarget.parentNode).parents(".user-row-details");
             $(parentRow).hasClass('user-table-row-selected')
@@ -47,11 +42,11 @@
 
     </script>
 
-    <script type="text/x-jsrender" id="user-profile-template">
+    <script type="text/x-jsrender" nonce="@Context.Items["ScriptNonce"]" id="user-profile-template">
         ${if (Email != "")}
-        <a class="item-name grid-content" title="${DisplayName}" data-toggle="tooltip" href="@Url.Action("ViewProfile", "UserManagement")?userid=${UserId}&email=${Email}">${DisplayName}</a>
+        <a class="item-name grid-content text-decoration-none" title="${DisplayName}" data-bs-toggle="tooltip" href="@Url.Action("ViewProfile", "UserManagement")?userid=${UserId}&email=${Email}">${DisplayName}</a>
         ${else}
-        <a class="item-name grid-content" title="${DisplayName}" data-toggle="tooltip" href="@Url.Action("ViewProfile", "UserManagement")?userid=${UserId}">${DisplayName}</a>
+        <a class="item-name grid-content text-decoration-none" title="${DisplayName}" data-bs-toggle="tooltip" href="@Url.Action("ViewProfile", "UserManagement")?userid=${UserId}">${DisplayName}</a>
         ${/if}
         ${if (DirectoryType.Id == @((int)DirectoryType.AzureAD))}
         <span class="su su-azure-ad grid-directory-icon"> </span>
@@ -69,59 +64,59 @@
         <span class="su su-azure-b2c grid-directory-icon"> </span>
         ${/if}
     </script>
-    <script type="text/x-jsrender" id="user-username-template">
-        <span class="grid-content" title="${Username}" data-toggle="tooltip">${Username}</span>
+    <script type="text/x-jsrender" nonce="@Context.Items["ScriptNonce"]" id="user-username-template">
+        <span class="grid-content" title="${Username}" data-bs-toggle="tooltip">${Username}</span>
     </script>
-    <script type="text/x-jsrender" id="user-email-template">
-        <span class="grid-content" title="${Email}" data-toggle="tooltip">${Email}</span>
+      <script type="text/x-jsrender" nonce="@Context.Items["ScriptNonce"]" id="user-email-template">
+        <span class="grid-content" title="${Email}" data-bs-toggle="tooltip">${Email}</span>
     </script>
-    <script type="text/x-jsrender" id="email-verification-template">
-        ${if (EmailVerified)}
-        @T["Completed"]
+    <script type="text/x-jsrender" nonce="@Context.Items["ScriptNonce"]" id="activation-method-template">
+        ${if (ActivationMethod == null || ActivationMethod == "" || ActivationMethod == " ")}
+            @T["NA"]
         ${else}
-        @T["Pending"]
+            ${ActivationMethod}
         ${/if}
     </script>
-    <script type="text/x-jsrender" id="status-description-template">
+    <script type="text/x-jsrender" nonce="@Context.Items["ScriptNonce"]" id="status-description-template">
         ${UserStatus}
     </script>
-    <script type="text/x-jsrender" id="filter-template">
+    <script type="text/x-jsrender" nonce="@Context.Items["ScriptNonce"]" id="filter-template">
         <span>
-            <a class="e-filtericon e-icon e-filterset" href="">
+            <a class="e-filtericon e-icon e-filterset text-decoration-none" href="">
             </a>
         </span>
     </script>
-    <script type="text/x-jsrender" id="role-template">
+    <script type="text/x-jsrender" nonce="@Context.Items["ScriptNonce"]" id="role-template">
         ${Role}
     </script>
-    <script type="text/x-jsrender" id="itemname-header">
+    <script type="text/x-jsrender" nonce="@Context.Items["ScriptNonce"]" id="itemname-header">
         <div class="item-name">@T["Name"]</div>
     </script>
-    <script type="text/x-jsrender" id="username-header">
+    <script type="text/x-jsrender" nonce="@Context.Items["ScriptNonce"]" id="username-header">
         <div class="item-header">@T["Username"]</div>
     </script>
-    <script type="text/x-jsrender" id="email-header">
+    <script type="text/x-jsrender" nonce="@Context.Items["ScriptNonce"]" id="email-header">
         <div class="item-header">@T["Email Address"]</div>
     </script>
-    <script type="text/x-jsrender" id="status-header">
+    <script type="text/x-jsrender" nonce="@Context.Items["ScriptNonce"]" id="status-header">
         <div class="item-header">@T["Status"]</div>
     </script>
-    <script type="text/x-jsrender" id="email-verification-header">
-        <div class="item-header">@T["Email Verification"]</div>
+    <script type="text/x-jsrender" nonce="@Context.Items["ScriptNonce"]" id="activation-method-header">
+        <div class="item-header">@T["Activation Method"]</div>
     </script>
-    <script type="text/x-jsrender" id="role-header">
+    <script type="text/x-jsrender" nonce="@Context.Items["ScriptNonce"]" id="role-header">
         <div class="item-header">@T["Role"]</div>
     </script>
 
-    <script type="text/x-jsrender" id="options">
+    <script type="text/x-jsrender" nonce="@Context.Items["ScriptNonce"]" id="options">
         <div class="dropdown">
-            <span class="dropdown-toggle option-icon" data-toggle="dropdown" data-placement="top" data-content="${UserName}">
+            <span class="dropdown-toggle option-icon" data-bs-toggle="dropdown" data-bs-placement="top" data-bs-content="${UserName}">
                 <span class="su su-options"> </span>
             </span>
             <ul class="dropdown-menu" role="menu">
                 ${if (UserStatus == "@UserLockedStatus.Locked")}
                 <li class="unlock-user" data-content="${UserId}">
-                    <a class="unlock-user-class">
+                    <a class="unlock-user-class text-decoration-none">
                         <i class="su su-unlock-user"></i>
                         <span>@T["Unlock User"]</span>
                     </a>
@@ -130,12 +125,12 @@
                 ${/if}
                 <li class="view-user">
                     ${if ((Email != ""))}
-                    <a href="@Url.Action("ViewProfile", "UserManagement")?userid=${UserId}&email=${Email}" title="">
+                    <a class="text-decoration-none" href="@Url.Action("ViewProfile", "UserManagement")?userid=${UserId}&email=${Email}" title="">
                         <i class="su su-eye"></i>
                         <span>@T["View"]</span>
                     </a>
                     ${else}
-                    <a href="@Url.Action("ViewProfile", "UserManagement")?userid=${UserId}" title="">
+                    <a class="text-decoration-none" href="@Url.Action("ViewProfile", "UserManagement")?userid=${UserId}" title="">
                         <i class="su su-eye"></i>
                         <span>@T["View"]</span>
                     </a>
@@ -144,7 +139,7 @@
                 ${if (UserId != "@ViewBag.LoggedUser")}
                 ${if (Role == "")}
                 <li class="assign-role" data-content="${UserId}">
-                    <a class="make-admin-class">
+                    <a class="make-admin-class text-decoration-none">
                         <i class="su su-user-settings"></i>
                         <span>@T["Make Admin"]</span>
                     </a>
@@ -152,14 +147,14 @@
                 ${/if}
                 ${if (Role == "@Role.Admin")}
                 <li class="assign-role" data-content="${UserId}">
-                    <a class="remove-admin-class" title="">
+                    <a class="remove-admin-class text-decoration-none" title="">
                         <i class="su su-user-settings"></i>
                         <span>@T["Remove Admin"]</span>
                     </a>
                 </li>
                 ${/if}
                 <li class="delete-user" data-content="${UserId}">
-                    <a class="delete-class" title="">
+                    <a class="delete-class text-decoration-none" title="">
                         <i class="su su-delete"></i>
                         <span>@T["Delete"]</span>
                     </a>
@@ -169,7 +164,7 @@
         </div>
     </script>
 
-    <script type="text/javascript">
+    <script nonce="@Context.Items["ScriptNonce"]" type="text/javascript">
         $(function() {
             $("#search-users").val("");
             var data = new ejs.data.DataManager({
@@ -192,10 +187,13 @@
                 },
                 beforeDataBound: fnbeforeDataBound,
                 dataBound: function (args) {
-                    $('[data-toggle="tooltip"]').tooltip(
-                        {
+                    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                        return new bootstrap.Tooltip(tooltipTriggerEl, {
                             container: 'body'
                         });
+                    });
+                    fnOnUserRowSelected();
                 },
                 rowSelected: fnOnUserRowSelected,
                 rowDeselected: fnOnUserRowSelected,
@@ -245,10 +243,10 @@
                         allowFiltering: false,
                     },
                     {
-                        field: "IsActivated",
-                        headerText: "@T["Email Verification"]",
-                        headerTemplate: "#email-verification-header",
-                        template: "#email-verification-template",
+                        field: "ActivationMode",
+                        headerText: "@T["Activation Method"]",
+                        headerTemplate: "#activation-method-header",
+                        template: "#activation-method-template",
                         width: 120,
                         type: "string",
                         allowFiltering: false
@@ -280,93 +278,103 @@
 }
 
 @section MainSection{
-    <div id="base-container" class="admin-page-content-container full-page-container">
-        <div class="admin-page-content col-md-12 no-padding">
-            <div class="col-xs-12 admin-page-header">
-                <div class="admin-page-header-description col-xs-6 no-padding" id="application-title">
+    <div class="col-12 float-start header-section no-padding no-margin width-alignment admin-header-width">
+        <div class="col-12 float-start admin-page-header">
+            <div class="admin-page-header-description col-6 float-start no-padding" id="application-title">
+                <hgroup class="col-12 float-start header-group">
                     <h1 class="h2 page-title">
                         <input type="hidden" id="user-count-text" value="@ViewBag.UserCount">
                         @T["USERS"] (<span id="user-count" value="@ViewBag.UserCount">@ViewBag.UserCount</span>)
                     </h1>
+                    <h5 class="page-description">@T["Add and manage your users."]</h5>
+                </hgroup>                
+            </div>
+            <div class="col-4 top-nav-sec no-padding">
+                @await Html.PartialAsync("../Shared/_TopMenu")
+            </div>
+        </div>
 
+        <div class="col-md-12 float-start import-area bi-page-header admin-page-icon">
+            <div class="col-12 float-start no-padding">
+                <div id="search-area" class="float-start">
+                    <input type="text" class="float-start" id="search-users" placeholder="@T["Search users"]" />
+                    <span class="su su-inner-close close-icon float-start" id="clear-search" title="@T["Clear search"]"></span>
+                    <span class="su su-search search-user float-start" title="@T["Search"]"></span>
                 </div>
-                <div class="col-xs-6 no-padding admin-header-btn">
-                    @if (DeviceDetection.IsMobile)
+                <div class="col-6 no-padding admin-header-btn float-end" id="user-management-options">
+                    @if (isMobile)
                     {
-                        <button class="primary-button pull-right" id="new-user-dropdown" title="@T["Add new user"]" data-toggle="tooltip" onclick="onUserAddDialogOpen()">
+                        <button class="primary-button float-end" id="new-user-dropdown" title="@T["Add new user"]" data-bs-toggle="tooltip">
                             @T["New User"]
-                        </button>
+                        </button>                       
                     }
                     else
                     {
-                        <button class="dropdown-toggle primary-button pull-right" data-toggle="dropdown" data-placement="left" id="new-user-dropdown" title="@T["Add new user"]">
+                        <button class="dropdown-toggle primary-button float-end" data-bs-toggle="dropdown" data-bs-placement="top"  title="@T["Add new user"]">
                             <span>@T["New User"] </span>
                             <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu add-user-dropdown multi-level pull-right" role="menu" id="dropdown-options">
-                            <li id="create-user" title="@T["Add new user"]" onclick="onUserAddDialogOpen()">
-                                <a href="javascript:void(0)" title="@T["Add user"]" data-toggle="tooltip" data-placement="top">
+                        <ul class="dropdown-menu add-user-dropdown multi-level float-end" role="menu" id="dropdown-options">
+                            <li id="create-user" title="@T["Add new user"]">
+                                <a href="#" title="@T["Add user"]" class="text-decoration-none" data-bs-toggle="tooltip" id="new-user-dropdown" data-bs-placement="top">
                                     <i class="su su-user-add"> </i>
                                     <span>@T["Add User"]</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="@Url.Action("UploadFileFormAction", "UserManagement")" title="@T["Import users from CSV"]" data-toggle="tooltip" data-placement="bottom">
+                                <a class="text-decoration-none" href="@Url.Action("UploadFileFormAction", "UserManagement")" title="@T["Import users from CSV"]" data-bs-toggle="tooltip" data-bs-placement="bottom">
                                     <i class="su su-download"> </i>
                                     <span>@T["Import from CSV"]</span>
                                 </a>
                             </li>
                         </ul>
                     }
-                    <button class="primary-button pull-right" id="assign-user-role-button" onclick="onMakeMultipleAdminDialogOpen()" disabled>
+                    <button class="primary-button float-end" id="assign-user-role-button"  disabled>
                         @T["Make Admin"]
                     </button>
-                    <button class="secondary-button pull-right" id="grant-user-button" onclick="onAddTenantsDialogOpen()" disabled>
+                    <button class="secondary-button float-end" id="grant-user-button" disabled>
                         @T["Grant Site Access"]
                     </button>
-
                 </div>
             </div>
-
-            <div id="user-list-container" class="list col-xs-12 admin-page-body">
-                <div id="search-area" class="pull-right">
-                    <input type="text" class="pull-left" id="search-users" placeholder="@T["Search users"]" />
-                    <span class="su su-inner-close close-icon pull-left" id="clear-search" title="@T["Clear search"]"></span>
-                    <span class="su su-search search-user pull-left" title="@T["Search"]"></span>
-                </div>
-                <div class="col-xs-12 no-padding ">
+        </div>
+    </div>
+    <div id="base-container" class="admin-page-content-container full-page-container">
+        <div class="admin-page-content col-md-12 float-start no-padding">
+            <div id="user-list-container" class="list col-12 float-start admin-page-body">
+                <div class="col-12 float-start no-padding ">
                     <div id="user_grid">
                     </div>
                 </div>
 
 
-                @if (ViewBag.AzureADUserCount > 0)
+                @if (ViewBag.ExternalUsers.HasAzureAdUsers)
                 {
                     <div id="azure-ad-indication" class="ad-azure-indication col-lg-12"><span class="su su-azure-ad"> </span> - @T["Azure AD User"]</div>
                 }
-                @if (ViewBag.DatabaseUserCount > 0)
+                @if (ViewBag.ExternalUsers.HasDatabaseUsers)
                 {
                     <div id="database-indication" class="ad-azure-indication col-lg-12"><span class="su su-datasource"> </span> - @T["Database User"]</div>
                 }
-                @if (ViewBag.AdUserCount > 0)
+                @if (ViewBag.ExternalUsers.HasAdUsers)
                 {
                     <div id="ad-indication" class="ad-azure-indication col-lg-12"><span class="su su-windows-ad"> </span> - @T["Windows AD User"]</div>
                 }
-                @if (ViewBag.OAuthUserCount > 0)
+                @if (ViewBag.ExternalUsers.HasOAuthUsers)
                 {
-                    <div id="ad-indication" class="ad-azure-indication col-lg-12"><span class="su su-oauth"><span class="su su-oauth path1"></span><span class="su su-oauth path2"></span><span class="su su-oauth path3"></span></span> - @T["OAuth User"]</div>
+                    <div id="oauth-indication" class="ad-azure-indication col-lg-12"><span class="su su-oauth"><span class="su su-oauth path1"></span><span class="su su-oauth path2"></span><span class="su su-oauth path3"></span></span> - @T["OAuth User"]</div>
                 }
-                @if (ViewBag.OpenIdUserCount > 0)
+                @if (ViewBag.ExternalUsers.HasOpenIdUsers)
                 {
-                    <div id="ad-indication" class="ad-azure-indication col-lg-12"><span class="su su-openid"> </span> - @T["OpenID Connect User"]</div>
+                    <div id="openid-indication" class="ad-azure-indication col-lg-12"><span class="su su-openid"> </span> - @T["OpenID Connect User"]</div>
                 }
-                @if (ViewBag.JwtSsoUserCount > 0)
+                @if (ViewBag.ExternalUsers.HasJwtSsoUsers)
                 {
-                    <div id="ad-indication" class="ad-azure-indication col-lg-12"><span class="su su-single-sign-on"> </span> - @T["JWT SSO User"]</div>
+                    <div id="jwt-indication" class="ad-azure-indication col-lg-12"><span class="su su-single-sign-on"> </span> - @T["JWT SSO User"]</div>
                 }
-                @if (ViewBag.AzureADB2CCount > 0)
+                @if (ViewBag.ExternalUsers.HasAzureAdB2CUsers)
                 {
-                    <div id="ad-indication" class="ad-azure-indication col-lg-12"><span class="su su-azure-b2c"> </span> - @T["Azure AD B2C User"]</div>
+                    <div id="azureadb2c-indication" class="ad-azure-indication col-lg-12"><span class="su su-azure-b2c"> </span> - @T["Azure AD B2C User"]</div>
                 }
             </div>
         </div>

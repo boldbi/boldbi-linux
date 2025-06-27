@@ -18,13 +18,23 @@
     var isDashboardNameExistUrl = "@Url.Action("IsDeploymentDashboardNameExists", "Publish")";
     var getDeploymentDashboardsUrl = "@Url.Action("GetDeploymentDashboards", "Publish")";
     var deploymentItemDetails = @Html.Raw(Json.Serialize(ViewBag.DeploymentDashboard));
-    var getSelectPickerValuesUrl = "@Url.Action("GetCreateSlideshowDetail", "SlideShow")";
+    var getSelectPickerValuesUrl = "@Url.Action("GetDeploymentDashboardDetail", "Administration")";
     var removeDashboardUrl = "@Url.Action("RemoveDeploymentDashboard", "Publish")";
 </script>
 
 <script type="text/x-jsrender" id="dashboard-template">
-    <div class="grid-content" title="{{:ItemName}}" data-toggle="tooltip" data-placement="top">
+    <div class="grid-content" title="{{:Name}}" data-bs-toggle="tooltip" data-placement="top">
         <span><a class="grid-content" href="@Url.Action("Dashboards", "Dashboards")/{{:ItemId}}/{{:CategoryName}}/{{:Name}}" target="_blank">{{:Name}}</a></span>
+    </div>
+</script>
+<script type="text/x-jsrender" id="dashboard-name-template">
+    <div class="grid-content" title="{{:DeploymentDashboardName}}" data-bs-toggle="tooltip" data-placement="top">
+        <span>{{:DeploymentDashboardName}}</span>
+    </div>
+</script>
+<script type="text/x-jsrender" id="category-template">
+    <div class="grid-content" title="{{:CategoryName}}" data-bs-toggle="tooltip" data-placement="top">
+        <span>{{:CategoryName}}</span>
     </div>
 </script>
 <script type="text/x-jsrender" id="actionstemplate">
@@ -33,20 +43,20 @@
     </div>
 </script>
 <script type="text/x-jsrender" id="locked-template-dashboard">
-    {{if IsDashboardLocked == false}}
+    {{if IsDashboardLocked == true}}
+    @T["Disabled"]
+    {{else}}
     @T["Enabled"]
-    {{else IsDashboardLocked == true}}
-   @T["Disabled"]
     {{/if}}
 </script>
 <script type="text/x-jsrender" id="locked-template-datasource">
-    {{if IsDatasourceLocked == false}}
-     @T["Enabled"]
-    {{else IsDatasourceLocked == true}}
-     @T["Disabled"]
+    {{if IsDatasourceLocked == true}}
+    @T["Disabled"]
+    {{else}}
+    @T["Enabled"]
     {{/if}}
 </script>
 
-<div id="dashboardGrid" class="col-xs-12 no-padding dialog-override">
+<div id="dashboardGrid" class="col-12 no-padding dialog-override">
 </div>
 

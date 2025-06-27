@@ -66,18 +66,18 @@
   -ms-border-radius: 50%;
   border-radius: 50%; }
 
-body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-offline-license-container #popup-container, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-db-selection-field, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-tenant-configuration-field, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-db-selection-field, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-tenant-configuration-field, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-user-account-container #admin-account-fields-container {
+body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-offline-license-container #popup-container, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-db-selection-field, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-tenant-configuration-field, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-db-selection-field, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-tenant-configuration-field, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-configuration-mode-container, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-user-account-container #admin-account-fields-container {
   background: var(--section-backgroud);
   border-radius: 6px;
   box-shadow: 0 1px 8px 2px rgba(0, 0, 0, 0.12);
   padding: 0px 24px 16px 24px;
   width: 500px; }
 
-body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .btn-holder, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .btn-holder, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .btn-holder, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-user-account-container #admin-account-fields-container .btn-holder {
+body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .btn-holder, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .btn-holder, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .btn-holder, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-configuration-mode-container .btn-holder, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-user-account-container #admin-account-fields-container .btn-holder {
   display: inline-block;
   padding: 32px 60px 24px 60px;
   width: 100%; }
-  body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .btn-holder .proceed-button, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .btn-holder .proceed-button, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .btn-holder .proceed-button, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-user-account-container #admin-account-fields-container .btn-holder .proceed-button {
+  body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .btn-holder .proceed-button, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .btn-holder .proceed-button, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .btn-holder .proceed-button, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-configuration-mode-container .btn-holder .proceed-button, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-user-account-container #admin-account-fields-container .btn-holder .proceed-button {
     background-color: var(--primary-branding-bg-color);
     border: 1px solid var(--grey-400);
     border-radius: 4px;
@@ -91,9 +91,9 @@ body .system-startUp-settings-bg .startup-page-conatiner #system-settings-genera
     position: relative;
     text-align: center;
     width: 320px; }
-    body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .btn-holder .proceed-button:hover, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .btn-holder .proceed-button:hover, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .btn-holder .proceed-button:hover, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-user-account-container #admin-account-fields-container .btn-holder .proceed-button:hover {
+    body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .btn-holder .proceed-button:hover, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .btn-holder .proceed-button:hover, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .btn-holder .proceed-button:hover, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-configuration-mode-container .btn-holder .proceed-button:hover, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-user-account-container #admin-account-fields-container .btn-holder .proceed-button:hover {
       background-color: var(--primary-button-bg-hover-color); }
-    body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .btn-holder .proceed-button:disabled, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .btn-holder .proceed-button:disabled, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .btn-holder .proceed-button:disabled, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-user-account-container #admin-account-fields-container .btn-holder .proceed-button:disabled {
+    body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .btn-holder .proceed-button:disabled, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .btn-holder .proceed-button:disabled, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .btn-holder .proceed-button:disabled, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-configuration-mode-container .btn-holder .proceed-button:disabled, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-user-account-container #admin-account-fields-container .btn-holder .proceed-button:disabled {
       background-color: var(--grey-400);
       border: 1px solid var(--grey-200);
       box-shadow: none;
@@ -169,7 +169,13 @@ body {
   body .validation-txt-errors {
     margin-left: 13px;
     margin-top: 4px;
-    margin-bottom: 2px; }
+    margin-bottom: 2px;
+    cursor: pointer !important; }
+  body #know-more-error {
+    color: var(--global-link-text-normal-color) !important; }
+  body .oci-object-storage-error-message {
+    margin-top: -23px !important;
+    margin-bottom: 10px !important; }
   body .center-storage-types {
     padding-bottom: 24px; }
   body .connection-types {
@@ -192,6 +198,20 @@ body {
         body header.startup-header .startup-header-container .footer-logo-container span {
           margin-right: 8px;
           color: var(--grey-700); }
+  body #oci-object-storage-form .connection-label, body #amazon-s3-storage-form .connection-label {
+    letter-spacing: 0.56px;
+    margin-bottom: 8px; }
+  body #oci-object-storage-form .validation-txt-errors, body #amazon-s3-storage-form .validation-txt-errors {
+    font-size: 12px;
+    color: var(--red); }
+  body #oci-object-storage-form .form-div, body #amazon-s3-storage-form .form-div {
+    margin: 0px !important;
+    padding-top: 24px; }
+  body #oci-object-storage-form .custom-endpoint-form-element, body #amazon-s3-storage-form .custom-endpoint-form-element {
+    margin: 0px !important;
+    position: relative; }
+  body #oci-object-storage-form #connection-string, body #amazon-s3-storage-form #connection-string {
+    height: 60px; }
   body .system-startUp-settings-bg {
     display: table;
     height: 100%;
@@ -226,6 +246,8 @@ body {
                 font-size: 12px;
                 letter-spacing: 0.65px;
                 margin-top: 18px; }
+              body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #image-parent-container .image-container .startup-content span.third-content {
+                margin-top: 10px; }
             body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #image-parent-container .image-container .startup-content .site-description {
               max-width: 500px;
               margin: 18px auto 0 auto; }
@@ -375,7 +397,9 @@ body {
                   border-top-right-radius: 4px;
                   border-bottom-right-radius: 4px;
                   margin-left: -1px;
-                  cursor: pointer; }
+                  cursor: pointer;
+                  padding-right: 15px;
+                  padding-left: 15px; }
                 body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-offline-license-container #popup-container .upload-content #upload-section .upload-btn-wrapper input[type="file"] {
                   -webkit-appearance: none;
                   text-align: left; }
@@ -481,6 +505,8 @@ body {
                   box-shadow: none;
                   color: var(--grey-400);
                   cursor: default; }
+              body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-offline-license-container #popup-container .btn-holder .remove-margin-left {
+                margin-left: 0px !important; }
             body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-offline-license-container #popup-container button {
               width: 50%; }
           body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-offline-license-container .display-none {
@@ -497,6 +523,11 @@ body {
         body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #progress-parent-container {
           float: none;
           display: none; }
+          body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #progress-parent-container .deployment-error {
+            display: none; }
+            body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #progress-parent-container .deployment-error #error-display {
+              width: 500px;
+              height: 180px; }
           body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #progress-parent-container .image-container {
             text-align: center;
             margin-top: -70px; }
@@ -516,6 +547,11 @@ body {
             color: var(--primary-text-color); }
         body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general .system-settings-page-container .database-dropdown-margin .btn-group .dropdown-menu li a[aria-disabled="true"] {
           cursor: default !important; }
+        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general .system-settings-page-container #admin-nav .disable-adv {
+          cursor: not-allowed;
+          color: var(--input-box-text-disable-color) !important;
+          background: var(--input-box-bg-normal-color);
+          pointer-events: none; }
         body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general .system-settings-page-container :disabled {
           cursor: default; }
         body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general .system-settings-page-container .radio-button {
@@ -619,13 +655,20 @@ body {
                         position: absolute;
                         height: 5px;
                         border-radius: 10px; }
+            body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-db-selection-field #database-new-or-existing, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-tenant-configuration-field #database-new-or-existing, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-db-selection-field #database-new-or-existing, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-tenant-configuration-field #database-new-or-existing {
+              height: auto; }
+            body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-db-selection-field .custom-height, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-tenant-configuration-field .custom-height, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-db-selection-field .custom-height, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-tenant-configuration-field .custom-height {
+              height: 100px !important; }
+            body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-db-selection-field .custom-height, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-tenant-configuration-field .custom-height, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-db-selection-field .custom-height, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-tenant-configuration-field .custom-height {
+              height: 106px; }
             body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-db-selection-field #database-type-dropdown, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-tenant-configuration-field #database-type-dropdown, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-db-selection-field #database-type-dropdown, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-tenant-configuration-field #database-type-dropdown {
               padding-top: 24px; }
             body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-db-selection-field .db-selection-radio, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-tenant-configuration-field .db-selection-radio, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-db-selection-field .db-selection-radio, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-tenant-configuration-field .db-selection-radio {
               padding-bottom: 22px;
               margin-bottom: 0px; }
             body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-db-selection-field .txt-holder, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-tenant-configuration-field .txt-holder, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-db-selection-field .txt-holder, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-tenant-configuration-field .txt-holder {
-              padding-bottom: 20px; }
+              padding-bottom: 20px;
+              position: relative !important; }
               body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-db-selection-field .txt-holder .info-icon, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-db-selection-container .system-settings-tenant-configuration-field .txt-holder .info-icon, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-db-selection-field .txt-holder .info-icon, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-general #system-settings-tenant-container .system-settings-tenant-configuration-field .txt-holder .info-icon {
                 margin-left: 5px;
                 cursor: pointer; }
@@ -671,10 +714,6 @@ body {
         body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .database-types {
           padding-top: 24px;
           position: relative; }
-          body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .database-types .file-storage-align, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .database-types .blob-storage-align {
-            display: inline-block;
-            margin-bottom: 24px;
-            margin-left: 90px; }
         body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .content-value {
           text-align: left;
           margin-bottom: 10px;
@@ -690,25 +729,39 @@ body {
             top: 2px; }
           body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .secure-sql.material-checkbox label::after {
             top: 5px; }
-        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block .azure-validation {
+        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block .azure-validation, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage .azure-validation {
           margin-bottom: 10px; }
-          body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block .azure-validation .blob-error-message {
+          body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block .azure-validation .blob-error-message, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage .azure-validation .blob-error-message {
             color: var(--red);
             font-size: 12px; }
-        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #blob-storage-form .connection-label {
+        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #blob-storage-form .connection-label, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #oci-object-storage-form .connection-label, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #oci-object-storage .connection-label, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #amazon-s3-storage-form .connection-label, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #blob-storage-form .connection-label, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #oci-object-storage-form .connection-label, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #oci-object-storage .connection-label, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #amazon-s3-storage-form .connection-label {
           letter-spacing: 0.56px;
           margin-bottom: 8px; }
-        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #blob-storage-form .validation-txt-errors {
+        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #blob-storage-form .validation-txt-errors, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #oci-object-storage-form .validation-txt-errors, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #oci-object-storage .validation-txt-errors, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #amazon-s3-storage-form .validation-txt-errors, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #blob-storage-form .validation-txt-errors, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #oci-object-storage-form .validation-txt-errors, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #oci-object-storage .validation-txt-errors, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #amazon-s3-storage-form .validation-txt-errors {
           font-size: 12px;
           color: var(--red); }
-        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #blob-storage-form .form-div {
+        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #blob-storage-form .form-div, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #oci-object-storage-form .form-div, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #oci-object-storage .form-div, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #amazon-s3-storage-form .form-div, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #blob-storage-form .form-div, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #oci-object-storage-form .form-div, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #oci-object-storage .form-div, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #amazon-s3-storage-form .form-div {
           margin: 0px !important;
           padding-top: 24px; }
-        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #blob-storage-form .custom-endpoint-form-element {
+        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #blob-storage-form .custom-endpoint-form-element, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #oci-object-storage-form .custom-endpoint-form-element, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #oci-object-storage .custom-endpoint-form-element, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #amazon-s3-storage-form .custom-endpoint-form-element, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #blob-storage-form .custom-endpoint-form-element, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #oci-object-storage-form .custom-endpoint-form-element, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #oci-object-storage .custom-endpoint-form-element, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #amazon-s3-storage-form .custom-endpoint-form-element {
           margin: 0px !important;
           position: relative; }
-        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #blob-storage-form #connection-string {
+        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #blob-storage-form #connection-string, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #oci-object-storage-form #connection-string, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #oci-object-storage #connection-string, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container .storage-block #amazon-s3-storage-form #connection-string, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #blob-storage-form #connection-string, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #oci-object-storage-form #connection-string, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #oci-object-storage #connection-string, body .system-startUp-settings-bg .startup-page-conatiner #system-settings-filestorage-container #oci-object-storage #amazon-s3-storage-form #connection-string {
           height: 60px; }
+      body .system-startUp-settings-bg .startup-page-conatiner #system-settings-configuration-mode-container {
+        display: none;
+        padding-top: 20px; }
+        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-configuration-mode-container .configuration-mode-box {
+          border: 1px solid gainsboro;
+          padding: 20px;
+          border-radius: 4px; }
+        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-configuration-mode-container .configuration-mode-description {
+          display: block;
+          margin-left: 28px; }
+        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-configuration-mode-container .configuration-mode-box-distance {
+          margin-top: 10px; }
+        body .system-startUp-settings-bg .startup-page-conatiner #system-settings-configuration-mode-container .configuration-mode-description-support {
+          padding-top: 10px; }
       body .system-startUp-settings-bg .startup-page-conatiner #system-settings-user-account-container #admin-account-fields-container .form-group {
         margin: 0px !important;
         padding-bottom: 16px;
@@ -739,17 +792,14 @@ body {
     width: 450px !important; }
   .system-startUp-settings-bg .startup-page-conatiner #system-settings-user-account-container #admin-account-fields-container {
     width: 450px !important; } }
-#new-password + .popover {
-  background: var(--grey-black);
+.custom-popover {
+  background: var(--grey-black) !important;
   opacity: 0.8;
-  width: 210px;
-  top: -154px !important; }
-  #new-password + .popover .arrow {
-    top: 80% !important; }
-  #new-password + .popover .arrow::after {
-    border-left-color: var(--grey-black);
+  width: 210px; }
+  .custom-popover .popover-arrow::after {
+    border-left-color: var(--grey-black) !important;
     opacity: 0.8; }
-  #new-password + .popover .popover-title {
+  .custom-popover .popover-header {
     background: var(--grey-black);
     opacity: 0.8;
     color: var(--grey-white);
@@ -758,16 +808,16 @@ body {
     line-height: 18px;
     padding-bottom: 0px;
     border: none; }
-  #new-password + .popover .popover-content {
+  .custom-popover .popover-body {
     padding-top: 0px;
     height: 175px; }
-    #new-password + .popover .popover-content ul {
+    .custom-popover .popover-body ul {
       list-style: none;
       padding: 0px; }
-      #new-password + .popover .popover-content ul li {
+      .custom-popover .popover-body ul li {
         height: 20px;
         margin: 15px 15px 15px 10px; }
-        #new-password + .popover .popover-content ul li span.icon {
+        .custom-popover .popover-body ul li span.icon {
           height: 20px;
           width: 20px;
           margin: 0 auto;
@@ -775,7 +825,7 @@ body {
           border: 2px solid var(--grey-white);
           display: inline-block;
           float: left; }
-        #new-password + .popover .popover-content ul li span.content {
+        .custom-popover .popover-body ul li span.content {
           color: var(--grey-white);
           display: block;
           margin-left: 40px; }
@@ -841,3 +891,6 @@ body {
 .offline-width {
   width: 568px !important;
   height: 398px !important; }
+
+.tooltip .tooltip-inner {
+  font-size: 12px; }

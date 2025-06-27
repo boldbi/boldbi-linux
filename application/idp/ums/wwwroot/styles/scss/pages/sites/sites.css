@@ -1,3 +1,6 @@
+.admin-page-content-container {
+  background: var(--resource-page-bg-normal-color) !important; }
+
 #messageBox {
   display: block; }
   #messageBox .message-content .tenant-name {
@@ -18,7 +21,7 @@
 #add-tenant-popup {
   padding: 0;
   width: 100% !important;
-  height: 100% !important;
+  max-height: 100% !important;
   top: 0px !important; }
   #add-tenant-popup .e-dlg-content {
     overflow: hidden !important;

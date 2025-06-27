@@ -1,12 +1,14 @@
 ﻿$(document).ready(function () {
-    
+
     var outlineEmail = new ejs.inputs.TextBox({
         cssClass: 'e-outline e-custom e-account',
         floatLabelType: 'Auto',
     });
     outlineEmail.appendTo('#key-input');
-    outlineEmail.focusIn();
-    document.getElementById("key-input").ej2_instances[0].value = localStorage.getItem(window.location.hostname + "_email");
+    if (document.getElementById("key-input") != null) {
+        outlineEmail.focusIn();
+        document.getElementById("key-input").ej2_instances[0].value = localStorage.getItem(window.location.hostname + "_email");
+    }
     localStorage.removeItem(window.location.hostname + "_email");
     $("#forgot-password-form").validate({
         errorElement: "span",
@@ -23,14 +25,14 @@
             }
         },
         highlight: function (element) {
-            $(element).closest(".forgot-form-input-field").addClass("has-error");
+            $(".forgot-form-input-field").find("div").addClass("has-error");
         },
         unhighlight: function (element) {
-            $(element).closest(".forgot-form-input-field").removeClass("has-error");
-            $(element).parent().find("p.validation-holder").html("");
+            $(".forgot-form-input-field").find("div").removeClass("has-error");
+            $("p.validation-holder").html("");
         },
         errorPlacement: function (error, element) {
-            $(element).parent().find("p.validation-holder").html(error);
+            $("p.validation-holder").html(error);
         },
         messages: {
             "userName": {
@@ -45,3 +47,10 @@ function ForgotValidate() {
     isValidForm ? showWaitingPopup('body') : hideWaitingPopup('body');
     return isValidForm;
 }
+$(document).ready(function () {
+    $("#forgot-password-form").on("submit", function (event) {
+        if (!ForgotValidate()) {
+            event.preventDefault(); // Prevent the form from submitting if validation fails
+        }
+    });
+});

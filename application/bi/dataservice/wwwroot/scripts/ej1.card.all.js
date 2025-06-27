@@ -1,7 +1,7 @@
 /*!
 *  filename: ej1.card.all.js
-*  version : 6.1.8
-*  Copyright Syncfusion Inc. 2001 - 2023. All rights reserved.
+*  version : 12.1.5
+*  Copyright Syncfusion Inc. 2001 - 2025. All rights reserved.
 *  Use of this code is subject to the terms of our license.
 *  A copy of the current license can be obtained at any time by e-mailing
 *  licensing@syncfusion.com. Any infringement will be prosecuted under
@@ -135,6 +135,7 @@ var NumberFormatting = /** @class */ (function () {
         var billion = Math.pow(ten, nine);
         var trillion = Math.pow(ten, twelve);
         var number = num;
+        var response = { fraction: number, symbol: "" };
         //if (this.model.valueRepresentation.currencyCulture === "en-IN") {
         //    if (((number >= thousand) && (number < lakhs)) || ((number <= -thousand) && (number > -lakhs))) {
         //        return { fraction: this.calculateFraction(number, thousand), symbol: "K" };
@@ -151,27 +152,27 @@ var NumberFormatting = /** @class */ (function () {
         //    }
         //} else {	
         if (((number >= thousand) && (number < million)) || ((number <= -thousand) && (number > -million))) {
-            return { fraction: this.calculateFraction(number, thousand), symbol: "K" };
+            response = { fraction: this.calculateFraction(number, thousand), symbol: "K" };
         }
 		if (this.isRequiredCulture(culture) && enableLakhsAndCroreRep) {
 			if (((number >= lakh) && (number < crores)) || ((number <= -lakh) && (number > -crores))) {
-				return { fraction: this.calculateFraction(number, lakh), symbol: "L" };
+				response = { fraction: this.calculateFraction(number, lakh), symbol: "L" };
 			} else if (number >= crores || number <= -crores) {
-				return { fraction: this.calculateFraction(number, crores), symbol: "Cr" };
+				response = { fraction: this.calculateFraction(number, crores), symbol: "Cr" };
 			}
 		}
 		else {
 			if (((number >= million) && (number < billion)) || ((number <= -million) && (number > -billion))) {
-				return { fraction: this.calculateFraction(number, million), symbol: "M" };
+				response = { fraction: this.calculateFraction(number, million), symbol: "M" };
 			} else if (((number >= billion) && (number < trillion)) || ((number <= -billion) && (number > -trillion))) {
-				return { fraction: this.calculateFraction(number, billion), symbol: "B" };
+				response = { fraction: this.calculateFraction(number, billion), symbol: "B" };
 			} else if (number >= trillion || number <= -trillion) {
-				return { fraction: this.calculateFraction(number, trillion), symbol: "T" };
+				response = { fraction: this.calculateFraction(number, trillion), symbol: "T" };
 			}
 		}
         //}
 
-        return { fraction: number, symbol: "" };
+        return response;
     };
 	NumberFormatting.prototype.isRequiredCulture = function (cultureName) {
          var cultures = [
@@ -4956,6 +4957,7 @@ var BoldBIDashboardSparkline;
 			isFixedLayout: false,
             responsiveMargin: false,
             selected: null,
+            enableTooltip: false
         },
 
         //#endregion
@@ -4982,12 +4984,16 @@ var BoldBIDashboardSparkline;
         //#region Wire Events
         wireEvents: function() {
             this._on(this.element, "click", this._selectedHandler);
+            this._on(this.element, "mousemove", this._toolTipInitializeHandler);
+            this._on(this.element, "mouseleave", this._hideTooltip);
             //this._on(this.element, 'mousemove', '.e-kpi-card-information-icon', this.showToolTip);
             //this._on(this.element, 'mouseleave', '.e-kpi-card-information-icon', this.hideToolTip);
         },
 
         unwireEvents: function() {
             this._off(this.element, "click", this._selectedHandler);
+            this._off(this.element, "mousemove", this._toolTipInitializeHandler);
+            this._off(this.element, "mouseleave", this._hideTooltip);
             //this._off(this.element, 'mousemove', '.e-kpi-card-information-icon', this.showToolTip);
             //this._off(this.element, 'mouseleave', '.e-kpi-card-information-icon', this.hideToolTip);
         },
@@ -5416,7 +5422,7 @@ var BoldBIDashboardSparkline;
         },
         updateKPIValue: function() {
             var value = this.getFormattedValue(this.model.kpiValue.type, this.model.valueRepresentation);
-            this.element.find('.e-kpi-card-middle-value-text').css({ 'color': this.model.kpiValue.followDirectionColor && !this.model.kpiValue.isColorCustomized ? this.getDirectionColor() : this.model.kpiValue.foreground, 'font-size': this.getResolutionBasedFontSize(this.model.kpiValue.fontSize) + 'px', 'font-weight': this.model.kpiValue.fontWeight, 'font-family': this.model.kpiValue.fontFamily, 'line-height': 1 }).html(value).attr({ 'data-tooltip': value }); // should depends upon type
+            this.element.find('.e-kpi-card-middle-value-text').css({ 'color': this.model.kpiValue.followDirectionColor && !this.model.kpiValue.isColorCustomized ? this.getDirectionColor() : this.model.kpiValue.foreground, 'font-size': this.getResolutionBasedFontSize(this.model.kpiValue.fontSize) + 'px', 'font-weight': this.model.kpiValue.fontWeight, 'font-family': this.model.kpiValue.fontFamily, 'line-height': 1.25 }).html(value).attr({ 'data-tooltip': value }); // should depends upon type
         },
         updateIcon: function() {
             this.updateIconType();
@@ -5510,7 +5516,9 @@ var BoldBIDashboardSparkline;
 		},		
         updateImage: function() {
             var imageContainer = this.element.find('.e-kpi-card-image-container');
-            this.updateImageData(imageContainer, this.model.image.data, this.model.image);
+            this.model.image.visibility ? this.updateImageData(imageContainer, this.model.image.data, this.model.image) : imageContainer.css({
+                "background-image": "none"
+            });
             this.updateImagePosition(imageContainer, this.model.image.mode, this.model.image.data);
 			this.updateContentWidth();
 			this.swapImage();
@@ -6564,6 +6572,7 @@ var BoldBIDashboardSparkline;
         },
         _selectedHandler: function(evt) {
             var that = this;
+            this._hideTooltip();
             this.singleTimer = setTimeout(function() {
                 var args = {};
                 if (that.model.selected) {
@@ -6574,7 +6583,82 @@ var BoldBIDashboardSparkline;
                 }
             }, 400);
         },
-
+        _hideTooltip: function(event) {
+            if (!BoldBIDashboard.isNullOrUndefined(event)) {
+                event.bubbles = false;
+                if (bbdesigner$.isFunction(event.stopPropagation)) {
+                    event.stopPropagation();
+                }
+            }
+            if (this.singleTimer) {
+                clearTimeout(this.singleTimer);
+            }
+            var that = this;
+            var args = {};
+            this.singleTimer = setTimeout(() => {
+                    args = { model: that.model, currentTarget: event.target, PageX:event.pageX, PageY:event.pageY};
+                    that._trigger("onMouseLeave", args);
+                    if (!BoldBIDashboard.isNullOrUndefined(bbdesigner$("#" + this.pluginName + "_Track_ToolTip_Template"))) {
+                        bbdesigner$("#" + this.pluginName + "_Track_ToolTip_Template").css('display', 'none');
+                    }
+                },
+                50
+            );
+        },
+        _toolTipInitializeHandler: function(evt) {
+            var that = this;
+            var args = {};
+            this.singleTimer = setTimeout( function() {
+                var value = that.getFormattedValue(that.model.kpiValue.type, that.model.valueRepresentation);
+                var actualValueFormat = that.getFormattedValue(that.model.leftValue.type, that.model.valueRepresentation);
+                var targetValueFormat = that.getFormattedValue(that.model.rightValue.type, that.model.valueRepresentation);
+                args = { model: that.model, currentTarget: evt.target, PageX:evt.pageX, PageY:evt.pageY, data: { actualValue: actualValueFormat, currentText: evt.target.getAttribute('data-tooltip'), kpiValue: value, targetValue: targetValueFormat }},
+                that._trigger("toolTipInitialize", args);
+                if (that.model.enableTooltip) {
+                    var tooltipdivRect = bbdesigner$("#" + that.pluginName + "_Track_ToolTip_Template");
+                    if (tooltipdivRect.length === 0) {
+                        tooltipdivRect = bbdesigner$("<div id='" + that.pluginName + "_Track_ToolTip_Template' class='bbi-kpi-card-tooltip'></div>");
+                        bbdesigner$(document.body).append(tooltipdivRect[0]);
+                    }
+                    var rectOptions = {
+                        "position": "absolute",
+                        "top": evt.pageY + bbdesigner$(document).scrollTop(),
+                        "left": evt.pageX + bbdesigner$(document).scrollLeft(),
+                        "border-style": "solid",
+                        "border-color": "transparent",
+                        "border-width": 1,
+                        "opacity": 1,
+                        "z-index": 100000,
+                        "border-radius": "0px",               
+                        "padding-left": '5px',
+                        "padding-right": '5px',
+                        "padding-top": '2px',
+                        "padding-bottom": '2px',
+                    };
+                    bbdesigner$(tooltipdivRect).css(rectOptions);
+                    bbdesigner$("#" + that.pluginName + "_Track_ToolTip_Template").html(args.data.currentText);
+                    evt.pageX = evt.pageX + 5;
+                    evt.pageY = evt.pageY + 20;
+                    var tooltipWidthAndAxis = (evt.pageX + bbdesigner$("#" + that.pluginName + "_Track_ToolTip_Template").outerWidth(true));
+                    var panelWidthEdge = (bbdesigner$(document).width());
+                    var tooltipHeightAndAxis = (evt.pageY + bbdesigner$("#" + that.pluginName + "_Track_ToolTip_Template").outerHeight(true));
+                    var panelHeightEdge = (bbdesigner$(document).height());
+                    if (tooltipWidthAndAxis > panelWidthEdge) {
+                        evt.pageX = evt.pageX - bbdesigner$("#" + that.pluginName + "_Track_ToolTip_Template").outerWidth(true);
+                    }
+                    if (tooltipHeightAndAxis > panelHeightEdge) {
+                        evt.pageY = evt.pageY - bbdesigner$("#" + that.pluginName + "_Track_ToolTip_Template").outerHeight(true);
+                    }
+                    bbdesigner$("#" + that.pluginName + "_Track_ToolTip_Template").css({
+                        'top': `${evt.pageY}px`,
+                        'left': `${evt.pageX}px`,
+                        'display': 'block'
+                    });
+                    evt.stopPropagation();
+                    evt.bubbles = false;
+                }
+            },10);
+        }
     });
 
     BoldBIDashboard.KPICard.ValueType = {
@@ -6773,6 +6857,7 @@ var BoldBIDashboardSparkline;
                 attribute: '',
                 text: ''
             },
+            enableToolTip: false,
         },
         _init: function () {
             this._initializePrivateVariables();
@@ -6799,9 +6884,17 @@ var BoldBIDashboardSparkline;
         },
         _wireEvents: function () {
             this._on(this.element, "click", this._selectedHandler);
+            this._on(this.element, "mousemove", this._toolTipInitializeHandler);
+            this._on(this.element, "mouseleave", this._hideTooltip);
+            this._on(this.element, "mouseover", ".e-number-card-description-text", this._showTooltipDescription);
+            this._on(this.element, "mouseout", ".e-number-card-description-text", this._hideTooltipDescription);
         },
         _unwireEvents: function () {
             this._off(this.element, "click", this._selectedHandler);
+            this._off(this.element, "mousemove", this._toolTipInitializeHandler);
+            this._off(this.element, "mouseleave", this._hideTooltip);
+            this._off(this.element, "mouseover", ".e-number-card-description-text", this._showTooltipDescription);
+            this._off(this.element, "mouseout", ".e-number-card-description-text", this._hideTooltipDescription);
         },
         _setModel: function (options) {
             for (var prop in options) {
@@ -7299,7 +7392,9 @@ var BoldBIDashboardSparkline;
         _updateImage: function() {
 			this.element.find('.e-number-card-image-wrapper').css({'height': '40px' , 'width': '40px' });
             var imageContainer = this.element.find('.e-number-card-image-container');
-            this._updateImageData(imageContainer, this.model.image.data, this.model.image);
+            this.model.image.visibility ? this._updateImageData(imageContainer, this.model.image.data, this.model.image) : imageContainer.css({
+                "background-image": "none"
+            });
             this._updateImagePosition(imageContainer, this.model.image.mode, this.model.image.data);
 			this._swapImage();
         },
@@ -7826,6 +7921,8 @@ var BoldBIDashboardSparkline;
         },
         _selectedHandler: function(evt) {
             var that = this;
+            this._hideTooltip();
+            this._hideTooltipDescription();
             this.singleTimer = setTimeout(function() {
                 var args = {};
                 if (that.model.selected) {
@@ -7835,6 +7932,151 @@ var BoldBIDashboardSparkline;
                     evt.bubbles = false;
                 }
             }, 400);
+        },
+        _hideTooltip: function(event) {
+            if (!BoldBIDashboard.isNullOrUndefined(event)) {
+                event.bubbles = false;
+                if (bbdesigner$.isFunction(event.stopPropagation)) {
+                    event.stopPropagation();
+                }
+            }
+            if (this.singleTimer) {
+                clearTimeout(this.singleTimer);
+            }
+            var that = this;
+            var args = {};
+            this.singleTimer = setTimeout(() => {
+                    args = { model: that.model, currentTarget: event.target, PageX:event.pageX, PageY:event.pageY};
+                    that._trigger("onMouseLeave", args);
+                    if (!BoldBIDashboard.isNullOrUndefined(bbdesigner$("#" + this.pluginName + "_Track_ToolTip_Template"))) {
+                        bbdesigner$("#" + this.pluginName + "_Track_ToolTip_Template").css('display', 'none');
+                    }
+                },
+                50
+            );
+        },
+        _toolTipInitializeHandler: function(evt) {
+            var that = this;
+            var args = {};
+            if(!bbdesigner$(evt.target).hasClass('e-number-card-description-text')) {
+                this.singleTimer = setTimeout(function() {    
+                    var value = that.formatting.applyFormat(that.model.measure.text, that.model.valueRepresentation);
+                    args = { model: that.model, currentTarget: evt.target, PageX:evt.pageX, PageY:evt.pageY, currentText: evt.target.getAttribute('data-tooltip'), measureValue: value},
+                    that._trigger("toolTipInitialize", args);
+                    if (that.model.enableTooltip) {
+                        var tooltipdivRect = bbdesigner$("#" + that.pluginName + "_Track_ToolTip_Template");
+                        if (tooltipdivRect.length === 0) {
+                            tooltipdivRect = bbdesigner$("<div id='" + that.pluginName + "_Track_ToolTip_Template' class='bbi-number-card-tooltip'></div>");
+                            bbdesigner$(document.body).append(tooltipdivRect[0]);
+                        }
+                        var rectOptions = {
+                            "position": "absolute",
+                            "top": evt.pageY + bbdesigner$(document).scrollTop(),
+                            "left": evt.pageX + bbdesigner$(document).scrollLeft(),
+                            "border-style": "solid",
+                            "border-color": "transparent",
+                            "border-width": 1,
+                            "opacity": 1,
+                            "z-index": 100000,
+                            "border-radius": "0px",               
+                            "padding-left": '5px',
+                            "padding-right": '5px',
+                            "padding-top": '2px',
+                            "padding-bottom": '2px'
+                        };
+                        bbdesigner$(tooltipdivRect).css(rectOptions);
+                        bbdesigner$("#" + that.pluginName + "_Track_ToolTip_Template").html(args.currentText);
+                        evt.pageX = evt.pageX + 5;
+                        evt.pageY = evt.pageY + 20;
+                        var tooltipWidthAndAxis = (evt.pageX + bbdesigner$("#" + that.pluginName + "_Track_ToolTip_Template").outerWidth(true));
+                        var panelWidthEdge = (bbdesigner$(document).width());
+                        var tooltipHeightAndAxis = (evt.pageY + bbdesigner$("#" + that.pluginName + "_Track_ToolTip_Template").outerHeight(true));
+                        var panelHeightEdge = (bbdesigner$(document).height());
+                        if (tooltipWidthAndAxis > panelWidthEdge) {
+                            evt.pageX = evt.pageX - bbdesigner$("#" + that.pluginName + "_Track_ToolTip_Template").outerWidth(true);
+                        }
+                        if (tooltipHeightAndAxis > panelHeightEdge) {
+                            evt.pageY = evt.pageY - bbdesigner$("#" + that.pluginName + "_Track_ToolTip_Template").outerHeight(true);
+                        }
+                        bbdesigner$("#" + that.pluginName + "_Track_ToolTip_Template").css({
+                            'top': `${evt.pageY}px`,
+                            'left': `${evt.pageX}px`,
+                            'display': 'block'
+                        });
+                        evt.stopPropagation();
+                        evt.bubbles = false;
+                    }
+                }, 10);
+            }
+        },
+        
+        _showTooltipDescription: function(evt) {
+            var that = this;
+            this._hideTooltip();
+            this.singleTimer = setTimeout(function() {
+                var tooltipdivRect = bbdesigner$("#" + that.pluginName + "Description_Track_ToolTip_Template");
+                if (tooltipdivRect.length === 0) {
+                    tooltipdivRect = bbdesigner$("<div id='" + that.pluginName + "Description_Track_ToolTip_Template' class='boldbi-dashboarddesigner bbi-dbrd-designer-tooltip'></div>");
+                    bbdesigner$(document.body).append(tooltipdivRect[0]);
+                }
+                bbdesigner$("#" + that.pluginName + "Description_Track_ToolTip_Template").css({
+                    'position': 'absolute',
+                    'z-index': 100001,
+                    'font-size': '12px',
+                    'font-family': '\'Heebo\', \'Roboto\'',
+                    'color': 'var(--primary-text-normal-color)',
+                    'white-space': 'pre-wrap',
+                    'max-width': '400px',
+                    'word-wrap': 'break-word',
+                    'padding': '10px',
+                    'border-radius': '4px',
+                    'box-shadow': '0 2px 4px 0 rgba(0,0,0,.12)',
+                    'border': '1px solid var(--designer-primary-border-color)',
+                    'background': 'var(--designer-preview-background)',
+                    'min-height': '15px',
+                    'width': 'auto',
+                    'height': 'auto',
+                    'cursor': 'pointer'
+                });
+                bbdesigner$("#" + that.pluginName + "Description_Track_ToolTip_Template").html(evt.target.getAttribute('data-tooltip'));
+                evt.pageY = evt.pageY + 20;
+                evt.pageX = evt.pageX + 10;
+                var tooltipWidthAndAxis = (evt.pageX + bbdesigner$("#" + that.pluginName + "Description_Track_ToolTip_Template").outerWidth(true));
+                var panelWidthEdge = (bbdesigner$(document.body).width());
+                var tooltipHeightAndAxis = (evt.pageY + bbdesigner$("#" + that.pluginName + "Description_Track_ToolTip_Template").outerHeight(true));
+                var panelHeightEdge = (bbdesigner$(document.body).height());
+                if (tooltipWidthAndAxis > panelWidthEdge) {
+                    evt.pageX = evt.pageX - bbdesigner$("#" + that.pluginName + "Description_Track_ToolTip_Template").outerWidth(true);
+                }
+                if (tooltipHeightAndAxis > panelHeightEdge) {
+                    evt.pageY = evt.pageY - bbdesigner$("#" + that.pluginName + "Description_Track_ToolTip_Template").outerHeight(true);
+                }
+                bbdesigner$("#" + that.pluginName + "Description_Track_ToolTip_Template").css({
+                    'top': `${evt.pageY}px`,
+                    'left': `${evt.pageX}px`,
+                    'display': 'block',
+                });
+                evt.stopPropagation();
+                evt.bubbles = false;
+            }, 10);
+        },
+        _hideTooltipDescription: function(event) {
+            if (!BoldBIDashboard.isNullOrUndefined(event)) {
+                event.bubbles = false;
+                if (bbdesigner$.isFunction(event.stopPropagation)) {
+                    event.stopPropagation();
+                }
+            }
+            if (this.singleTimer) {
+                clearTimeout(this.singleTimer);
+            }
+            this.singleTimer = setTimeout(() => {
+                    if (!BoldBIDashboard.isNullOrUndefined(bbdesigner$("#" + this.pluginName + "Description_Track_ToolTip_Template"))) {
+                        bbdesigner$("#" + this.pluginName + "Description_Track_ToolTip_Template").css('display', 'none');
+                    }
+                },
+                50
+            );
         },
     });
     BoldBIDashboard.NumberCard.ImageModes = {

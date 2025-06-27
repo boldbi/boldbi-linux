@@ -1,6 +1,6 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var imageHelper = new ImageHelper();
+    var imageHelper = new ImageHelper(Context);
 }
 @{
     ViewBag.Title = T["Site not found"].Value + " - " + GlobalAppSettings.SystemSettings.OrganizationName;
@@ -10,14 +10,26 @@
     <html>
         <head>
             <meta name="viewport" content="width=device-width" />
-            <link rel="stylesheet" href="~/bundles/css/error-page-layout.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/bundles/css/error-page-layout.css" integrity="@IntegrityTagHelper.GetIntegrity("bundles/css/error-page-layout.css")" crossorigin="anonymous" asp-append-version="true" />
+        <script nonce="@Context.Items["ScriptNonce"]">
+            var defaultErrorImageSrc = "@Url.Content(CloudAppConfig.FallbackLoginLogoUrl)";
+            document.addEventListener("DOMContentLoaded", function () {
+                var logoimage = document.getElementById("sitenotfoundimage");
+                if (logoimage) {
+                    logoimage.onerror = function () {
+                        this.onerror = null;
+                        this.src = defaultErrorImageSrc;
+                    };
+                }
+            });
+        </script>
         </head>
     <body >
         <div class="error-layout">
             <div class="error-display">
                 <div class="error-innerdisplay">
                     <div class="error-headerlogo">
-                        <img src="@Url.Content("~/logos?type=login")" onerror="if (this.src != '@Url.Content(CloudAppConfig.FallbackLoginLogoUrl)') this.src = '@Url.Content(CloudAppConfig.FallbackLoginLogoUrl)';">
+                        <img id="sitenotfoundimage" src="@Url.Content("~/logos?type=login")">
                     </div>
                     <div>
                         <img src="@imageHelper.SiteNotFoundImage()" class="error-logo">
@@ -27,7 +39,7 @@
                         @T["Sorry! The site you are looking for is not available. The site may have been deleted."]
                     </div>
                     <div class="error-link">
-                        <span class="error-page-cursor"><a class="error-to-back-text-color" href="@Url.Action("Sites", "TenantsManagement")">@T["Take me back to Site page"]</a></span>
+                        <span class="error-page-cursor"><a class="error-to-back-text-color text-decoration-none" href="@Url.Action("Sites", "TenantsManagement")">@T["Take me back to Site page"]</a></span>
                     </div>
                 </div>
             </div>

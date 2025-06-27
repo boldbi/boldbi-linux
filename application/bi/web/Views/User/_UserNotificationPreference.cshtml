@@ -7,16 +7,23 @@ new SelectListItem { Text = T["Enable"].Value, Value = ((int)NotificationPrefere
 new SelectListItem { Text = T["Disable"].Value, Value = ((int)NotificationPreferenceOption.Disable).ToString()},
 new SelectListItem { Text = T["Inherit from global settings"].Value, Value = ((int)NotificationPreferenceOption.Inherit).ToString()}
 };
-    var isProfileNotificationsTab = (Context.Request.Query["tab"].ToString() == "profile-notifications") ? "active" : string.Empty;
+    var isProfileNotificationsTab = (Context.Request.Query["tab"].ToString().ToLower() == "profile-notifications") ? "active" : string.Empty;
 }
 <script>
+    @{
+#pragma warning disable SCS0029
+    }
     var notificationSettings = @Html.Raw(Json.Serialize(ViewBag.userNotificationSettings));
     var globalNotificationSettings =  @Html.Raw(Json.Serialize(_globalAppSettings.SystemSettings.NotificationAdministration));
+    @{
+#pragma warning restore SCS0029
+    }
+
 </script>
-<div role="tabpanel" id="profile-notifications" class="col-xs-12 no-padding no-margin tab-pane @isProfileNotificationsTab">
-    <div class="col-xs-12 bi-page-body no-margin ">
+<div role="tabpanel" id="profile-notifications" class="col-12 no-padding no-margin tab-pane @isProfileNotificationsTab">
+    <div class="col-12 bi-page-body no-margin ">
         <input type="hidden" class="page-title" data-page="NOTIFICATION PREFERENCE">
-        <div class="col-xs-12 no-padding" id="notification-preference-form-div">
+        <div class="col-12 no-padding" id="notification-preference-form-div">
             <div class="notification-preference-table">
                 <div class="col-xs-8 field-container-notification no-padding">
                     <div ng-controller="UserMailNotificationSettingsController">
@@ -94,6 +101,12 @@ new SelectListItem { Text = T["Inherit from global settings"].Value, Value = ((i
                                         <span>@T["User synchronization notification"]</span>
                                     </label>
                                 </li>
+                                <li class="notifications-list ">
+                                    @Html.CheckBox("EnableAPIKeyExpirationNotification", new { @class = "material-checkbox", ng_model = "NotificationSettings.UserMailNotificationSettings.EnableNotificationForApiKeyExpiration", ng_change = "updateCheckAllMailNotificatiionSettingsOnChange()", ng_disabled = "!DisableNotificationsettings.MailNotificationSettings.EnableNotificationForApiKeyExpiration" })
+                                    <label for="EnableAPIKeyExpirationNotification">
+                                        <span>@T["Enable notification for API key expiration"]</span>
+                                    </label>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -101,7 +114,7 @@ new SelectListItem { Text = T["Inherit from global settings"].Value, Value = ((i
                         <div class="notifications-head">
                             <h3 class="notification-header">@T["System Notifications"]</h3>
                             <h5 class="notification-header-description">
-                                @T["System notifications will appear in the bottom left once the user logs into the application"]
+                                @T["System notifications will appear in the top right once the user logs into the application"]
                             </h5>
                         </div>
                         <div class="inherit-from-global-settings notifications-info">
@@ -138,16 +151,22 @@ new SelectListItem { Text = T["Inherit from global settings"].Value, Value = ((i
                                     <span>@T["Notify me about comments when I have watch enabled for a dashboard"]</span>
                                 </label>
                             </li>
+                            <li class="notifications-list ">
+                                @Html.CheckBox("EnableAPIKeyExpirationSystemNotification", new { @class = "material-checkbox", ng_model = "NotificationSettings.UserSystemNotificationSettings.EnableNotificationForApiKeyExpiration", ng_change = "updateCheckAllSystemNotificatiionSettingsOnChange()", ng_disabled = "!DisableNotificationsettings.SystemNotificationSettings.EnableNotificationForApiKeyExpiration" })
+                                <label for="EnableAPIKeyExpirationSystemNotification">
+                                    <span>@T["Enable notification for API key expiration"]</span>
+                                </label>
+                            </li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="bi-page-footer col-xs-12 update-user-notification-settings">
-        <div class="bi-page-actions col-xs-12 col-md-12">
-            <a href="@Url.Action("dashboards", "dashboards")" class="secondary-button app-btn-secondary pull-right" id="cancel-settings" title="">@T["Cancel"]</a>
-            <input type="button" class="primary-button app-btn-primary pull-right inactive-content" id="update-notification-settings" title="" value="@T["Save"]">
+    <div class="bi-page-footer col-12 update-user-notification-settings">
+        <div class="bi-page-actions col-12 col-md-12">
+            <a href="@Url.Action("dashboards", "dashboards")" class="secondary-button app-btn-secondary float-end" id="cancel-settings" title="">@T["Cancel"]</a>
+            <input type="button" class="primary-button app-btn-primary float-end inactive-content" id="update-notification-settings" title="" value="@T["Save"]">
         </div>
     </div>
 </div>

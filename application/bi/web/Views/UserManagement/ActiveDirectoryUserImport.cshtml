@@ -5,11 +5,25 @@
     ViewBag.Title = String.Format(T["{0} Users Import"].Value, ViewBag.AdImport ? "Active Directory" : "Azure AD") + " - " + globalAppSettings.SystemSettings.OrganizationName;
 
     ViewBag.HelpSiteUrl = GlobalAppSettings.GetHelpSiteUrl(HelpSiteUrlNames.ImportAzureAdUsers);
+    @if (ViewBag.AdImport)
+    {
+        ViewBag.PageHeader = @String.Format(T["Import Users — {0}"].Value, "Active Directory");
+        ViewBag.PageDescription = @String.Format(T["Import users from {0}."].Value, "Active Directory");
+    }
+    else
+    {
+        ViewBag.PageHeader = @String.Format(T["Import Users — {0}"].Value, "Azure AD");
+        ViewBag.PageDescription = @String.Format(T["Import users from {0}."].Value, "Azure AD");
+    }
+    ViewBag.BackIconRedirectionUrl = Url.Action("index", "UserManagement");
+    ViewBag.BackIconTitle = T["Users"];
+    var model = ViewBag.GranularPermissions as Dictionary<object, bool>;
+    var canShowAdminMenu = await ServerAppConfig.CanShowAdminMenu(model, _identityResponse.IsAdmin, _featureManager);
 }
 
 
 @section scripts
-{
+    {
     <environment include="Development,CloudDevelopment">
         <link rel="stylesheet" asp-append-version="true" href="@dashboardServerResourceUrl/cdn/css/user-active-directory.css" />
         <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/user-active-directory.js"></script>
@@ -23,6 +37,7 @@
         <script>
             var saveSelectedActiveDirectoryUserUrl = "@Url.Action("SaveSelectedActiveDirectoryUser", "UserManagement")";
             var SearchActiveDirectoryUsersUrl = "@Url.Action("SearchActiveDirectoryUsers", "UserManagement")";
+            var userCreationLimitCheckUrl = "@Url.Action("CheckUserCreationLimit", "UserManagement")";
         </script>
     }
     else
@@ -30,8 +45,15 @@
         <script>
             var saveSelectedActiveDirectoryUserUrl = "@Url.Action("SaveSelectedAzureADUser", "UserManagement")";
             var SearchActiveDirectoryUsersUrl = "@Url.Action("SearchAzureADUsers", "UserManagement")";
+            var userCreationLimitCheckUrl = "@Url.Action("CheckUserCreationLimit", "UserManagement")";
         </script>
     }
+
+    <script>
+        var userImportSuccessUrl = "@Url.Action("BulkImportResult", "UserManagement")";
+        var viewCurrentImportUrl = "@Url.Action("BulkUserImportResult", "UserManagement")";
+        var checkCurrentJobStatusUrl = "@Url.Action("CheckCurrentJobStatus", "UserManagement")";
+    </script>
 }
 
 @section MainSection{
@@ -39,7 +61,7 @@
 
     <script type="text/x-jsrender" id="user-detail-validation">
         {{if IsDuplicated}}
-        <span class="su su-login-error user-import-validation" title="{{:DisplayMessage}}" data-html="true" data-toggle="tooltip" data-placement="left"></span>
+        <span class="su su-login-error user-import-validation" title="{{:DisplayMessage}}" data-html="true" data-bs-toggle="tooltip" data-placement="left"></span>
         {{/if}}
     </script>
 
@@ -56,26 +78,21 @@
     </script>
 
     <script type="text/x-jsrender" id="full-name-template">
-        <span title="{{:~renderDoubleQuotes(FullName)}}" class="grid-content" data-toggle="tooltip">
+        <span title="{{:~renderDoubleQuotes(FullName)}}" class="grid-content" data-bs-toggle="tooltip">
             {{:FullName}}
         </span>
     </script>
 
     <script type="text/x-jsrender" id="username-template">
-        <span title="{{:Username}}" class="grid-content" data-toggle="tooltip">
+        <span title="{{:Username}}" class="grid-content" data-bs-toggle="tooltip">
             {{:Username}}
         </span>
     </script>
 
     <script type="text/x-jsrender" id="email-id-template">
-        <span title="{{:EmailId}}" class="grid-content" data-toggle="tooltip">
+        <span title="{{:EmailId}}" class="grid-content" data-bs-toggle="tooltip">
             {{:EmailId}}
         </span>
-    </script>
-
-    <script type="text/x-jsrender" id="checkbox-header-template">
-        @Html.CheckBox("checkbox-header", new { @class = "material-checkbox" })
-        @Html.Label("checkbox-header", " ", new { @class = "checkbox-header-label" })
     </script>
 
     <script type="text/x-jsrender" id="full-name-header">
@@ -100,7 +117,7 @@
     <script type="text/javascript">
 
         $(function () {
-                $("#ad-user-import").val("");
+            $("#ad-user-import").val("");
                 addPlacehoder("#search-area");
                 @if(ViewBag.AdImport)
                 {
@@ -121,7 +138,7 @@
                 </text>
                 }
                 ej.support.stableSort = false;
-                GridLocalization();
+            GridLocalization(window.Server.App.Localization.UsersResourceEmpty);
                 $("#Grid").ejGrid({
                     dataSource: data,
                     gridLines: ej.Grid.GridLines.None,
@@ -145,10 +162,6 @@
                     rowDataBound: function () {
                         $("input.checkbox-row-disabled").parents("tr").addClass("row-disabled");
                     },
-                    dataBound: function () {
-                        $("#checkbox-header").change(headCheckboxOnChange);
-                        this.model.indexes = {}; /* Additional property*/
-                    },
                     columns: [
                         { headerTemplateID: "#checkbox-header-template", template: true, templateID: "#checkbox-row-template", textAlign: ej.TextAlign.Center, width: 10, allowFiltering: false },
                         { field: "FullName", cssClass: "full-name", headerText: "@T["Name"]",  templateID: "#full-name-template", headerTemplateID: "#full-name-header", width: 40, type: "string" },
@@ -166,38 +179,32 @@
                         return inputString.replace(new RegExp("\"", 'g'), '&quot;');
                     }
                 });
-            });
+        });
     </script>
 
-    <div id="import-active-directory-users" class="col-lg-12 bi-page-container @(ViewBag.ThirdPartyLogins ? string.Empty : "unlock-enterprise-features blur-content")">
-        <div class="bi-page-content col-xs-12 no-padding">
-            <div class="col-lg-12 bi-page-header">
-                <div class="col-lg-6 no-padding import-area">
-                    <a href="@Url.Action("Index", "UserManagement")" data-toggle="tooltip" data-placement="top" title="@T["Users"]" class="back-button pull-left">
-                        <i class="su su-arrow-back"> </i>
-                    </a>
-                    <hgroup class="col-xs-6 col-xs-6 col-sm-6 col-xs-12 no-padding bi-page-header-description">
-                        @if (ViewBag.AdImport)
-                        {
-                            <h1 class="h2 page-title">@String.Format(T["Import Users — {0}"].Value, "Active Directory")</h1>
-                            <h5 class="page-description">@String.Format(T["Import users from {0}."].Value, "Active Directory")</h5>
-                        }
-
-                        else
-                        {
-                            <h1 class="h2 page-title">@String.Format(T["Import Users — {0}"].Value, "Azure AD")</h1>
-                            <h5 class="page-description">@String.Format(T["Import users from {0}."].Value, "Azure AD")</h5>
-                        }
-                    </hgroup>
+    <div class="col-12 no-padding no-margin @(canShowAdminMenu ? "width-alignment" : "admin-panel-full-width")">
+        <div class="col-12 no-padding">
+            @await Html.PartialAsync("../Shared/_TopHeaderSection")
+        </div>
+        <div class="col-12 bi-page-header tabs-header-padding top-nav-btn-secton import-users">
+            <div class="col-12 no-padding">
+                <div class="col-xs-6 no-padding button-section">
+                    <input type="button" value="@T["Import Selected Users"]" disabled="" title="@T["Import the selected users"]" onclick="SaveActiveDirectoryUsers()" id="import-button" class="primary-button app-btn-primary float-end import-button" />
+                    <input type="button" value="@T["Import All Users"]" title="@T["Import all users and activate their accounts"]" id="import-all" class="primary-button app-btn-primary float-end import-button bi-header-btn" />
                 </div>
-                <div class="col-lg-6 no-padding bi-header-btn">
-                    <input type="button" value="@T["Import"]" disabled="" title="@T["Import the selected users"]" onclick="SaveActiveDirectoryUsers()" id="import-button" class="primary-button app-btn-primary pull-right import-button" />
+                <div id="search-area" class="float-start col-4">
+                    <input type="text" id="ad-user-import" class="float-start" placeholder="@T["Search users"]" autocomplete="off" />
+                    <span class="su su-inner-close close-icon float-end" id="clear-search" title="@T["Clear search"]"></span>
+                    <span class="su su-search search-user float-end" title="@T["Search"]"></span>
                 </div>
             </div>
-
-            <div class="content-section bi-page-body col-xs-12">
-                <div class="col-md-12 col-xs-12 no-margin no-padding directory-user-search">
-                    <div class="col-md-8 col-xs-8 no-padding directorypath-area">
+        </div>
+    </div>
+    <div id="import-active-directory-users" class="col-lg-12 bi-page-container @(ViewBag.ThirdPartyLogins ? string.Empty : "unlock-enterprise-features blur-content") bg-grid @(canShowAdminMenu ? "width-alignment" : "admin-panel-full-width")">
+        <div class="bi-page-content col-12 no-padding">
+            <div class="content-section bi-page-body col-12">
+                <div class="col-md-12 col-12 no-margin no-padding directory-user-search">
+                    <div class="col-md-8 col-xs-8 directorypath-area">
                         @if (ViewBag.AdImport)
                         {
                             <span class="directory-path no-padding">@T["Directory Path"] :<input type="hidden" name="url" value="@ViewBag.ActiveDirectory.LdapUrl"></span>
@@ -216,31 +223,26 @@
                         }
                         <div class="no-padding error-msg">@TempData["ErrorMessage"]</div>
                     </div>
-                    <div id="search-area" class="pull-right">
-                        <input type="text" id="ad-user-import" class="pull-left" placeholder="@T["Search users"]" autocomplete="off" />
-                        <span class="su su-inner-close close-icon pull-left" id="clear-search" title="@T["Clear search"]"></span>
-                        <span class="su su-search search-user pull-left" title="@T["Search"]"></span>
-                    </div>
                 </div>
-                <div class="col-xs-12 col-md-12 no-padding">
+                <div class="col-12 col-md-12 no-padding">
                     <span class="import-message @(ViewBag.AdImport ? "windows-ad-msg" : "")">
                         @T["Search and select the users from the following list to import"]
                     </span>
                 </div>
-                <div class="col-xs-12 no-padding no-margin user-data-grid">
-                    <div class="col-xs-12 no-padding">
+                <div class="col-12 no-padding no-margin user-data-grid">
+                    <div class="col-12 no-padding">
                         @if (ViewBag.AdImport)
                         {
-                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 bg-warning windows-ad-user-import-warning">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-12 bg-warning windows-ad-user-import-warning">
                                 <div class="warning-icon-container no-padding">
                                     <span class="su su-info"></span>
                                 </div>
                                 <span class="no-padding text-warning">@String.Format(T["A user without an email address will be assigned a {0} or system-generated email address."].Value, "User Principal Name (UPN)")</span>
                             </div>
                         }
-                        <div class="col-xs-12  col-md-12 no-padding no-margin">
+                        <div class="col-12  col-md-12 no-padding no-margin">
                             <div id="grid-validation-messages" class="list grid-error-validation">
-                                <div class="col-xs-12">
+                                <div class="col-12">
                                     <span id="grid-validation" class="grid-validation no-padding"><span id="user-count" class="user-count">@ViewBag.UserCount</span> @T["User(s) has been imported and activated successfully."]</span>
                                     <span id="grid-error-validation" class="grid-error-validation no-padding">@T["Duplicate or Invalid data is found. Please change the data accordingly and re-import."]</span>
                                     <span id="empty-validation" class="validation-message empty-validation no-padding">@T["Please select user(s) to import"]</span>
@@ -248,13 +250,13 @@
                             </div>
                         </div>
                     </div>
-                    <div id="grid-container" class="col-md-12 no-top-margin no-padding">
+                    <div id="grid-container" class="col-12 no-top-margin no-padding">
                         <div class="col-md-12 container-fluid page-inner-padding no-padding ">
                             <div id="Grid">
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-4 no-padding"></div>
+                    <div class="col-4 no-padding"></div>
                     <div class="col-xs-8 no-padding"></div>
                 </div>
             </div>

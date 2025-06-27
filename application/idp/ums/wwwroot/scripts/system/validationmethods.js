@@ -6,7 +6,7 @@
     }, window.Server.App.LocalizationContent.EnterName);
 
     $.validator.addMethod("additionalSpecialCharValidation", function (value, element) {
-        if (/^[a-zA-Z_0-9`~!\$\^()=\-\.\{\} ]+$/.test(value) || value === "") {
+        if (/^[a-zA-Z_0-9`~!\$\^()=\-\.\{\}À-ÖØ-öø-ÿŒœŸÿ€ß' ]+$/.test(value) || value === "") {
             return true;
         }
     }, window.Server.App.LocalizationContent.AvoidSpecailCharacters);
@@ -37,7 +37,7 @@
 
     //database validation methods
 
-    $.validator.addMethod("isValidPrefix", function (value, element) {
+    $.validator.addMethod("isWhitespaceOrNumeric", function (value, element) {
         if (/^[a-zA-Z\_]+$/g.test(value) || value === "") {
             return true;
         } else {
@@ -82,7 +82,7 @@
     }, window.Server.App.LocalizationContent.AvoidSpecailCharacters + " (';\")");
 
     $.validator.addMethod("additionalSpecialCharValidation", function (value, element) {
-        if (/^[a-zA-Z_0-9`~!\$\^()=\-\.\{\} ]+$/.test(value) || value === "") {
+        if (/^[a-zA-Z_0-9`~!\$\^()=\-\.\{\}À-ÖØ-öø-ÿŒœŸÿ€ß' ]+$/.test(value) || value === "") {
             return true;
         }
     }, window.Server.App.LocalizationContent.AvoidSpecailCharacters);

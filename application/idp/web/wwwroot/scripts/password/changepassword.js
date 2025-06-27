@@ -1,13 +1,17 @@
 ﻿var isKeyUp = false;
 $(document).ready(function () {
+    $(document).on("click", "#change-password-save", onChangePasswordClick);
     if (isShow2FA) {
-
         if ($("#security-setting-container").is(":visible")) {
             if (location.href.match(/2fa/)) {
+                $("#2fa").closest("li").addClass("active");
                 $("#2fa").tab("show");
+                $("#user-management-options").hide();
             }
             else {
+                $("#change-password").closest("li").addClass("active");
                 $("#change-password").tab("show");
+                $("#user-management-options").show();
                 var query = (window.location.search).toString();
                 if (query != "?view=change-password") {
                     history.pushState(null, '', '?view=change-password');
@@ -17,7 +21,9 @@ $(document).ready(function () {
     }
     else {
         if ($("#security-setting-container").is(":visible")) {
-                $("#2fa").tab("show");
+            $("#2fa").closest("li").addClass("active");
+            $("#2fa").tab("show");
+            $("#user-management-options").hide();
                 var query = (window.location.search).toString();
                 if (query != "?view=2fa") {
                     history.pushState(null, '', '?view=2fa');
@@ -28,14 +34,19 @@ $(document).ready(function () {
 
     }
 
-    $("a[data-toggle='tab']").on('click', function (e) {
+    $("a[data-bs-toggle='tab']").on('click', function (e) {
+        $("ul.nav.nav-tabs li").removeClass("active");
         if ($(this).attr("id") == "change-password") {
+            $(this).closest("li").addClass("active");
+            $("#user-management-options").show();
             var query = (window.location.search).toString();
             if (query != "?view=change-password") {
                 history.pushState(null, '', '?view=change-password');
             }
         }
         else if ($(this).attr("id") == "2fa") {
+            $(this).closest("li").addClass("active");
+            $("#user-management-options").hide();
             var query = (window.location.search).toString();
             if (query != "?view=2fa") {
                 history.pushState(null, '', '?view=2fa');
@@ -44,7 +55,10 @@ $(document).ready(function () {
         $(".success-message, .error-message").hide();
     });
 
-    $('[data-toggle="popover"]').popover();
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    });
     var outlineEditPassword = new ejs.inputs.TextBox({
         cssClass: 'e-outline e-custom e-non-float',
         floatLabelType: 'Never',
@@ -66,6 +80,11 @@ $(document).ready(function () {
             return true;
         }
     }, "");
+
+    $.validator.addMethod("notSameAsCurrent", function(value, element) {
+        var currentPassword = $("input[name='current-password']").val();
+        return this.optional(element) || value !== currentPassword;
+    }, window.Server.App.LocalizationContent.PasswordSameAsCurrent);
 
     $('.change-password-form').validate({
         errorElement: 'span',
@@ -89,6 +108,7 @@ $(document).ready(function () {
             },
             "new-password": {
                 required: true,
+                notSameAsCurrent: true,
                 isEditadminPassword: true
             },
             "confirm-password": {
@@ -115,6 +135,7 @@ $(document).ready(function () {
             },
             "new-password": {
                 required: window.Server.App.LocalizationContent.NewPasswordValidator,
+                notSameAsCurrent: window.Server.App.LocalizationContent.PasswordSameAsCurrent,
                 isEditadminPassword: window.Server.App.LocalizationContent.InvalidPasswordValidator
             },
             "confirm-password": {
@@ -262,6 +283,7 @@ function onChangePasswordClick() {
                     } else {
                         hideWaitingPopup('content-area');
                         SuccessAlert(window.Server.App.LocalizationContent.UpdatePassword, window.Server.App.LocalizationContent.PasswordSuccess, 7000);
+                        window.location.reload();
                     }
                 }
                 $(".popover").hide();
@@ -306,15 +328,8 @@ function disableMfa() {
         success: function (result) {
             if (result.Data.status && result.Data.recovery != "") {
                 document.getElementById("authenticator-application-box").ej2_instances[0].hide();
-                $.ajax({
-                    type: "POST",
-                    url: disableMfaUrl,
-                    async: false,
-                    success: function (result) {
-                        hideWaitingPopup('content-area');
-                        window.location.reload();
-                    }
-                });
+                hideWaitingPopup('content-area');
+                window.location.reload();
             }
             else {
                 document.getElementById("disable-verification-code").value = "";
@@ -335,19 +350,6 @@ function onRecoveryCodeDialogOpen() {
 function onRecoveryCodeDialogClose() {
     document.getElementById("recovery-code-regeneration-confirmation").ej2_instances[0].hide();
     window.location.reload();
-}
-
-function copyToClip() {
-    value = document.getElementById("copy-recovery").value;
-    navigator.clipboard.writeText(value)
-    setTimeout(function () {
-        $("#recovery-code-copy").attr("data-original-title", window.Server.App.LocalizationContent.Copied);
-        $("#recovery-code-copy").tooltip('show');
-    }, 200);
-    setTimeout(function () {
-        $("#recovery-code-copy").attr("data-original-title", window.Server.App.LocalizationContent.ClicktoCopy);
-        $("#recovery-code-copy").tooltip();
-    }, 3000);
 }
 
 
@@ -385,6 +387,34 @@ function regenerateRecoveryCode() {
 function onMfaDialogOpen() {
     $(".verification-ok-button").attr("disabled", true);
     document.getElementById("authenticator-application-box").ej2_instances[0].show();
+}
+
+function copyToClipboard(inputId, buttonId) {
+    if (typeof (navigator.clipboard) != 'undefined') {
+        var value = $(inputId).val();
+        var copyText = $(inputId);
+        copyText.attr("type", "text").select();
+        navigator.clipboard.writeText(value)
+        if (inputId === "#copy-recovery") {
+            $("#copy-recovery").css("display", "none");
+        }
+    }
+    else {
+        var copyText = $(inputId);
+        copyText.attr("type", "text").select();
+        document.execCommand("copy");
+        if (inputId === "#copy-recovery") {
+            $("#copy-recovery").css("display", "none");
+        }
+    }
+    setTimeout(function () {
+        $(buttonId).attr("data-bs-original-title", window.Server.App.LocalizationContent.Copied);
+        $(buttonId).tooltip('show');
+    }, 200);
+    setTimeout(function () {
+        $(buttonId).attr("data-bs-original-title", window.Server.App.LocalizationContent.ClickToCopy);
+        $(buttonId).tooltip();
+    }, 3000);
 }
 
 function onMfaDialogClose() {
@@ -500,3 +530,10 @@ function validateVerificationCode(verificationCode) {
         $(".verification-ok-button").attr("disabled", true);
     }
 }
+$(document).on("click", "#user-id-copy", function () {
+    copyToClipboard('#user-id', '#user-id-copy');
+});
+
+$(document).on("click", "#recovery-code-copy", function () {
+    copyToClipboard('#copy-recovery', '#recovery-code-copy');
+});

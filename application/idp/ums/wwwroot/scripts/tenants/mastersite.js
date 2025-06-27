@@ -28,7 +28,7 @@ $(document).ready(function () {
     $("#change-master").change(function () {
         var checkBox = $("#change-master").is(':checked');
         if (checkBox) {
-            tenantType = document.getElementById("tenant-type").value;
+            tenantType = document.getElementById("tenant-type").ej2_instances[0].value;
             tenantType = tenantType == "BoldBIOnPremise" ? 3 : 4;
             getMasterSite(tenantType);
         }
@@ -50,27 +50,31 @@ function onMasterDialogOpen(tenanatName, tenantType) {
                 $(".site-master").hide();
                 var masterDialog = document.getElementById("master-site-change").ej2_instances;
                 masterDialog[0].showCloseIcon = true,
-                masterDialog[0].close = onCloseMasterDialog,
+                    masterDialog[0].close = onCloseMasterDialog,
                     masterDialog[0].content = window.Server.App.LocalizationContent.OnStartupMessage.format("<span class='tenant-name'>", result.data, "</span> <span class='conform-message'>", ", <span class='tenant-name'>", tenanatName, "</span> ,", "</span>"),
-                document.getElementById("master-site-change").ej2_instances[0].show();
+                    document.getElementById("master-site-change").ej2_instances[0].show();
+            }
+            else
+            {
+                onCloseMasterDialog();
+                WarningAlert(window.Server.App.LocalizationContent.Master, window.Server.App.LocalizationContent.ErrorMessageDescription, result.Message, 7000);
             }
         }
     });
 }
 
 function updateMasterTenant() {
+    onCloseMasterDialog();
     $.ajax({
         type: "POST",
         url: updateMasterTenantUrl,
         data: { TenantInfoId: UpdateTenantId },
         success: function (result) {
             if (result.Success) {
-                onCloseMasterDialog();
                 SuccessAlert(window.Server.App.LocalizationContent.Master, result.Message, 7000);
                 siteGridRefresh();
             }
             else {
-                onCloseMasterDialog();
                 WarningAlert(window.Server.App.LocalizationContent.Master, window.Server.App.LocalizationContent.ErrorMessageDescription, result.Message, 7000);
                 siteGridRefresh();
             }
@@ -88,10 +92,11 @@ function getMasterSite(tenantType) {
                 $(".update-master").hide();
                 var masterDialog = document.getElementById("master-site-change").ej2_instances;
                 masterDialog[0].content = window.Server.App.LocalizationContent.OnStartupMessage.format("<span class='tenant-name'>", result.data, "</span> <span class='conform-message'>", "", "", "", "</span>"),
-                document.getElementById("master-site-change").ej2_instances[0].show();
+                    document.getElementById("master-site-change").ej2_instances[0].show();
             }
             else {
                 onMasterDialogClose();
+                WarningAlert(window.Server.App.LocalizationContent.Master, window.Server.App.LocalizationContent.ErrorMessageDescription, result.Message, 7000);
             }
         }
     });
@@ -107,11 +112,11 @@ function onCloseMasterDialog() {
 }
 
 function onMasterDialog() {
-    $(".make-master-checkbox").attr("checked", true);
+    $(".make-master-checkbox").prop("checked", true);
     onCloseMasterDialog();
 }
 
 function onMasterDialogClose() {
-    $(".make-master-checkbox").attr("checked", false);
+    $(".make-master-checkbox").prop("checked", false);
     onCloseMasterDialog();
 }

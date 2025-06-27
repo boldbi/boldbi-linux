@@ -31,7 +31,7 @@
         rules: {
             username: {
                 isRequired: true,
-                hasWhiteSpace: false,
+                hasWhiteSpace: true,
                 isValidName: true,
                 isValidUser: true,
                 additionalSpecialCharValidation: false
@@ -39,15 +39,16 @@
             firstname: {
                 isRequired: true,
                 isValidName: true,
-                additionalSpecialCharValidation: false
+                additionalSpecialCharValidation: true
             },
             lastname: {
-                additionalSpecialCharValidation: false
+                isValidName: true,
+                additionalSpecialCharValidation: true
             },
             username: {
                 isRequired: true,
                 isValidUsernameLength: true,
-                isValidUsername: false
+                isValidUsername: true
             },
             email: {
                 isRequired: true,
@@ -131,23 +132,35 @@
     }); 
 
     $("#user-account-proceed").on("click", function () {
-        if ($(".admin-account-fields-container").valid()) {
-            $(".startup-waiting-popup").removeClass("storage-page-content");
-            $("#system-settings-user-account-container").hide();
-            $("#image-parent-container .startup-image").hide().attr("src", serverSetupImageUrl).fadeIn();
-            $(".startup-content span.first-content").hide().text(window.Server.App.LocalizationContent.YourSite).slideDown();
-            $(".startup-content span.second-content").hide().text(window.Server.App.LocalizationContent.YourSite2 + displayName + window.Server.App.LocalizationContent.SiteLetter + ".").slideDown();
-            $("#help-link").attr("href", databaseConfigurationUrl);
-            $("#system-settings-db-selection-container").show();
-            $("#db-content-holder,#db-config-submit").show();
-            $("#sql-existing-db-submit, .sql-server-existing-db").hide();
-            autoFocus("txt-servername");
-            $("#advanced_tab_db_name").hide();
-            prefillDbNames();
-            if (!isBoldBI) {
-                hideDataStore();
+        validateStartup(function (result) {
+            if (result) {
+                messageBox("su-login-error", window.Server.App.LocalizationContent.ConfigurationError, window.Server.App.LocalizationContent.ConfigurationErrorMessage, "success", function () {
+                    onCloseMessageBox();
+                });
             }
-        }
+            else {
+                if ($(".admin-account-fields-container").valid()) {
+                    
+                    $(".startup-waiting-popup").removeClass("storage-page-content");
+                    $("#system-settings-user-account-container").hide(); 
+                    $("#image-parent-container .startup-image").hide().attr("src", serverSetupImageUrl).fadeIn();
+
+                    $(".startup-waiting-popup").addClass("storage-page-content");
+                    $(".startup-content span.first-content").hide().html(window.Server.App.LocalizationContent.YourDatabaseConfiguration + "<br/>" +
+                        window.Server.App.LocalizationContent.YourDatabaseConfiguration1).slideDown();
+                    $(".startup-content span.second-content").hide().text(window.Server.App.LocalizationContent.YourDatabaseConfiguration2.format(displayName)).slideDown();
+                    $(".startup-content span.third-content").hide().text(window.Server.App.LocalizationContent.YourDatabaseConfiguration3.format(displayName)).slideDown();
+                    $("#help-link").attr("href", databaseConfigurationUrl);
+                    $("#system-settings-configuration-mode-container").show();
+                    if (!useSingleTenantDb) {
+                        $("#database-per-tenant").prop("checked", true);
+                    }
+                    
+                    $(".report-content").hide();
+                }
+                $('.popover').hide();
+            }
+        });
     });
 });
 

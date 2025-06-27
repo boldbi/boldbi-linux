@@ -1,7 +1,7 @@
 /*!
 *  filename: ej1.chart.all.js
-*  version : 6.1.8
-*  Copyright Syncfusion Inc. 2001 - 2023. All rights reserved.
+*  version : 12.1.5
+*  Copyright Syncfusion Inc. 2001 - 2025. All rights reserved.
 *  Use of this code is subject to the terms of our license.
 *  A copy of the current license can be obtained at any time by e-mailing
 *  licensing@syncfusion.com. Any infringement will be prosecuted under
@@ -4524,6 +4524,7 @@ BoldBIDashboard.EjSvgRender.utils = {
                 else if (intersectAction == 'rotate90')
                     intersectRotation = 90;
                 labelRotation = labelRotation!=null || orientation== "vertical" ? labelRotation : intersectRotation;
+                labelRotation = typeof(labelRotation) === "string" ? parseFloat(labelRotation) : labelRotation;
                 axis.rotationValue = labelRotation;
                 if (labelRotation) {                
                     rotateLabel = (!BoldBIDashboard.isNullOrUndefined(rotateLabel)) ? rotateLabel : '';
@@ -5107,6 +5108,7 @@ BoldBIDashboard.EjSvgRender.utils = {
         return (value <= range.max) && (value >= range.min);
     },
     _logBase: function (val, base) {
+        val = val < 0? Math.abs(val) : val;
         return Math.log(val) / Math.log(base);
     },
     _correctRect: function (x1, y1, x2, y2) {
@@ -10465,6 +10467,23 @@ BoldBIDashboard.EjAxisRenderer.prototype = {
 											var prevStartX = prePoint + xAxis.x - (preTextWidth/2);
 											var currStartX = options.x - (textWidth/2);
 										}
+										if (position === "shift" && xAxisLabelLength > 1 && i === xAxisLabelLength - 1) {
+                                            var nextXLabel = labels[i],
+                                                prevXLabel = labels[i - 1];
+                                            var nextPoint = Math.floor(BoldBIDashboard.EjSvgRender.utils._getPointXY(nextXLabel.Value, range, xAxis.isInversed) * xAxis.width),
+                                                prevPoint = Math.floor(BoldBIDashboard.EjSvgRender.utils._getPointXY(prevXLabel.Value, range, xAxis.isInversed) * xAxis.width);
+                                            var pointSpacing = Math.abs(nextPoint - prevPoint);
+                                            var fontSize = 12; // default value
+                                            if (xAxis.font && typeof xAxis.font.size === 'string' && !isNaN(parseFloat(xAxis.font.size))) {
+                                                fontSize = parseFloat(xAxis.font.size);
+                                            }
+                                            var estimatedCharSpacing = fontSize * 0.6;
+                                            var minLabelCharCount = 8;
+                                            var minSpacing = (estimatedCharSpacing * minLabelCharCount) + this.diff;
+                                            if (pointSpacing < minSpacing) {
+                                                labelText = label.displayText = '';
+                                            }
+                                        }
                                         if ((xAxis.isInversed) ? (value < pointX + width) : (value > pointX - width || currStartX < prevStartX))
                                             label.displayText = labelText = '';
                                     } else {
@@ -10539,8 +10558,14 @@ BoldBIDashboard.EjAxisRenderer.prototype = {
                          }         
                         }                  
                          if ((!this.edgeLabel) && !this.zoomed && !xAxis.zoomed && !(labelRotation) && !(intersectAction == "rotate90") && !(intersectAction == "rotate45") && (((pointX + xAxis.x) + (textWidth / 2)) > (bbdesigner$(this.svgObject).width()))) {
+						var xPos = options.x; 
                         bbdesigner$(options).attr('x', (bbdesigner$(this.svgObject).width() - 2));
                         bbdesigner$(options).attr('text-anchor', 'end');
+						// to check last is overlapped with previous label after moving inside areabounds
+						if((options.x - textSize.width) < (labels[i-1].region.bounds.x + labels[i-1].region.bounds.width)){
+							 bbdesigner$(options).attr('x',xPos);
+							 bbdesigner$(options).attr('text-anchor', 'start');							 
+						}	
                     }
 					labels[i].y = options.y;
 					
@@ -11567,7 +11592,7 @@ BoldBIDashboard.EjLegendRender.prototype =
             }
 
             index = (BoldBIDashboard.util.isNullOrUndefined(pointIndex)) ? seriesIndex : pointIndex;
-            chart.gLegendItemEle = chartSvgRender.createGroup({ 'id': svgObject.id + '_Legend' + index, 'cursor': 'pointer' });
+            chart.gLegendItemEle = chartSvgRender.createGroup({ 'id': svgObject.id + '_Legend' + index, 'cursor': legend.toggleSeriesVisibility ? 'pointer' : 'default' });
             legendItem.CommonEventArgs.data.gLegendItemEle = chart.gLegendItemEle;
             data = bbdesigner$.extend(true, {}, legendItem.CommonEventArgs.data);
             data.model = chart.model;
@@ -12151,7 +12176,7 @@ BoldBIDashboard.EjTrendLineRenderer = function () {
                     this.calculateMovingAverageTrendline(series, trendline, axis);
                     break;
             }
-            if (series.points.length > 1)
+            if (series.points.length > 1 && trendline.points.length > 1)
                 this.calculateTrendLineRange(trendline, axis);
             return false;
         },
@@ -16060,11 +16085,12 @@ BoldBIDashboard.ejTMA = ejExtendClass(BoldBIDashboard.EjIndicatorRender, {
         chart._trigger("displayTextRendering", commonEventArgs);
         var dataLabelOffset = (marker.dataLabel.offset.y==undefined) ? marker.dataLabel.offset : marker.dataLabel.offset.y;
         var xval = marker.dataLabel.offset.x;
+        var offset = textPosition == "top" && series.type.toLowerCase().indexOf("100") != -1 ? -10 : dataLabelOffset;
 		var textOffset = BoldBIDashboard.EjSvgRender.utils._measureText(commonEventArgs.data.text, null, labelfont);
         if (textPosition == 'bottom')
               commonEventArgs.data.location.y = commonEventArgs.data.location.y + dataLabelOffset;
         else
-              commonEventArgs.data.location.y = commonEventArgs.data.location.y - dataLabelOffset;
+              commonEventArgs.data.location.y = commonEventArgs.data.location.y - offset;
         if (xval)                           
               commonEventArgs.data.location.x = commonEventArgs.data.location.x + xval;
                           
@@ -17187,7 +17213,7 @@ BoldBIDashboard.ejTMA = ejExtendClass(BoldBIDashboard.EjIndicatorRender, {
                     commonEventArgs, textsize,
                     positionX = 0, textWidth, textHeight,
                     positionY = 0,
-                    pointColor;
+                    pointColor, chartHeight = !legend.visible? 200 : 250;
 
                 if ((type == "pyramid" || type == "funnel") && _labelPosition == 'outsideextended')
                     _labelPosition = 'inside';
@@ -17231,11 +17257,13 @@ BoldBIDashboard.ejTMA = ejExtendClass(BoldBIDashboard.EjIndicatorRender, {
                         svgWidth = bbdesigner$(chartObj.svgObject).width(),
                         svgHeight = bbdesigner$(chartObj.svgObject).height();
 
-                    // This condition is removed due to datalabel crop issue (JS-63856)
-                     if (currentseries._enableSmartLabels && (svgWidth < 250 || svgHeight < 250)) {
-                         dataLabelFont.size = "9px"; //Change pie/doughnut text size dynamically
-                         size = measureText(commonEventArgs.data.text, svgWidth, dataLabelFont);
-                         textOffset = 10;
+                    // This condition is removed due to datalabel crop issue (JS-63856)                     
+					  if (currentseries._enableSmartLabels && (svgWidth < 250 || svgHeight < chartHeight)) {
+                        //if(!legend.visible){
+							//dataLabelFont.size = "11.5px"; //Change pie/doughnut text size dynamically
+							//size = measureText(commonEventArgs.data.text, svgWidth, dataLabelFont);
+						//}
+                         textOffset = !legend.visible? 8 : 10;
                      }
                     if (isNull(connectorLine.height))
                         textOffset = textOffset || measureText(commonEventArgs.data.text, null, dataLabelFont).height;
@@ -17522,6 +17550,9 @@ BoldBIDashboard.ejTMA = ejExtendClass(BoldBIDashboard.EjIndicatorRender, {
                       //      point.hide = true;
                       //  }
                         // To check the datalabel overlaps with chart bounds - (End)
+						if ((textOptions.y - textsize.height/2) < 0 || textOptions.y > svgHeight) {
+                            point.hide = true;
+                        }
 						if (!point.hide) chartObj.svgRenderer.drawText(textOptions, datalabelText, chartObj.gSeriesTextEle[seriesIndex]);
 
                         var datalabelSize = measureText(datalabelText, datalabelText.length, dataLabelFont);
@@ -17996,9 +18027,9 @@ BoldBIDashboard.ejTMA = ejExtendClass(BoldBIDashboard.EjIndicatorRender, {
 			          x += pointWidth / 2;
 		  	} else {
 		  	    if ((point.y >= 0 && !series.yAxis.isInversed) || (point.y < 0 && series.yAxis.isInversed))
-                      x = anchor == "middle" ? (x + (type == "bar" ? textOffset.width : -textOffset.width)) : (anchor == "start" ? (x + textOffset.width/2 + lineHeight) : (x + lineHeight)) ;
+                       x += textOffset.width / 4 + lineHeight;
                 else
-                      x = anchor == "middle" ? (x - textOffset.width / 4 + lineHeight) : (anchor == "start" ? (x - textOffset.width / 2 + lineHeight) : (x + lineHeight));
+                      x -= textOffset.width / 4 + lineHeight;
            }
 			}
 			else
@@ -18179,7 +18210,7 @@ BoldBIDashboard.ejTMA = ejExtendClass(BoldBIDashboard.EjIndicatorRender, {
             }
             else {
                 if (textPosition == "bottom")
-                    y += (2 * textOffset.height + lineHeight);
+                    y += (textOffset.height + lineHeight); // 922785 - to reduce bottom spacing
                 else if (textPosition == "top")
                     y -= lineHeight;
             }
@@ -20681,7 +20712,7 @@ BoldBIDashboard.ejCandleSeries = ejExtendClass(BoldBIDashboard.EjSeriesRender, {
              visiblePoints = this._calculateVisiblePoints(currentseries).visiblePoints,
              visiblePointslength = visiblePoints.length,
              internalRegion = [],
-			 dataLabel = currentseries.marker,
+			 dataLabel = currentseries.marker.dataLabel,
              legendWidth = legend.border.width,
              translate = [],
              textSize = 0,
@@ -21404,7 +21435,7 @@ var Gradient = function (colors) {
                                 }
                             }
                             if (!(currentSeries._hiloTypes)) {
-                                currentSeries.points[k].YValues[0] = currentSeries.points[k].y;
+                                currentSeries.points[k].YValues[0] = currentSeries.points[k].y == "" ? 0 : currentSeries.points[k].y;
 
                                 if (!BoldBIDashboard.util.isNullOrUndefined(currentSeries.points[k].size))
                                     currentSeries.points[k].YValues[1] = currentSeries.points[k].size;
@@ -21829,6 +21860,7 @@ var Gradient = function (colors) {
 		this._drawBackInterior();
         this.model.chartRegions = [];         
 		this.model.outsideDataRegionPoints = [];
+        this.model.marker = BoldBIDashboard.util.isNullOrUndefined(this.model.marker) ? [] : this.model.marker;
 		this.model.regionCount = null;
 		this.model.totalRadius = null;
 		this.model.circularRadius = [];
@@ -21851,16 +21883,40 @@ var Gradient = function (colors) {
         this.model.stackedValue = {};
 		this._setCulture(this.model.locale);
 		 var seriesLength = this.model.series.length;
-		 var series, seriesType;
+		 var series, seriesType, len, trendlines, visibility;
         if (BoldBIDashboard.util.isNullOrUndefined(this.model.sideBySideSeriesPlacement))  // for setting sideBySideSeriesPlacement property values
             this.model._sideBySideSeriesPlacement = (this.model.enable3D) ? false : true;
         else
             this.model._sideBySideSeriesPlacement = this.model.sideBySideSeriesPlacement;
+        this._trigger("showMarkerVisibility", this.model);
         for (var i = 0; i < seriesLength; i++)
         {
             series = this.model.series[i];
             seriesType = series.type.toLowerCase();
             series._isTransposed = (seriesType.indexOf("bar") == -1) ? series.isTransposed : !series.isTransposed;
+            // 421892 - Fix for displaying tooltip without marker
+            this.model.marker.push(bbdesigner$.extend(true, {}, series.marker));
+            if (seriesType === "line" || seriesType === "spline") {
+                series.marker.visible = this.model.enableSeriesMaker;
+                if(!series.marker.visible){
+                    series.marker.visible = true;
+                    series.marker.fill = "transparent";
+                    series.marker.border.color = "transparent";
+                }
+                else if (this.model.ChartType === "ComboChart") {
+                    series.marker.fill = this.model.marker[i] != null && this.model.marker[i] != undefined ?  this.model.marker[i].fill : this.model.marker[i - 1].fill;
+                    series.marker.border.color = this.model.marker[i] != null && this.model.marker[i] != undefined ? this.model.marker[i].border.color : this.model.marker[i - 1].border.color;
+                } else {
+                    series.marker.fill = this.model.marker[i].fill;
+                    series.marker.border.color = this.model.marker[i].border.color;
+                }
+            }
+            trendlines = series.trendlines;
+			len = trendlines.length;
+			for(var j = 0; j< len ;j++){
+				visibility = trendlines[j].visibility.toLowerCase();
+				this.model._drawTrendline = visibility == "visible"? true: false;
+			}
         }
         if (seriesLength > 0)
             this.addedXYValues(excludeDataUpdate);
@@ -23139,6 +23195,7 @@ var Gradient = function (colors) {
 		  for (i = 0; i < visibleSeriesLength; i++) {
 	        currentSeries = this.model.series[i];
 			anchor = currentSeries.marker.dataLabel.textAnchor.toLowerCase();
+            compareColumnLabels = currentSeries.marker.dataLabel.showColumnLabels;
 		   if (currentSeries.visibility != "hidden"){
 	        points = currentSeries._visiblePoints;
 	        if (currentSeries._enableSmartLabels && this.model.AreaType == "cartesianaxes" && !BoldBIDashboard.util.isNullOrUndefined(points)) {
@@ -23146,7 +23203,8 @@ var Gradient = function (colors) {
 			   if (currentSeriesType == "column" || currentSeriesType == "stackingcolumn" ||
                    currentSeriesType == "bar" || currentSeriesType == "stackingbar" || currentSeriesType == "stackingbar100" || currentSeriesType == "stackingcolumn100" || currentSeriesType == "rangecolumn") {
 			       this.cartesianColumnSmartLabels(currentSeries, points, i);
-			       this.compareColumnDataLabelsRegion();
+                   if(!compareColumnLabels)
+			        this.compareColumnDataLabelsRegion();
 			   }
 			   else {
 			       this.cartesianSmartLabels(currentSeries, points, i);
@@ -23157,7 +23215,7 @@ var Gradient = function (colors) {
 						beforeWidth = (anchor == "middle") ? (currentPoint.width/2) : (anchor == "end" ? currentPoint.width : 2);
 					    if ((currentPoint.xPos - beforeWidth < 0) || (currentPoint.xPos + pointWidth > areaBounds.Width)||
 						     (currentPoint.yPos + currentPoint.height/2 > areaBounds.Height)||(currentPoint.yPos - currentPoint.height/2 < 0))
-							 currentPoint.hide = true;
+							 currentPoint.hide = compareColumnLabels ? false :true;
 		            }
 			}
 		  }
@@ -24482,7 +24540,7 @@ var Gradient = function (colors) {
 	        if (series.marker.visible) {
 	            for (c = 0; c < series._visiblePoints.length; c++) {
 	                currentPoint = series._visiblePoints[c];
-					location = currentPoint.location;
+					location = currentPoint.location ? currentPoint.location: currentPoint.symbolLocation;
 	                this.model.markerRegion[this.model.markerRegion.length] = { seriesIndex: d, xPos: location.X + this.canvasX, yPos: location.Y + this.canvasY, width: markerWidth, height: markerHeight };
 	            }
 	        }
@@ -24623,6 +24681,7 @@ var Gradient = function (colors) {
 
 	compareColumnDataLabels: function (currentSeries, i, points, count, processCount) {
 	    var length = this.model.allPoints.length - 1;
+        var areaBounds = this.model.m_AreaBounds;
 		var prevLabel, currentLabel, padding;
 		var type = currentSeries.type.toLowerCase();
 	    for (var j = 0; j < length; j++) {
@@ -24633,7 +24692,25 @@ var Gradient = function (colors) {
 	        collide = this.isCollide(prevLabel, currentLabel);
 	        textPosition = currentSeries.marker.dataLabel.textPosition;
 	        if (collide.state) {  
-			   currentLabel.hide = true;
+                if (type == "column" || type == "stackingcolumn" || type == "rangecolumn" || type == "waterfall") {
+                    if (textPosition == "top" || textPosition == "middle")
+                        currentLabel.textOptions.y = currentLabel.yPos = currentLabel.yPos + collide.height + padding;
+                    else
+                        currentLabel.textOptions.y = currentLabel.yPos = currentLabel.yPos - collide.height - padding;
+                    currentLabel.textOptions.y = currentLabel.textOptions.y + padding + currentLabel.margin.top / 2 - currentLabel.margin.bottom / 2;
+				    if(currentLabel.textOptions.y > areaBounds.Height){
+					    currentLabel.hide = true;
+					    break;
+				    }
+                }
+                else {
+                    // for horizontal orientation series types
+                    if (textPosition == "top" || textPosition == "middle")
+                        currentLabel.textOptions.x = currentLabel.xPos = prevLabel.xPos - prevLabel.width / 2 - currentLabel.width / 2 - padding;
+                    else
+                        currentLabel.textOptions.x = currentLabel.xPos = prevLabel.xPos + prevLabel.width / 2 + currentLabel.width / 2 + padding;
+                }
+                this.compareColumnDataLabels(currentSeries, i, points, count, this.processCount);  // to call recursive
 	        }
 	    }
 	},
@@ -25642,6 +25719,7 @@ var Gradient = function (colors) {
                 bbdesigner$.each(this.model.chartRegions, function (index, regionItem) {
                     if (!BoldBIDashboard.util.isNullOrUndefined(regionItem.SeriesIndex)) {
 					var currentSer = seriesCollection[regionItem.SeriesIndex];
+					var dataLabel = currentSer.marker.dataLabel;
                     if (chartObj.model.AreaType == "polaraxes" && currentSer.drawType.toLowerCase() == 'column' && evt.target) {
                         if (chartObj.model.enableCanvasRendering) {
                                     if (currentSer.type.toLowerCase() == "polar") {
@@ -25714,7 +25792,9 @@ var Gradient = function (colors) {
                         if (!chartObj.model.enableCanvasRendering) {
                             if(evt.target.id == chartObj.svgObject.id + "_Series" + regionItem.SeriesIndex + "_Point" + regionItem.Region.PointIndex ||
                                 evt.target.id == chartObj.svgObject.id + "_Series" + regionItem.SeriesIndex + "_Point" + regionItem.Region.PointIndex + "_symbol" ||
-                                evt.target.id == chartObj.svgObject.id + "_trackSymbol_" + regionItem.SeriesIndex + "_" + regionItem.Region.PointIndex)
+                                evt.target.id == chartObj.svgObject.id + "_trackSymbol_" + regionItem.SeriesIndex + "_" + regionItem.Region.PointIndex ||
+								(dataLabel.visible && (dataLabel.textPosition == "middle" || dataLabel.textPosition == "bottom") && 
+								evt.target.id ==  chartObj.svgObject.id + "_SeriesText" + regionItem.Region.PointIndex  + regionItem.SeriesIndex))
                                 region = regionItem;                           
                         }
                         else if ((((currentX >= regionItem.Region.Bounds.X) && (currentX <= (regionItem.Region.Bounds.X + (regionItem.Region.Bounds.Width))))) && ((currentY > regionItem.Region.Bounds.Y) && (currentY < (regionItem.Region.Bounds.Y) + (regionItem.Region.Bounds.Height)))) {
@@ -26912,6 +26992,7 @@ var Gradient = function (colors) {
 				else if(data)
 					this._doClick(evt);
 			}
+            evt.preventDefault(); // 883174 - to prevent mousemove event after pointclick in device mode
         }
     },
     _pointerTouchEnd: function (e) {
@@ -27687,7 +27768,7 @@ var Gradient = function (colors) {
         var valY = !isCanvas ? clientY : valAxis.y;
         var valWidth = !isCanvas ? chartArea.width: valAxis.width;
         var valHeight = !isCanvas ? chartArea.height: valAxis.height;
-        if (((y <= (valY + valHeight) && valY <= y) && (valX <= x && x <= (valX + valWidth))) || !isCanvas) {
+        if (((y <= (valAxis.y + valHeight) && valAxis.y <= y) && (valAxis.x <= x && x <= (valAxis.x + valWidth))) || !isCanvas) {
             for (var i = 0; i < visiblePointsLength; i++) {
                 chartPoint = series._visiblePoints[i];
                 location = chartPoint.location;
@@ -27695,22 +27776,20 @@ var Gradient = function (colors) {
                 pointIndex = i;
                 closestX = null;
                 closestY = null;
-                if (!isCanvas && evt) {
-                    if ((this.svgObject.id + "_Series" + series.seriesIndex + "_Point" + i + '_symbol') == evt.target.id) {
-                        var markerSize = document.getElementById(evt.target.id).getBoundingClientRect();
-                        chartPoint.height = markerSize.height;
-                        chartPoint.width = markerSize.width;
-                        closestPoint = chartPoint;
-                        ptIndex = i;
-                    }
+                if (!isCanvas && evt && (this.svgObject.id + "_Series" + series.seriesIndex + "_Point" + i + '_symbol') == evt.target.id) {
+                    var markerSize = document.getElementById(evt.target.id).getBoundingClientRect();
+                    chartPoint.height = markerSize.height;
+                    chartPoint.width = markerSize.width;
+                    closestPoint = chartPoint;
+                    ptIndex = i;
                 }
                 else if (location) {
-                    if (x > location.X + valX - (size.width / 2) && x < location.X + valX + (size.width / 2)) {
+                    if (x > location.X + valAxis.x - (size.width / 2) && x < location.X + valAxis.x + (size.width / 2)) {
                         closestX = chartPoint.x;
                         if (BoldBIDashboard.util.isNullOrUndefined(closestX))
                             pointVisible = chartPoint.visible;
                     }
-                    if (y > location.Y + valY - (size.height / 2) && y < location.Y + valY + (size.height / 2)) {
+                    if (y > location.Y + valAxis.y - (size.height / 2) && y < location.Y + valAxis.y + (size.height / 2)) {
                         closestY = chartPoint.YValues[0];
                     }
                     if ((!BoldBIDashboard.util.isNullOrUndefined(closestX) || pointVisible) && !BoldBIDashboard.util.isNullOrUndefined(closestY)) {
@@ -29832,14 +29911,13 @@ var Gradient = function (colors) {
                             }
                             this.svgRenderer._setAttr(bbdesigner$(this.svgObject).find("#" + this.svgObject.id + "_TrackToolTip"), { 'transform': 'translate(' + trans.x + ',' + trans.y + ')' });
                             bbdesigner$('#' + this.svgObject.id + "_TrackToolTip").attr("visibility", "visible");
-                            var isCanvas = this.model.enableCanvasRendering;
                             location = { X: !isCanvas ? evt.originalEvent.clientX : (data.location.x - this.model.m_AreaBounds.X), Y: !isCanvas ? evt.originalEvent.clientY :Math.abs(data.location.y - (this.model.m_AreaBounds.Y)) };
                         } else {
                             if (bbdesigner$(this.svgObject).find("#" + this.svgObject.id + "_TrackToolTip").length == 0) {
                                 var transToolTipOptions = { 'id': this.svgObject.id + '_TrackToolTip' };
                                 this.gTransToolEle = this.svgRenderer.createGroup(transToolTipOptions);
                             }
-                            location = { X: (data.location.x), Y: Math.abs(data.location.y) };
+                            location = { X: !isCanvas ? evt.originalEvent.clientX : (data.location.x), Y: !isCanvas ? evt.originalEvent.clientY : Math.abs(data.location.y) };
                         }
 
 
@@ -30342,8 +30420,8 @@ var Gradient = function (colors) {
 
     chartInteractiveBehavior: function (evt, data) {
         var mouseMoveCords = this.calMousePosition(evt);
-        this.mousemoveX = evt.originalEvent.clientX;
-        this.mousemoveY = evt.originalEvent.clientY;
+        this.mousemoveX = mouseMoveCords.X;
+        this.mousemoveY = mouseMoveCords.Y;
 
         var id = "#" + this.svgObject.id;
         if (this.mouseWheelCoords) {
@@ -32040,8 +32118,8 @@ var Gradient = function (colors) {
             bbdesigner$("#" + this.svgObject.id + "_TrackToolTip").show();
 			if (!parentZindex)
                 parentZindex = bbdesigner$('#' + this._id)[0].offsetParent.style.zIndex;
-			x = !isCanvas ? location.X : x;
-			y = !isCanvas ? location.Y : y;
+            x = !isCanvas ? (this.model.AreaType == "none" ? location.X + padding : location.X ): x;
+            y = !isCanvas ? (this.model.AreaType == "none" ? location.Y + padding : location.Y) : y;
             var rectOptions = {
                 'top': y + bbdesigner$(document).scrollTop(),
                 'left': x + bbdesigner$(document).scrollLeft(),
@@ -33032,17 +33110,18 @@ var Gradient = function (colors) {
             chartModel = chart.model,
             legend = chartModel.legend,
             word, textCollection = [], currentWidth,nextWidth,
-            text = data.legendItem.Text.toString(),
-            legendTextCollection = text.split(' '),
+            legendMode = legend.mode.toLowerCase(),		   
+			text = data.legendItem.Text.toString(),
+            legendTextCollection = typeof data.legendItem.Text == "object" ? data.legendItem.Text : text.split(' '),
             textMaxWidth=textmaxwidth,
             font=data.legendItem.LegendStyle.Font,
             textOverflow=legend.textOverflow.toLowerCase(),
             legendTextLength = legendTextCollection.length;
       
         for (var i = 0; i < legendTextLength; i++) {
-            word = legendTextCollection[i];
+            word = legendTextCollection[i].toString();
             currentWidth = BoldBIDashboard.EjSvgRender.utils._measureText(word, null, font).width;
-            if (currentWidth <= textMaxWidth) {
+            if (legendMode != "range" && currentWidth <= textMaxWidth) {
                 while (i < legendTextLength) {
                     currentWidth = BoldBIDashboard.EjSvgRender.utils._measureText(word, null, font).width;
                     nextWidth = (legendTextCollection[i + 1]) ? BoldBIDashboard.EjSvgRender.utils._measureText(legendTextCollection[i + 1], null, font).width : 0;
@@ -33057,7 +33136,7 @@ var Gradient = function (colors) {
                 textCollection.push(word);
             }
             else{
-                if (textOverflow == "wrapandtrim") {
+                if (legendMode != "range" && textOverflow == "wrapandtrim") {
                     word = BoldBIDashboard.EjSvgRender.utils._trimText(word, textMaxWidth, font);
                     textCollection.push(word);
                     this.model._legendMaxWidth = textMaxWidth;
@@ -33426,8 +33505,8 @@ var Gradient = function (colors) {
                 currentLegend = legendSeries[j];
                 shapeWidth = currentLegend.CommonEventArgs.data.style.ShapeSize.width;
                 legendsize = chart._getLegendSize(currentLegend);
-                legendItemWidth = max(chartModel._legendMaxWidth > 0 ? (chartModel._legendMaxWidth + itemPadding + shapeWidth) : legendsize.Width, legendItemWidth);
-                legendItemHeight = max((textOverflow == "wrap" || textOverflow == "wrapandtrim") ? legendsize.Height * chartModel._legendMaxHeight : legendsize.Height, legendItemHeight);
+                legendItemWidth = max(chartModel._legendMaxWidth > 0 && legendMode != "range" ? (chartModel._legendMaxWidth + itemPadding + shapeWidth) : legendsize.Width, legendItemWidth);
+                legendItemHeight = max(((textOverflow == "wrap" || textOverflow == "wrapandtrim") && legendMode != "range" ) ? legendsize.Height * chartModel._legendMaxHeight : legendsize.Height, legendItemHeight);
             }
             legendHeight = legendItemHeight + elementSpacing * 2;
             legendWidth = legendItemWidth;
@@ -36099,6 +36178,8 @@ bbdesigner$.uaMatch = function (ua) {
 
                         dataLabel: {
 
+                            showColumnLabels: false,
+
                             isReversed: false,
 
                             visible: false,
@@ -36523,6 +36604,8 @@ bbdesigner$.uaMatch = function (ua) {
 
                     dataLabel:
                     {
+                        showColumnLabels: false,
+                        
                         isReversed: false,
 
                         visible: false,

@@ -11,8 +11,13 @@ var storageButtonValue;
 var azureDataforBoldbi = null;
 
 $(document).ready(function () {
-    $('[data-toggle="popover"]').popover();
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    })
     $("#blob-storage-form").hide();
+    $("#oci-object-storage-form").hide("slow");
+    $("#amazon-s3-storage-form").hide("slow");
     $("#report-storage").hide();
     $("#system-settings-user-account-container").hide();
 
@@ -37,6 +42,7 @@ $(document).ready(function () {
         return a
     }
 
+    $("#default-tab").addClass("active");
     $("#default-tab").popover({
         html: true,
         trigger: 'hover',
@@ -51,60 +57,236 @@ $(document).ready(function () {
         content: isSiteCreation ? window.Server.App.LocalizationContent.AdvanceTabSiteCreationMsg : window.Server.App.LocalizationContent.AdvanceTabStartupMsg
     });
 
-    $("a[data-toggle='tab']").on('click', function (e) {
+    $("a[data-bs-toggle='tab']").on('click', function (e) {
         removeError();
-        if ($(this).attr("id") == "advanced-tab") {
-            $("#default-tab").removeClass("active");
-            $("#advanced-tab").addClass("active");
-            if (!isSiteCreation) {
-                $("#label_txt-dbname").html(window.Server.App.LocalizationContent.IDDatabaseName);
-                $("#label_database-name").html(window.Server.App.LocalizationContent.IDDatabaseName);
+        var obj = document.getElementById("database-type");
+        var itemsList = obj.ej2_instances[0].list.querySelectorAll('.e-list-item');
+        if (isSiteCreation) {
+            if (!isBoldReportsTenantType() && (IsBiPrefixSchema)) {
+                $(".schema-prefix-hide").removeClass("d-none").addClass("d-block");
             }
-            $("#simple_tab_db_name").hide();
-            $("#advanced_tab_db_name").show();
-            if (!isBoldBI && isSiteCreation && isBoldReportsTenantType() || !isBoldBI && !isSiteCreation) {
-                hideDataStore();
+
+            if (isBoldReportsTenantType() && (IsReportsPrefixSchema)) {
+                $(".schema-prefix-hide").removeClass("d-none").addClass("d-block");
+            }
+        }
+        var configurationModeType = getRadioButtonValue('ConfigurationMode');
+        if ($(this).attr("id") == "advanced-tab") {
+            var databaseType = getDropDownValue("database-type");
+                $("#default-tab").removeClass("active");
+                $("#advanced-tab").addClass("active");
+                $("#simple-tenant-prefix").hide();
+                $("#simple-server-prefix").hide();
+                /*$('.server-schema-prefix-hide').removeClass("d-block").addClass("visually-hidden");*/
+                if (!isSiteCreation) {
+                    $("#label_txt-dbname").html(window.Server.App.LocalizationContent.IDDatabaseName);
+                    $("#label_database-name").html(window.Server.App.LocalizationContent.IDDatabaseName);
+                    if (configurationModeType !== undefined && configurationModeType === "0")
+                    {
+                        $("#label_txt-dbname").html(window.Server.App.LocalizationContent.DatabaseName);
+                        $("#label_database-name").html(window.Server.App.LocalizationContent.DatabaseName);
+                    }
+                }
+
+                $("#simple_tab_db_name").hide();
+                /*$("#simple_tab_db_name").removeClass("d-block").addClass("visually-hidden");*/
+                $("#advanced_tab_db_name").show();
+                if (!isBoldBI && isSiteCreation && isBoldReportsTenantType() || !isBoldBI && !isSiteCreation) {
+                    hideDataStore();
+                }
+                else if (configurationModeType !== undefined && configurationModeType === "0"){
+                    hideDataStore();
+                }
+                else
+                {
+                    showDataStore();
+                }
+
+                $(".simple-tab").removeClass("d-block").addClass("visually-hidden");
+                if (!isSiteCreation) {
+                    $("#simple_tab_db_name").show();
+                    $(".db-name-info").html(window.Server.App.LocalizationContent.DatabaseInfo);
+                    $(".db-schema-info").html(window.Server.App.LocalizationContent.SchemaInfo);
+                    prefillDbNames();
+                    /*$('.simple-id-schema-prefix-hide').removeClass("visually-hidden").addClass("d-block");*/
+                }
+                else {
+                    $(".db-schema-info").html(window.Server.App.LocalizationContent.SchemaInfo);
+                    $(".db-prefix-info").html(window.Server.App.LocalizationContent.PrefixInfo);
+                }
+
+                if (!isSiteCreation) {
+                    $('.id-schema-prefix-hide').removeClass("visually-hidden").addClass("d-block");
+                }
+                else {
+                    $('.id-schema-prefix-hide').removeClass("d-block").addClass("visually-hidden");
+                }
+
+                if ($("input[name='databaseType']:checked").val() === "1") {
+                    $(".old-db").removeClass("visually-hidden").addClass("d-block");
+                    $(".new-smp-db").removeClass("d-block").addClass("visually-hidden");
+                    $(".simple-exist-schema-prefix-hide").removeClass("d-block").addClass("visually-hidden");
+                }
+                else {
+                    $(".old-db").removeClass("d-block").addClass("visually-hidden");
+                    $(".new-smp-db").removeClass("visually-hidden").addClass("d-block");
+                    $('.server-schema-prefix-hide').removeClass("d-block").addClass("visually-hidden");
+                }
+                var databaseType = getDropDownValue("database-type").toLowerCase();;
+                if (databaseType == "oracle") {
+                    $(".advance-schema-prefix-hide").removeClass("d-block").addClass("visually-hidden");
+                    $(".ser-schema-prefix-hide").removeClass("visually-hidden").addClass("d-block");
+                }
+
+                isSimpleModeValue = "false";
+
+            if (configurationModeType !== undefined && configurationModeType === "0")
+            {
+                $("#server-database-name").hide();
+            }
+            if (isSiteCreation) {
+                ResizeHeightForDOM();
+            }
+            if (isSiteCreation) {
+                if (!isBoldReportsTenantType() && (!IsBiPrefixSchema)) {
+                    $(".schema-prefix-hide").removeClass("d-block").addClass("d-none");
+                }
+
+                if (isBoldReportsTenantType() && (!IsReportsPrefixSchema)) {
+                    $(".schema-prefix-hide").removeClass("d-block").addClass("d-none");
+                }
             }
             else {
-                showDataStore();
-            }
+                if (!IsBiPrefixSchema) {
+                    $(".schema-prefix-hide").removeClass("d-block").addClass("d-none");
+                }
 
-            if (!isSiteCreation) {
-                $(".db-name-info").html(window.Server.App.LocalizationContent.DatabaseInfo);
-                $("#simple_tab_db_name").show();
-                prefillDbNames();
+                if (IsReportsPrefixSchema && !isBoldBI) {
+                    $(".schema-prefix-hide").removeClass("d-none").addClass("d-block");
+                }
             }
-
-            isSimpleModeValue = "false";
         }
         else {
             $("#default-tab").addClass("active");
             $("#advanced-tab").removeClass("active");
             $("#simple_tab_db_name").show();
+            $("#simple-tenant-prefix").show();
+            $("#simple-server-prefix").show();
+            if (document.getElementById("existing-db").checked) {
+                $("#simple-server-prefix").hide();
+            }
             if (!isSiteCreation) {
                 $("#label_txt-dbname").html(window.Server.App.LocalizationContent.DatabaseName);
-                $("#label_database-name").html(window.Server.App.LocalizationContent.DatabaseName);
+                $("#label_database-name").html(window.Server.App.LocalizationContent.DatabaseName); 
             }
-            $(".db-name-info").html(isBoldBI ? window.Server.App.LocalizationContent.DatabaseInfoBI.format("Embedded BI") : window.Server.App.LocalizationContent.DatabaseInfoReports.format("Enterprise Reporting"));
+            else {
+                $("#table-prefix-ums").hide();
+                $("#table-prefix-name").hide();
+            }
+
+            $('.advance-tab').removeClass("d-block").addClass("visually-hidden");
+            $(".db-name-info").html(isBoldBI ? window.Server.App.LocalizationContent.DatabaseInfoBI.format(biProductname) : window.Server.App.LocalizationContent.DatabaseInfoReports.format(reportsProductname));
             if (!isSiteCreation) {
-                $(".db-name-info").html(isBoldBI ? window.Server.App.LocalizationContent.DatabaseInfoBI3 : window.Server.App.LocalizationContent.DatabaseInfoReports2.format("Enterprise Reporting", "report"));
+                $(".db-name-info").html(isBoldBI ? window.Server.App.LocalizationContent.DatabaseInfoBI3 : window.Server.App.LocalizationContent.DatabaseInfoReports2.format(reportsProductname, "report"));
                 prefillDbNames();
+                //$('.simple-tab').removeClass("d-block").addClass("visually-hidden");
+            }
+            else {
+                $(".db-schema-info").html(window.Server.App.LocalizationContent.SchemaInfo);
+                $(".db-prefix-info").html(window.Server.App.LocalizationContent.PrefixInfo);
             }
             $("#advanced_tab_db_name").hide();
+            if (!isSiteCreation) {
+                $('.id-schema-prefix-hide').removeClass("visually-hidden").addClass("d-block");
+            }
+            else {
+                $('.id-schema-prefix-hide').removeClass("d-block").addClass("visually-hidden");
+            }
+
+            if ($("input[name='databaseType']:checked").val() === "1") {
+                $(".old-db").removeClass("visually-hidden").addClass("d-block");
+                $(".new-smp-db").removeClass("d-block").addClass("visually-hidden");
+            }
+            else {
+                $(".old-db").removeClass("d-block").addClass("visually-hidden");
+                $(".new-smp-db").removeClass("visually-hidden").addClass("d-block");
+            }
+
             isSimpleModeValue = "true";
+            if (itemsList && itemsList.length > 3) {
+                if (isSiteCreation) {
+                    $(".id-schema-prefix-hide").removeClass("d-block").addClass("visually-hidden");
+                    if (isBoldReportsTenantType() && !IsOracleSupportReports) {
+                        itemsList[3].style.display = "none";
+                    }
+                    else if (isBoldReportsTenantType() && IsOracleSupportReports) {
+                        itemsList[3].style.display = "";
+                    }
+
+                    if (!isBoldReportsTenantType() && !IsOracleSupportBi) {
+                        itemsList[3].style.display = "none";
+                    }
+                    else if (!isBoldReportsTenantType() && IsOracleSupportBi) {
+                        itemsList[3].style.display = "";
+                    }
+                }
+                else {
+                    if (isBoldReports && !IsOracleSupportReports) {
+                        itemsList[3].style.display = "none";
+                    }
+                    else if (isBoldReports && IsOracleSupportReports) {
+                        itemsList[3].style.display = "";
+                    }
+
+                    if (isBoldBI && !IsOracleSupportBi) {
+                        itemsList[3].style.display = "none";
+                    }
+                    else if (isBoldBI && IsOracleSupportBi) {
+                        itemsList[3].style.display = "";
+                    }
+                }
+            }
+            
+            if (isSiteCreation) {
+                ResizeHeightForDOM();
+            }
+            if (isSiteCreation) {
+                if (!isBoldReportsTenantType() && (!IsBiPrefixSchema)) {
+                    $(".schema-prefix-hide").removeClass("d-block").addClass("d-none");
+                }
+
+                if (isBoldReportsTenantType() && (!IsReportsPrefixSchema)) {
+                    $(".schema-prefix-hide").removeClass("d-block").addClass("d-none");
+                }
+            }
+            else {
+                if (!IsBiPrefixSchema) {
+                    $(".schema-prefix-hide").removeClass("d-block").addClass("d-none");
+                }
+
+                if (IsReportsPrefixSchema && !isBoldBI) {
+                    $(".schema-prefix-hide").removeClass("d-none").addClass("d-block");
+                }
+            }
+
+            if (configurationModeType !== undefined && configurationModeType === "0")
+            {
+                $(".schema-prefix-hide").removeClass("d-block").addClass("d-none");
+            }
         }
-        if (isSiteCreation) {
-            ResizeHeightForDOM();
+
+        if ((configurationModeType !== undefined && configurationModeType === "0")) {
+            itemsList[3].style.display = "none";
         }
     });
 
-    if ($('meta[name=has-drm-configuration]').attr("content") == "true") {
+    if ($('meta[name=is-ignore-drm-configuration]').attr("content") == "true") {
         $("#image-parent-container .startup-image").hide().attr("src", adminSetupImageUrl).fadeIn();
         $(".startup-content").fadeIn();
         $("#system-settings-welcome-container").hide();
         $(".welcome-content").addClass("display-none");
         $("#system-settings-offline-license-container").hide();
-        $('#auth-type-dropdown').removeClass("hide").addClass("show");
+        $('#auth-type-dropdown').removeClass("d-none").addClass("d-block");
         $("#system-settings-user-account-container").slideDown("slow");
         autoFocus("txt-firstname");
     }
@@ -134,30 +316,31 @@ function getFormData() {
     var maintenanceDb = $('#maintenance-db').val();
     var enableSSL = $("#secure-sql-connection").is(":checked");
     var additionalParameters = $("#additional-parameter").val();
-
+    var isNewDatabase = $("#new-db").is(":checked");
+    var schemaName = getSchema($("#schema-name").val());
+    var prefix = getPrefix(serverType === "Oracle" ? $("#ums-table-prefix").val() : $("#new-db").is(":checked") ? $("#txt-ums-prefix").val() : $("#ums-table-prefix").val());
+    var isAdvancedTab = window.getComputedStyle(document.getElementById("advanced_tab_db_name")).display !== "none";
+    var tenantPrefix = getTenantPrefix(serverType === "Oracle" ? $("#tenant-table-prefix").val() : isAdvancedTab ? ($("#new-db").is(":checked") ? $("#server-prefix-name").val() : $("#server-table-prefix").val()) : ($("#new-db").is(":checked") ? $("#txt-server-prefix").val() : $("#tenant-table-prefix").val()));
     switch (database) {
-        case "mssqlce":
-            var prefix = $("#tenant-table-prefix").val();
-            break;
         case "mssql":
-            var prefix = ($("#table-prefix").val() === "" || $("#new-db").is(":checked")) ? $("#tenant-table-prefix").val() : $("#table-prefix").val();
             var databaseName = $("#new-db").is(":checked") ? $("#txt-dbname").val() : $("#databaseName").val();
             break;
         case "mysql":
-            var prefix = ($("#table-prefix").val() === "" || $("#new-db").is(":checked")) ? $("#tenant-table-prefix").val() : $("#table-prefix").val();
             var databaseName = $("#new-db").is(":checked") ? $("#txt-dbname").val() : $("#database-name").val();
             break;
         case "oracle":
-            var prefix = ($("#table-prefix-oracle").val() === "" || $("#new-db-oracle").is(":checked")) ? $("#tenant-table-prefix").val() : $("#table-prefix-oracle").val();
-            var databaseName = $("#new-db-oracle").is(":checked") ? $("#client-username").val() : $("#database-name-oracle").val();
+            var databaseName = $("#txt-dbname-for-oracle").val();
+            isNewDatabase = $("#existing-db").is(":checked");
+            //var databaseName = $("#new-db-oracle").is(":checked") ? $("#client-username").val() : $("#database-name-oracle").val();
             break;
         case "postgresql":
-            var prefix = ($("#table-prefix").val() === "" || $("#new-db").is(":checked")) ? $("#tenant-table-prefix").val() : $("#table-prefix").val();
             var databaseName = $("#new-db").is(":checked") ? $("#txt-dbname").val() : $("#database-name").val();
             break;
     }
 
-    var isNewDatabase = $("#new-db").is(":checked");
+    if (serverType == "Oracle") {
+        isNewDatabase = false;
+    }
 
     var authenticationType = 0;
     if (!(getRadioButtonValue("checkWindows") == "windows"))
@@ -185,9 +368,12 @@ function getFormData() {
             Prefix: prefix,
             SslEnabled: enableSSL,
             IsNewDatabase: isNewDatabase,
-            AdditionalParameters: additionalParameters
+            AdditionalParameters: additionalParameters,
+            SchemaName: schemaName,
+            Prefix: prefix,
+            TenantPrefix: tenantPrefix
         },
-        StorageType: window.storageType
+        StorageType: getDropDownValue("storage-type") == "2" ? "4" : getDropDownValue("storage-type")
     };
 
     var azureData = {
@@ -201,19 +387,105 @@ function getFormData() {
 
     var tenantInfo = {
         TenantType: getTenantType(),
-        TenantName: isBoldBI ? "Bold BI Enterprise Dashboards" : "Bold Reports Enterprise Reporting",
+        TenantName: isBoldBI && !isWhiteLabelling ? "Bold BI Enterprise Dashboards" : isBoldBI && isWhiteLabelling ? biProductname : !isBoldBI && !isWhiteLabelling ? "Bold Reports Enterprise Reporting" : reportsProductname,
         TenantIdentifier: "site1",
     };
+
+    var storageType = getDropDownValue("storage-type") == "2" ? "4" : getDropDownValue("storage-type");
+    if (storageType == "3") {
+        amazons3details = {
+            Region: getDropDownValue("aws-region"),
+            BucketName: $("#txt-bucketname").val(),
+            AccessKeyId: $("#txt-accesskeyid").val(),
+            AccessKeySecret: $("#txt-accesskeysecret").val(),
+            RootFolderName: $("#txt-rootfoldername").val()
+        }
+    } else {
+        amazons3details = {}
+    }
+
+    if (storageType == "4") {
+        ociObjectStoragedetails = {
+            Region: getDropDownValue("oci-object-region"),
+            BucketName: $("#txt-oci-bucketname").val(),
+            AccessKey: $("#txt-oci-accesskey").val(),
+            SecretKey: $("#txt-secretkey").val(),
+            RootFolderName: $("#txt-oci-rootfoldername").val(),
+            OCINameSpace: $("#txt-namespace").val()
+        }
+    } else {
+        ociObjectStoragedetails = {}
+    }
+
+    var storage = {
+        StorageType = systemSettingsData.StorageType,
+        AzureBlob = azureData,
+        OciObjectStorage = ociObjectStoragedetails,
+        AmazonS3 = amazons3details
+    }
 
     $("#global-admin-details").val(JSON.stringify(globalAdmin));
     $("#system-settings-data").val(JSON.stringify(systemSettingsData));
     $("#azure-data").val(JSON.stringify(azureData));
+    $("#oci-object-data").val(JSON.stringify(ociObjectStoragedetails));
     $("#tenant-info").val(JSON.stringify(tenantInfo));
+    $("#storage-info").val(JSON.stringify(storage));
 }
 
 function validateEmail(email, eventType) {
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
+}
+
+function getTenantPrefix(prefix) {
+    if (!isSiteCreation) {
+        if (prefix === "") {
+            if (isBoldBI) {
+                prefix = defaultValues.DefaultPrefixForBI;
+            }
+            else {
+                prefix = defaultValues.DefaultPrefixForReports;
+
+            }
+        }
+    }
+    else {
+        if (prefix === "") {
+            if (!isBoldReportsTenantType()) {
+                prefix = defaultValues.DefaultPrefixForBI;
+            }
+            else {
+                prefix = defaultValues.DefaultPrefixForReports;
+
+            }
+        }
+    }
+
+    return prefix;
+}
+
+function getPrefix(prefix) {
+    if (!isSiteCreation) {
+        if (prefix === "") {
+            prefix = defaultValues.DefaultPrefixForUMS;
+        }
+    }
+
+    return prefix;
+}
+
+function getSchema(schemaName) {
+    var databaseType = getDropDownValue("database-type").toLowerCase();
+    if (schemaName === "") {
+        if (databaseType === "mssql") {
+            schemaName = defaultValues.DefaultSchemaForMSSQL;
+        }
+        else if (databaseType === "postgresql") {
+            schemaName = defaultValues.DefaultSchemaForPostgres;
+        }
+    }
+
+    return schemaName;
 }
 
 function changeFooterPostion() {
@@ -226,13 +498,13 @@ function changeFooterPostion() {
 
 $(document).on("focus", "input[type=text],input[type=password]", function () {
     if (regexIe8.test(userAgent)) {
-        $(this).next(".placeholder").removeClass("show").addClass("hide");
+        $(this).next(".placeholder").removeClass("d-block").addClass("d-none");
     }
 });
 
 $(document).on("focusout", "input[type=text],input[type=password]", function () {
     if (regexIe8.test(userAgent) && $(this).val() === "") {
-        $(this).next(".placeholder").removeClass("hide").addClass("show");
+        $(this).next(".placeholder").removeClass("d-none").addClass("d-block");
     }
 });
 
@@ -282,27 +554,36 @@ function existingDbConfiguration(element) {
 function checkingExistingDB(element) {
     $('#details-next').attr("disabled", true);
     var databaseValidationMessage = window.Server.App.LocalizationContent.OneOrMoreErrors.format("<a id='know-more-error'>", "</a>");
-
+    var isAdvancedTab = window.getComputedStyle(document.getElementById("advanced_tab_db_name")).display !== "none";
     window.serverName = $("#txt-servername").val();
     window.portNumber = $("#txt-portnumber").val();
     window.maintenanceDb = $('#maintenance-db').val();
     window.IsWindowsAuthentication = getRadioButtonValue("checkWindows") == "windows";
     window.login = $("#txt-login").val();
     window.password = $("#txt-password-db").val();
-    var databaseType = getDropDownValue("database-type");
 
-    window.databaseName = $("#database-name").val();
+    var databaseType = getDropDownValue("database-type");
+    if (databaseType === "Oracle") {
+        window.databaseName = $("#txt-dbname-for-oracle").val();
+        window.ServiceInstance = $("#txt-servicename").val();
+    } else {
+        window.databaseName = $("#database-name").val();
+    }   
+
     window.serverDatabaseName = $("#server-existing-dbname").val();
     window.intermediateDatabaseName = $("#imdb-existing-dbname").val();
     window.sslEnabled = $("#secure-sql-connection").is(":checked");
     window.additionalParameters = $("#additional-parameter").val();
+    window.prefix = getPrefix($("#new-db").is(":checked") ? $("#txt-ums-prefix").val() : $("#ums-table-prefix").val());
+    window.tenantPrefix = getTenantPrefix(databaseType === "Oracle" ? $("#tenant-table-prefix").val() : isAdvancedTab ? ($("#new-db").is(":checked") ? $("#server-prefix-name").val() : $("#server-table-prefix").val()) : ($("#new-db").is(":checked") ? $("#txt-server-prefix").val() : $("#tenant-table-prefix").val()));
+    window.schemaName = getSchema($("#schema-name").val());
    
     $.ajax({
         type: "POST",
         url: connectDatabaseUrl,
         async: false,
         data: {
-            data: JSON.stringify({ ServerType: databaseType, serverName: window.serverName, Port: window.portNumber, MaintenanceDatabase: window.maintenanceDb, userName: window.login, password: window.password, IsWindowsAuthentication: window.IsWindowsAuthentication, databaseName: window.databaseName, ServerDatabaseName: window.serverDatabaseName, IntermediateDatabaseName: window.intermediateDatabaseName, sslEnabled: window.sslEnabled, IsNewDatabase: false, TenantType: getTenantType(), additionalParameters: window.additionalParameters }),
+            data: JSON.stringify({ ServerType: databaseType, serverName: window.serverName, Port: window.portNumber, MaintenanceDatabase: window.maintenanceDb, userName: window.login, password: window.password, IsWindowsAuthentication: window.IsWindowsAuthentication, databaseName: window.databaseName, ServerDatabaseName: window.serverDatabaseName, IntermediateDatabaseName: window.intermediateDatabaseName, sslEnabled: window.sslEnabled, IsNewDatabase: false, TenantType: getTenantType(), additionalParameters: window.additionalParameters, ServiceInstance: window.ServiceInstance, SchemaName: window.schemaName, Prefix: window.prefix, TenantPrefix: window.tenantPrefix }),
             isSimpleMode: isSimpleModeSelction(),
             isSiteCreation: true
         },
@@ -317,7 +598,7 @@ function checkingExistingDB(element) {
                     url: checkTableExistsUrl,
                     async: false,
                     data: {
-                        data: JSON.stringify({ ServerType: databaseType, serverName: window.serverName, Port: window.portNumber, MaintenanceDatabase: window.maintenanceDb, userName: window.login, password: window.password, IsWindowsAuthentication: window.IsWindowsAuthentication, databaseName: window.databaseName, ServerDatabaseName: window.serverDatabaseName, IntermediateDatabaseName: window.intermediateDatabaseName, sslEnabled: window.sslEnabled, TenantType: getTenantType(), IsNewDatabase: false, additionalParameters: window.additionalParameters }),
+                        data: JSON.stringify({ ServerType: databaseType, serverName: window.serverName, Port: window.portNumber, MaintenanceDatabase: window.maintenanceDb, userName: window.login, password: window.password, IsWindowsAuthentication: window.IsWindowsAuthentication, databaseName: window.databaseName, ServerDatabaseName: window.serverDatabaseName, IntermediateDatabaseName: window.intermediateDatabaseName, sslEnabled: window.sslEnabled, TenantType: getTenantType(), IsNewDatabase: false, additionalParameters: window.additionalParameters, ServiceInstance: window.ServiceInstance, SchemaName: window.schemaName, Prefix: window.prefix, TenantPrefix: window.tenantPrefix }),
                         isSimpleMode: isSimpleModeSelction(),
                         isSiteCreation: true
                     },
@@ -336,6 +617,7 @@ function checkingExistingDB(element) {
                             html += "</ol>";
                             errorContent = html;
                             $(".database-error").html(databaseValidationMessage).show();
+                            $(".server-schema-prefix-hide").removeClass("d-block").addClass("visually-hidden");
 
                         } else if (!result.Data.key && items.length <= 0) {
                             delete window.serverName;
@@ -384,7 +666,7 @@ function checkingNewDBConnection(element, actionType) {
             type: "POST",
             url: checkValidDatabaseUrl,
             async: false,
-            data: { tenantId: tenantId, connectionString: window.connectionString },
+            data: { tenantId: tenantId, connectionString: window.connectionString, updateSchema: window.schemaName, updatePrefix: window.tenantPrefix, TenantPrefix: window.tenantPrefix },
             success: function (response) {
                 if (response.Status) {
                     isValidDBDetail = true;
@@ -432,6 +714,7 @@ function connectDatabase(element, actionType) {
     var ValidationMessage = window.Server.App.LocalizationContent.OneOrMoreErrors.format("<a id='know-more-error'>", "</a>");
     var result = "";
     var isNewDatabase = true;
+    var isAdvancedTab = window.getComputedStyle(document.getElementById("advanced_tab_db_name")).display !== "none";
     window.serverName = $("#txt-servername").val();
     window.portNumber = $("#txt-portnumber").val();
     window.maintenanceDb = $('#maintenance-db').val();
@@ -439,11 +722,20 @@ function connectDatabase(element, actionType) {
     window.login = $("#txt-login").val();
     window.password = $("#txt-password-db").val();
     var databaseType = getDropDownValue("database-type");
-    window.databaseName = $("#txt-dbname").val();
+    if (databaseType === "Oracle") {
+        window.databaseName = $("#txt-dbname-for-oracle").val();
+        window.ServiceInstance = $("#txt-servicename").val();
+        isNewDatabase = false
+    } else {
+        window.databaseName = $("#txt-dbname").val();
+    }
     window.serverDatabaseName = $("#server-dbname").val();
     window.intermediateDatabaseName = $("#imdbname").val();
     window.sslEnabled = $("#secure-sql-connection").is(":checked");
     window.additionalParameters = $("#additional-parameter").val();
+    window.prefix = getPrefix($("#new-db").is(":checked") ? $("#txt-ums-prefix").val() : $("#ums-table-prefix").val());
+    window.tenantPrefix = getTenantPrefix(databaseType === "Oracle" ? $("#tenant-table-prefix").val() : isAdvancedTab ? ($("#new-db").is(":checked") ? $("#server-prefix-name").val() : $("#server-table-prefix").val()) : ($("#new-db").is(":checked") ? $("#txt-server-prefix").val() : $("#tenant-table-prefix").val()));
+    window.schemaName = getSchema($("#schema-name").val());
     if (actionType == "edit") {
         isNewDatabase = false;
     }
@@ -453,7 +745,7 @@ function connectDatabase(element, actionType) {
         url: connectDatabaseUrl,
         async: false,
         data: {
-            data: JSON.stringify({ ServerType: databaseType, serverName: window.serverName, Port: window.portNumber, MaintenanceDatabase: window.maintenanceDb, userName: window.login, password: window.password, IsWindowsAuthentication: window.IsWindowsAuthentication, databaseName: window.databaseName, ServerDatabaseName: window.serverDatabaseName, IntermediateDatabaseName: window.intermediateDatabaseName, sslEnabled: window.sslEnabled, IsNewDatabase: isNewDatabase, TenantType: getTenantType(), additionalParameters: window.additionalParameters }),
+            data: JSON.stringify({ ServerType: databaseType, serverName: window.serverName, Port: window.portNumber, MaintenanceDatabase: window.maintenanceDb, userName: window.login, password: window.password, IsWindowsAuthentication: window.IsWindowsAuthentication, databaseName: window.databaseName, ServerDatabaseName: window.serverDatabaseName, IntermediateDatabaseName: window.intermediateDatabaseName, sslEnabled: window.sslEnabled, IsNewDatabase: isNewDatabase, TenantType: getTenantType(), additionalParameters: window.additionalParameters, ServiceInstance: window.ServiceInstance, SchemaName: window.schemaName, Prefix: window.prefix, TenantPrefix: window.tenantPrefix, ActionType: actionType }),
             isSimpleMode: isSimpleModeSelction(),
             isSiteCreation: true
         },
@@ -487,10 +779,17 @@ function getDatabaseFormValues() {
     var isNewDatabase = $("#new-db").is(":checked");
     var databaseName = $("#new-db").is(":checked") ? $("#txt-dbname").val() : $("#database-name").val();
     var serverType = getDropDownValue("database-type");
+    if (serverType == "Oracle") {
+        isNewDatabase = false;
+    }
     var maintenanceDb = $('#maintenance-db').val();
     var authenticationType = 0;
     var enableSSL = $("#secure-sql-connection").is(":checked");
     var additionalParameters = $("#additional-parameter").val();
+    var schemaName = getSchema($("#schema-name").val());
+    var prefix = getPrefix(serverType === "Oracle" ? $("#ums-table-prefix").val() : $("#new-db").is(":checked") ? $("#txt-ums-prefix").val() : $("#ums-table-prefix").val());
+    var isAdvancedTab = window.getComputedStyle(document.getElementById("advanced_tab_db_name")).display !== "none";
+    var tenantPrefix = getTenantPrefix(serverType === "Oracle" ? $("#tenant-table-prefix").val() : isAdvancedTab ? ($("#new-db").is(":checked") ? $("#server-prefix-name").val() : $("#server-table-prefix").val()) : ($("#new-db").is(":checked") ? $("#txt-server-prefix").val() : $("#tenant-table-prefix").val()));
     if (!(getRadioButtonValue("checkWindows") == "windows"))
         authenticationType = 1;
         formData = {
@@ -505,9 +804,12 @@ function getDatabaseFormValues() {
                 MaintenanceDatabase: maintenanceDb,
                 SslEnabled: enableSSL,
                 IsNewDatabase: isNewDatabase,
-                AdditionalParameters: additionalParameters
+                AdditionalParameters: additionalParameters,
+                SchemaName: schemaName,
+                Prefix: prefix,
+                TenantPrefix: tenantPrefix
             },
-            StorageType: $("input[name='IsBlobStorage']:checked").val(),
+            StorageType: getDropDownValue("storage-type") == "2" ? "4" : getDropDownValue("storage-type"),
             TenantIsolation:
             {
                 IsEnabled: $("#isolation-enable-switch").is(":checked"),
@@ -520,15 +822,26 @@ function getDatabaseFormValues() {
 }
 
 
-function postSystemSettingsData(systemSettingsDetails, azuredetails, userName, tenantDetails, brandingType, isAddFromServer, userId) {
+function postSystemSettingsData(systemSettingsDetails, azuredetails, userName, tenantDetails, brandingType, isAddFromServer, userId, amazons3details, globalSettingsValues) {
     var userNameData = (userName != undefined && userName != null) ? JSON.stringify(userName) : $("#tenant-email").val();
     var tenantDetailsData = (tenantDetails != undefined && tenantDetails != null) ? JSON.stringify(tenantDetails) : null;
-    var userIdValue = (userId != undefined && userId !=null) ? JSON.stringify(userId) : null;
-    setSystemSettingsData = { systemSettingsData: JSON.stringify(systemSettingsDetails), azureData: JSON.stringify(azuredetails), userName: userNameData, tenantDetails: tenantDetailsData, brandingType: brandingType, userIds: userIdValue };
+    var userIdValue = (userId != undefined && userId != null) ? JSON.stringify(userId) : null;
+    var storage = {
+        StorageType = systemSettingsDetails.StorageType,
+        AzureBlob = azuredetails,
+        OCIObjectStorage = ociObjectStoragedetails,
+        AmazonS3 = amazons3details
+    }
+    setSystemSettingsData = { systemSettingsData: JSON.stringify(systemSettingsDetails), storage: JSON.stringify(storage), userName: userNameData, tenantDetails: tenantDetailsData, brandingType: brandingType, userIds: userIdValue, globalSettingsOptions: globalSettingsValues };
     $.ajax({
         type: "POST", url: setSystemSettingsUrl, data: setSystemSettingsData,
         success: function (setSystemSettingsResponse) {
-            if (isAddFromServer != undefined && isAddFromServer) {
+            if (setSystemSettingsResponse.hasError != undefined && setSystemSettingsResponse.hasError) {
+                parent.hideWaitingPopup('add-tenant-popup');
+                $("#validation-site-error").text(setSystemSettingsResponse.errorMessege).show();
+                $(this).removeAttr("disabled");
+            }
+            else if (isAddFromServer != undefined && isAddFromServer) {
                 parent.hideWaitingPopup('add-tenant-popup');
                 $("#provide-admin-access-button").attr("disabled", "disabled");
                 var tenantGridObj = parent.document.getElementById('tenants_grid').ej2_instances[0];
@@ -553,7 +866,8 @@ function postSystemSettingsData(systemSettingsDetails, azuredetails, userName, t
 function validate_report_storage() {
     $(".blob-error-message").hide();
     showWaitingPopup('startup-page-conatiner', true);
-    var storageType = $("input[name='IsBlobStorage']:checked").val();
+    var storageType = getDropDownValue("storage-type");
+    storageType = getDropDownValue("storage-type") == "2" ? "4" : storageType;
     window.storageType = storageType;
     var azuredetails = "";
     var tenantDetails = {
@@ -716,8 +1030,37 @@ function getTenantType() {
     return tenantType;
 }
 
+function ResizeHeightForDOM() {
+    var height = "";
+    var modalheight = "";
+
+    if ($(".storage-form").hasClass("show")) {
+        var storageType = getDropDownValue("storage-type");
+        storageType = getDropDownValue("storage-type") == "2" ? "4" : storageType;
+        if (storageType == "0") {
+            height = $(window).height() - $(".modal-header").height() - 210;
+            modalheight = $("#dialog-body-container").height() + $("#dialog-body-header").height() + 102;
+        }
+        else if (storageType == "1") {
+            height = $(window).height() - $(".modal-header").height() - 210 + 280;
+            modalheight = $("#dialog-body-container").height() + $("#dialog-body-header").height() + 102;
+        }
+        else {
+            height = $(window).height() - $(".modal-header").height() - 210 + 140;
+            modalheight = $("#dialog-body-container").height() + $("#dialog-body-header").height() + 102;
+        }
+    }
+
+    $(".dialog-body-div").css("height", "auto");
+    gridHeight = height;
+}
+
 function forceToLower(input) {
     input.value = input.value.toLowerCase();
+}
+
+function validateNoWhiteSpace(input) {
+    input.value = input.value.replace(/\s/g, '');
 }
 
 function getDropDownValue(id) {
@@ -735,32 +1078,38 @@ function autoFocus(id) {
 function ResizeHeightForDOM() {
     var height = /*$(window).height() - $(".modal-header").height() - 210*/"";
     var modalheight = /*$("#dialog-body-container").height() + $("#dialog-body-header").height() + 50*/"";
-    //if ($(".tenant-registration-form").hasClass("show")) {
+    //if ($(".tenant-registration-form").hasClass("d-block")) {
     //    height = $(window).height() - $(".modal-header").height() - 210 + 100;
     //    modalheight = $("#dialog-body-container").height() + $("#dialog-body-header").height() + 102;
     //}
 
-    if ($(".storage-form").hasClass("show")) {
-        if ($("#file-storage").is(":checked")) {
+    if ($(".storage-form").hasClass("d-block")) {
+        var storageType = getDropDownValue("storage-type");
+        if (storageType == "0") {
             height = $(window).height() - $(".modal-header").height() - 210;
             modalheight = $("#dialog-body-container").height() + $("#dialog-body-header").height() + 102;
-        } else {
+        }
+        else if (storageType == "1") {
             height = $(window).height() - $(".modal-header").height() - 210 + 280;
             modalheight = $("#dialog-body-container").height() + $("#dialog-body-header").height() + 102;
         }
+        else {
+            height = $(window).height() - $(".modal-header").height() - 210 + 140;
+            modalheight = $("#dialog-body-container").height() + $("#dialog-body-header").height() + 102;
+    }
     }
 
-    //if ($(".tenant-user-form").hasClass("show")) {
+    //if ($(".tenant-user-form").hasClass("d-block")) {
     //    height = $(window).height() - $(".modal-header").height() - 210;
     //    modalheight = $("#dialog-body-container").height() + $("#dialog-body-header").height() + 102;
     //}
 
-    //if ($(".data-security-form").hasClass("show")) {
+    //if ($(".data-security-form").hasClass("d-block")) {
     //    height = $(window).height() - $(".modal-header").height() - 210;
     //    modalheight = $("#dialog-body-container").height() + $("#dialog-body-header").height() + 102;
     //}
 
-    //if ($(".tenant-database-form").hasClass("show")) {
+    //if ($(".tenant-database-form").hasClass("d-block")) {
     //    var databaseType = getDropDownValue("database-type").toLowerCase();
 
     //    if (databaseType == "postgresql") {
@@ -770,10 +1119,32 @@ function ResizeHeightForDOM() {
 
     //}
 
-    if (height > modalheight) {
-        $(".dialog-body-div").css("height", height);
-    } else {
-        $(".dialog-body-div").css("height", modalheight);
-    }
+    $(".dialog-body-div").css("height", "auto");
     gridHeight = height;
 }
+
+// Returns true if startup is already completed.
+function validateStartup(result) {
+    $.ajax({
+        type: "GET",
+        url: validateStartupUrl,
+        success: function (data) {
+            if (data.Data) {
+                result(true);
+            } else {
+                result(false);
+            }
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    var newPasswordInput = document.getElementById("new-password");
+
+    if (newPasswordInput != null){
+        newPasswordInput.addEventListener("shown.bs.popover", function () {
+            var popoverId = newPasswordInput.getAttribute("aria-describedby");
+            document.getElementById(popoverId).classList.add("custom-popover");
+        });
+    }
+});

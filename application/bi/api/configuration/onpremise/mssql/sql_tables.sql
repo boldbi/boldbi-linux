@@ -127,9 +127,10 @@ CREATE TABLE [BOLDBI_ItemView](
 	[ItemId] [uniqueidentifier] NOT NULL,
 	[UserId] [int] NOT NULL,
 	[ItemViewId] [uniqueidentifier] NOT NULL,
-	[QueryString] [nvarchar](4000) NOT NULL,
+	[QueryString] nvarchar(max) NOT NULL,
 	[ModifiedDate] [datetime] NOT NULL,
-	[IsActive] [bit] NOT NULL)
+	[IsActive] [bit] NOT NULL,
+	[IsWidgetLinking] [bit] NOT NULL)
 ;
 
 CREATE TABLE [BOLDBI_ItemLogType](
@@ -182,6 +183,7 @@ CREATE TABLE [BOLDBI_ItemLog](
 	[ToCategoryId] [uniqueidentifier] NULL,
 	[UpdatedUserId] [int] NOT NULL,	
 	[ModifiedDate] [datetime] NOT NULL,
+    [AnonymousUsername] [nvarchar](255) NULL,
 	[IsActive] [bit] NOT NULL)
 ;
 
@@ -231,9 +233,13 @@ CREATE TABLE [BOLDBI_ExportType](
 
 CREATE TABLE [BOLDBI_ScheduleDetail](
 	[Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
-	[ScheduleId] [uniqueidentifier] NOT NULL,
+	[ScheduleId] [uniqueidentifier] NOT NULL UNIQUE,
 	[ItemId] [uniqueidentifier] NOT NULL,
+	[DashboardWidgetId] [uniqueidentifier] NULL,
+	[DashboardWidgetIds] [nvarchar](max) NULL,
+	[DashboardViewId] [uniqueidentifier] NULL,
 	[Name] [nvarchar](150) NOT NULL,
+	[Parameter] [nvarchar](max) NULL,
 	[RecurrenceTypeId] [int] NULL,
 	[RecurrenceInfo] [nvarchar](4000) NULL,
 	[Subject] [nvarchar](4000) NULL,
@@ -244,7 +250,8 @@ CREATE TABLE [BOLDBI_ScheduleDetail](
 	[EndDate] [datetime] NULL,
 	[EndAfter] [int] NULL DEFAULT 0,
 	[NextSchedule] [datetime] NULL,
-	[ExportTypeId] [int] NOT NULL,
+	[ExportTypeId] [int] NULL,
+    [MultiExportType] [nvarchar](max) NULL,
 	[IsEnabled] [bit] NOT NULL,
 	[CreatedById] [int] NOT NULL,
 	[ModifiedById] [int] NOT NULL,
@@ -300,6 +307,15 @@ CREATE TABLE [BOLDBI_ScheduleLogUser](
 	[IsActive] [bit] NOT NULL)
 ;
 
+CREATE TABLE [BOLDBI_ScheduleMissingLogs](
+	[Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
+	[ScheduleId] [uniqueidentifier] NOT NULL,
+	[MissingType] [int] NOT NULL,
+	[StartDate] [datetime] NOT NULL,
+	[EndDate] [datetime] NOT NULL,
+	[IsActive] [bit] NOT NULL)	
+;
+
 CREATE TABLE [BOLDBI_ScheduleLogGroup](
 	[Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
 	[ScheduleId] [uniqueidentifier] NOT NULL,
@@ -329,7 +345,9 @@ CREATE TABLE [BOLDBI_ScheduleLog](
 	[Message] [nvarchar](max) NULL,
 	[ModifiedDate] [datetime] NOT NULL,
 	[IsOnDemand] [bit] NOT NULL DEFAULT (0),
-	[IsActive] [bit] NOT NULL)
+	[IsActive] [bit] NOT NULL,
+	[RequestId] [uniqueidentifier] NULL,
+	[LogExist] [bit] NOT NULL DEFAULT (0))
 ;
 
 CREATE TABLE [BOLDBI_SystemSettings](
@@ -703,7 +721,8 @@ CREATE TABLE [BOLDBI_PublishedItem](
 	[CreatedById] [int] NOT NULL,
 	[CreatedDate] [datetime] NOT NULL,
 	[ModifiedDate] [datetime] NOT NULL,
-    [IsActive] [bit] NOT NULL)
+    [IsActive] [bit] NOT NULL,
+	[ExternalSiteId] [int] NOT NULL DEFAULT 0)
 ;
 
 CREATE TABLE [BOLDBI_PublishJobs](
@@ -714,8 +733,16 @@ CREATE TABLE [BOLDBI_PublishJobs](
     [CreatedDate] [datetime] NOT NULL,
     [CompletedDate] [datetime] NOT NULL,
     [Status] [nvarchar](255) NOT NULL,
-    [IsActive] [bit] NOT NULL)
+    [IsActive] [bit] NOT NULL,
+	[Type] [int] NOT NULL)	
 ;
+
+CREATE TABLE [BOLDBI_PublishType](
+	[Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
+	[Name] [nvarchar](100) NOT NULL UNIQUE,
+	[IsActive] [bit] NOT NULL
+
+);
 
 CREATE TABLE [BOLDBI_DeploymentDashboards](
 	[Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
@@ -913,8 +940,175 @@ CREATE TABLE [BOLDBI_BackgroundJobs](
 	[ResourceInfo] [nvarchar](max) NULL,
 	[CanIncludeSensitiveInfo] [bit] NULL,
 	[IsSampleData] [bit] NULL,
+    [IsActive] [bit] NOT NULL,
+	[ParentJobId] [int] NULL)
+;
+
+CREATE TABLE [BOLDBI_UploadDataSourceMapping](
+    [Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    [DownloadedTenantId] [uniqueidentifier] NOT NULL,
+    [DownloadedItemId] [nvarchar](255) NOT NULL,
+    [UploadedItemId] [uniqueidentifier] NOT NULL,
+    [UploadedDate] [datetime] NULL,
+    [IsActive] [bit] NULL)
+;
+
+CREATE TABLE [BOLDBI_ScheduleRunHistory](
+	[Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
+	[ScheduleStatusId] [int] NOT NULL,
+	[ScheduleId] [uniqueidentifier] NOT NULL,
+	[StartedDate] [datetime] NOT NULL,
+	[Message] [nvarchar](max) NULL,
+	[ModifiedDate] [datetime] NOT NULL,
+	[IsOnDemand] [bit] NOT NULL DEFAULT (0),
+	[IsActive] [bit] NOT NULL,
+	[LogExist] [bit] NOT NULL DEFAULT (0))
+;
+CREATE TABLE [BoldBI_DSMetrics]  (
+   Id INT IDENTITY(1,1) PRIMARY KEY,
+   DataSourceID VARCHAR(255),
+   IsRefresh bit,
+   RefreshStartTime VARCHAR(255),
+   RefreshEndTime VARCHAR(255),
+   IsIncremental VARCHAR(255),
+   TableDetails VARCHAR(255),
+   RowsUpdated INTEGER,
+   TotalRows INTEGER,
+   CustomQuery VARCHAR(max),
+   SourceConnectionDetails VARCHAR(255),
+   IncrementalRefreshDetails VARCHAR(255),
+   ExtractType VARCHAR(255),
+   RefreshStatus VARCHAR(255),
+   RefreshException VARCHAR(255))
+;
+	   
+CREATE TABLE [BOLDBI_CustomEmailTemplate](
+[Id] [int] IDENTITY(1,1) primary key NOT NULL,
+[IsEnabled] [bit] NULL,
+[DisclaimerContent] [nvarchar](255) NOT NULL,
+[HeaderContent] [nvarchar](255) NULL,
+[Subject] [nvarchar](255) NULL,
+[TemplateName] [nvarchar](255) NULL,
+[Language] [nvarchar](255) NOT NULL,
+[MailBody] [nvarchar](max) NOT NULL,
+[CreatedDate] [datetime] NOT NULL,
+[ModifiedDate] [datetime] NULL,
+[SendEmailAsHTML] [bit] NOT NULL,
+[CustomVisibilityOptions] [nvarchar](max) NOT NULL,
+[IsActive] [bit] NOT NULL,
+[TemplateId] [int] NOT NULL,
+[IsDefaultTemplate][bit] NOT NULL,
+[IsSystemDefault][bit] NOT NULL,
+[Description][nvarchar](255) NULL,
+[ModifiedBy][int] NOT NULL,
+[TemplateLocalizationKey][nvarchar](255) NULL);
+
+CREATE TABLE [BoldBI_ai_qnawidgethistory] (
+   searchid VARCHAR(255) PRIMARY KEY,
+   question TEXT,
+   tableinfo TEXT,
+   fieldinfo TEXT,
+   message TEXT,
+   haserror BIT,
+   chartType TEXT,
+   uservote TEXT,
+   isreported BIT,
+   search_date DATETIME,
+   widgetid NVARCHAR(255))
+;
+
+CREATE TABLE [BOLDBI_Notification] (
+    [Id] [int] IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    [CurrentUserId] [int] NOT NULL,
+    [ClubId] nvarchar(100) NOT NULL,
+    [CommentId] [int] NULL,
+    [ItemId] [uniqueidentifier] NULL,
+    [NotificationSource] nvarchar(100) NULL,
+    [NotifictionDetails] nvarchar(4000) NULL,
+    [NotificationTo] [int] NULL,    
+    [ModifiedDate] [datetime] NOT NULL,
+    [IsRead] [bit] NOT NULL,
     [IsActive] [bit] NOT NULL)
 ;
+
+CREATE TABLE [BOLDBI_ApiKeyDetails] (
+    [Id] [uniqueidentifier] PRIMARY KEY NOT NULL,
+    [Name] [nvarchar](255) NOT NULL,
+    [ModifiedDate] [datetime] NOT NULL,
+    [CreatedDate] [datetime] NOT NULL,
+    [LastUsedDate] [datetime] NULL,
+    [ApiKey] nvarchar(100) NULL,
+    [TokenValidity] [datetime] NULL,
+    [CreatedBy] [int] NOT NULL,
+    [ModifiedBy] [int] NOT NULL,
+    [IsActive] [bit] NOT NULL)
+;
+
+CREATE TABLE [BOLDBI_AI_SESSIONS] (
+    [SessionID] NVARCHAR(255) PRIMARY KEY,
+    [SessionStartTime] DATETIMEOFFSET,
+    [SessionEndTime] DATETIMEOFFSET,
+    [InputToken] INT,
+    [OutputToken] INT,
+    [TotalToken] INT,
+    [InputTokenCost] FLOAT,
+    [OutputTokenCost] FLOAT,
+    [TotalTokensCost] FLOAT,
+    [UserInfo] NVARCHAR(MAX),
+    [TenantID] NVARCHAR(MAX),
+    [Environment] NVARCHAR(MAX)
+    );
+
+CREATE TABLE [BOLDBI_AI_CHAT] (
+    [SearchID] NVARCHAR(255) PRIMARY KEY,
+    [SessionID] NVARCHAR(MAX),
+    [SearchDateTime] DATETIMEOFFSET,
+    [InputToken] INT,
+    [OutputToken] INT,
+    [TotalToken] INT,
+    [InputTokenCost] FLOAT,
+    [OutputTokenCost] FLOAT,
+    [TotalTokensCost] FLOAT,
+    [UserInfo] NVARCHAR(MAX),
+    [TenantID] NVARCHAR(MAX),
+    [RequestType] NVARCHAR(MAX),
+    [Environment] NVARCHAR(MAX)
+    );
+
+CREATE TABLE [BOLDBI_AICredentials](
+    [Id] uniqueidentifier NOT NULL,
+    [AIModel] [int] NOT NULL,
+    [AIConfiguration] [nvarchar](4000) NULL,
+    [CreatedById] [uniqueidentifier] NULL,
+    [ModifiedById] [uniqueidentifier] NULL,
+    [CreatedDate] [datetime] NOT NULL,
+    [ModifiedDate] [datetime] NOT NULL,
+    [IsActive] [bit] NOT NULL,
+    [IsAIModel][bit] NOT NULL DEFAULT (0),
+    [EnableAIFeature][bit] NOT NULL DEFAULT (0),
+    [IsAISummariesEnabledGlobally][bit] NOT NULL DEFAULT (0)
+    )
+;
+
+CREATE TABLE [BOLDBI_AI_REQUESTS] (
+    [MessageId] NVARCHAR(255) NOT NULL PRIMARY KEY,
+    [SearchDate] DATETIMEOFFSET,
+    [Message] NVARCHAR(MAX),
+    [DatasourceId] NVARCHAR(MAX),
+    [SessionId] NVARCHAR(MAX),
+    [HasError] BIT,
+    [Response] NVARCHAR(MAX),
+    [StatusMessage] NVARCHAR(MAX),
+    [AiModel] NVARCHAR(MAX),
+    [TenantId] NVARCHAR(MAX),
+    [UserEmail] NVARCHAR(MAX),
+    [Feedback] NVARCHAR(MAX),
+    [UserInfo] NVARCHAR(MAX),
+    [RequestType] NVARCHAR(MAX),
+    [Environment] NVARCHAR(MAX),
+    [IsValidResponse] BIT,
+    [IsWidgetRendered] BIT
+);
 
 ---- PASTE INSERT Queries below this section --------
 
@@ -983,6 +1177,10 @@ INSERT into [BOLDBI_SettingsType] (Name,IsActive) Values (N'CORS Settings',1)
 ;
 INSERT into [BOLDBI_SettingsType] (Name,IsActive) Values (N'Look and Feel',1)
 ;
+INSERT into [BOLDBI_SettingsType] (Name,IsActive) Values (N'Site Credentials',1)
+;
+INSERT into [BOLDBI_SettingsType] (Name,IsActive) Values (N'API Key',1)
+;
 INSERT into [BOLDBI_ItemLogType] (Name,IsActive) VALUES ( N'Added',1)
 ;
 INSERT into [BOLDBI_ItemLogType] (Name,IsActive) VALUES ( N'Edited',1)
@@ -1003,6 +1201,8 @@ INSERT into [BOLDBI_ItemLogType] (Name,IsActive) VALUES ( N'Rollbacked',1)
 ;
 INSERT into [BOLDBI_ItemLogType] (Name,IsActive) VALUES ( N'Visited',1)
 ;
+INSERT into [BOLDBI_ItemLogType] (Name,IsActive) VALUES ( N'Downloaded',1)
+;
 
 INSERT into [BOLDBI_ExportType] (Name,IsActive) VALUES (N'Excel', 1)
 ;
@@ -1015,6 +1215,12 @@ INSERT into [BOLDBI_ExportType] (Name,IsActive) VALUES (N'Word', 1)
 INSERT into [BOLDBI_ExportType] (Name,IsActive) VALUES (N'Image', 1)
 ;
 INSERT into [BOLDBI_ExportType] (Name,IsActive) VALUES (N'Refresh', 1)
+;
+INSERT into [BOLDBI_ExportType] (Name,IsActive) VALUES (N'PPT', 1)
+;
+INSERT into [BOLDBI_ExportType] (Name,IsActive) VALUES (N'CSV', 1)
+;
+INSERT into [BOLDBI_ExportType] (Name,IsActive) VALUES (N'DashboardCache', 1)
 ;
 
 INSERT into [BOLDBI_RecurrenceType] (Name,IsActive) VALUES (N'Daily', 1)
@@ -1099,6 +1305,8 @@ INSERT INTO [BOLDBI_PermissionEntity] (Name,EntityType,ItemTypeId, IsActive) VAL
 ;
 INSERT INTO [BOLDBI_PermissionEntity] (Name,EntityType,ItemTypeId, IsActive) VALUES (N'All Groups',1,12,1)
 ;
+INSERT INTO [BOLDBI_PermissionEntity] (Name,EntityType,ItemTypeId, IsActive) VALUES (N'All Users',1,12,1)
+;
 
 INSERT into [BOLDBI_Group] (Name,Description,Color,IsolationCode,ModifiedDate,DirectoryTypeId,IsActive) VALUES (N'System Administrator','Has administrative rights for the dashboards','#ff0000',null,GETDATE(), 1, 1)
 ;
@@ -1152,12 +1360,8 @@ INSERT INTO [BOLDBI_PermissionAccess] (Name, AccessId, IsActive) VALUES (N'Read,
 ;
 INSERT INTO [BOLDBI_PermissionAccess] (Name, AccessId, IsActive) VALUES (N'Read, Write, Delete',14,1)
 ;
---INSERT INTO [BOLDBI_PermissionAccess] (Name, AccessId, IsActive) VALUES (N'Read, Download',18,1)
---;
---INSERT INTO [BOLDBI_PermissionAccess] (Name, AccessId, IsActive) VALUES (N'Read, Write, Download',22,1)
---;
---INSERT INTO [BOLDBI_PermissionAccess] (Name, AccessId, IsActive) VALUES (N'Read, Write, Delete, Download',30,1)
---;
+INSERT INTO [BOLDBI_PermissionAccess] (Name, AccessId, IsActive) VALUES (N'Download',18,1)
+;
 
 INSERT INTO [BOLDBI_PermissionAccEntity] (PermissionEntityId, PermissionAccessId, IsActive) VALUES (4,1,1)
 ;																									  
@@ -1279,6 +1483,14 @@ INSERT INTO [BOLDBI_PermissionAccEntity] (PermissionEntityId, PermissionAccessId
 ;
 INSERT INTO [BOLDBI_PermissionAccEntity] (PermissionEntityId, PermissionAccessId, IsActive) VALUES (22,4,1)
 ;
+INSERT INTO [BOLDBI_PermissionAccEntity] (PermissionEntityId, PermissionAccessId, IsActive) VALUES (12,5,1)
+;
+INSERT INTO [BOLDBI_PermissionAccEntity] (PermissionEntityId, PermissionAccessId, IsActive) VALUES (13,5,1)
+;
+INSERT INTO [BOLDBI_PermissionAccEntity] (PermissionEntityId, PermissionAccessId, IsActive) VALUES (14,5,1)
+;
+INSERT INTO [BOLDBI_PermissionAccEntity] (PermissionEntityId, PermissionAccessId, IsActive) VALUES (30,3,1)
+;
 
 INSERT into [BOLDBI_PermissionLogType] (Name,IsActive) VALUES ( N'PermissionAdded',1)
 ;
@@ -1290,6 +1502,8 @@ INSERT into [BOLDBI_Source] (Name,IsActive) VALUES ( N'Web',1)
 INSERT into [BOLDBI_Source] (Name,IsActive) VALUES ( N'API',1)
 ;
 INSERT into [BOLDBI_Source] (Name,IsActive) VALUES ( N'Schedule',1)
+;
+INSERT into [BOLDBI_Source] (Name,IsActive) VALUES ( N'Embed',1)
 ;
 
 INSERT into [BOLDBI_LogStatus] (Name,IsActive) VALUES ( N'Start',1)
@@ -1407,6 +1621,10 @@ INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive)
 ;
 INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (1,N'CopyrightInformation',N'SiteSettings.CopyrightInformation',GETDATE(),1)
 ;
+INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (1,N'ResourceType',N'SiteSettings.ResourceType',GETDATE(),1)
+;
+INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (1,N'ResourceOrder',N'SiteSettings.ResourceOrder',GETDATE(),1)
+;
 
 INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableNotificationForDashboardOwner',N'UserNotificationSettings.UserSystemNotificationSettings.EnableNotificationForDashboardOwner',GETDATE(),1)
 ;
@@ -1416,6 +1634,8 @@ INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive)
 ;
 INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableNotificationWhenWatchEnabled',N'UserNotificationSettings.UserSystemNotificationSettings.EnableNotificationWhenWatchEnabled',GETDATE(),1)
 ;
+INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableNotificationForApiKeyExpiration',N'UserNotificationSettings.UserSystemNotificationSettings.EnableNotificationForApiKeyExpiration',GETDATE(),1)
+;
 INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableNotificationForDashboardOwner',N'UserNotificationSettings.UserMailNotificationSettings.EnableNotificationForDashboardOwner',GETDATE(),1)
 ;
 INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableNotificationForAccessibleUser',N'UserNotificationSettings.UserMailNotificationSettings.EnableNotificationForAccessibleUser',GETDATE(),1)
@@ -1423,6 +1643,8 @@ INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive)
 INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableNotificationOnUserMention',N'UserNotificationSettings.UserMailNotificationSettings.EnableNotificationOnUserMention',GETDATE(),1)
 ;
 INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableNotificationWhenWatchEnabled',N'UserNotificationSettings.UserMailNotificationSettings.EnableNotificationWhenWatchEnabled',GETDATE(),1)
+;
+INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableNotificationForApiKeyExpiration',N'UserNotificationSettings.UserMailNotificationSettings.EnableNotificationForApiKeyExpiration',GETDATE(),1)
 ;
 INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (2,N'EnableUserScheduleNotification',N'UserNotificationSettings.UserMailNotificationSettings.EnableUserScheduleNotification',GETDATE(),1)
 ;
@@ -1441,6 +1663,8 @@ INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive)
 ;
 INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableNotificationWhenWatchEnabled',N'NotificationSettings.SystemNotificationSettings.EnableNotificationWhenWatchEnabled',GETDATE(),1)
 ;
+INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableNotificationForApiKeyExpiration',N'NotificationSettings.SystemNotificationSettings.EnableNotificationForApiKeyExpiration',GETDATE(),1)
+;
 INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableNotificationForDashboardOwner',N'NotificationSettings.MailNotificationSettings.EnableNotificationForDashboardOwner',GETDATE(),1)
 ;
 INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableNotificationForAccessibleUser',N'NotificationSettings.MailNotificationSettings.EnableNotificationForAccessibleUser',GETDATE(),1)
@@ -1448,6 +1672,8 @@ INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive)
 INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableNotificationOnUserMention',N'NotificationSettings.MailNotificationSettings.EnableNotificationOnUserMention',GETDATE(),1)
 ;
 INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableNotificationWhenWatchEnabled',N'NotificationSettings.MailNotificationSettings.EnableNotificationWhenWatchEnabled',GETDATE(),1)
+;
+INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableNotificationForApiKeyExpiration',N'NotificationSettings.MailNotificationSettings.EnableNotificationForApiKeyExpiration',GETDATE(),1)
 ;
 INSERT into [BOLDBI_LogField] (ModuleId,Field,Description,ModifiedDate,IsActive) VALUES (3,N'EnableUserScheduleNotification',N'NotificationSettings.MailNotificationSettings.EnableUserScheduleNotification',GETDATE(),1)
 ;
@@ -1827,7 +2053,22 @@ INSERT INTO [BOLDBI_EventPayloadsMapping] (EventType, PayloadType, IsActive) VAL
 INSERT INTO [BOLDBI_EventPayloadsMapping] (EventType, PayloadType, IsActive) VALUES (2,9,1)
 ;
 
+INSERT into [BOLDBI_PublishType] (Name,IsActive) VALUES ( N'Publish',1)
+;
+
+INSERT into [BOLDBI_PublishType] (Name,IsActive) VALUES ( N'Lock',1)
+;
+
+INSERT into [BOLDBI_PublishType] (Name,IsActive) VALUES ( N'Unlock',1)
+;
+
 ---- PASTE ALTER Queries below this section --------
+
+ALTER TABLE [BOLDBI_PublishJobs]  ADD FOREIGN KEY([Type]) REFERENCES [BOLDBI_PublishType] ([Id])
+;
+
+ALTER TABLE [BOLDBI_ScheduleMissingLogs]  ADD FOREIGN KEY([ScheduleId]) REFERENCES [BOLDBI_ScheduleDetail] ([ScheduleId])
+;
 
 ALTER TABLE [BOLDBI_UserGroup]  ADD FOREIGN KEY([GroupId]) REFERENCES [BOLDBI_Group] ([Id])
 ;

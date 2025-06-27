@@ -46,19 +46,6 @@
                         label {
                             margin-bottom: 8px;
                         }
-
-                        .mail-loader-div {
-                            position: absolute;
-                            bottom: 23px;
-                            right: 0px;
-                            margin-right: 0px;
-                            left: 0px !important;
-                            margin-left: auto !important;
-                        }
-
-                        .email-loader {
-                            display: none;
-                        }
                     }
 
                     #password-field {
@@ -109,6 +96,29 @@
 
                     #current-password {
                         height: 40px !important;
+                        width: 346px;
+                    }
+
+                    #label_login-email, #label_current-password {
+                        background-color: var(--surface);
+                    }
+
+                    @media (max-width: 426px) {
+                        #show-newpassword {
+                            right: 23px !important;
+                        }
+                    }
+
+                    @media (max-width: 376px) {
+                        #show-newpassword {
+                            right: -15px !important;
+                        }
+                    }
+
+                    @media (max-width: 321px) {
+                        #show-newpassword {
+                            right: 12px !important;
+                        }
                     }
                 }
 
@@ -121,7 +131,7 @@
                     cursor: pointer;
                     display: block;
                     width: 45%;
-                    margin: 0 auto $space-xl auto;
+                    margin: 0 auto $space-m auto;
                 }
 
                 .validation-holder, #error-email, #error-password {
@@ -175,7 +185,7 @@
                     width: 390px;
 
                     .page-wrapper {
-                        padding-top: $space-xl;
+                        padding-top: $space-m;
 
                         img {
                             height: 24px;
@@ -185,9 +195,7 @@
                         }
 
                         .external-provider {
-                            float: left;
-                            margin-left: 7px;
-                            margin-top: 3px !important;
+                            margin-bottom: 2px !important;
                         }
 
                         button {
@@ -227,7 +235,7 @@
                             display: block;
                             text-align: center;
                             width: 350px;
-                            height: 44px;
+                            height: 44px!important;
                             padding: 6px;
                             vertical-align: top;
                             line-height: 30px;
@@ -236,7 +244,6 @@
 
                             .login-provider-name, .windows-ad-login-text {
                                 cursor: pointer;
-                                padding: 5px;
                                 font-weight: bold;
                                 font-size: 14px;
                                 color: $primary-text-color;
@@ -250,9 +257,7 @@
                             }
 
                             .open-id-logo {
-                                float: left;
-                                margin-top: 3px !important;
-                                margin-left: 3px !important;
+                                margin-bottom: 2px !important;
                             }
                         }
 
@@ -602,5 +607,120 @@
                 float: none !important;
             }
         }
+    }
+}
+
+#disclaimer-content-check-default {
+    padding-bottom: 10px;
+
+    #open-login-disclaimer {
+        color: $primary-button-bg-normal-color;
+    }
+}
+
+#open-login-disclaimer {
+    cursor: pointer;
+    display: inline !important;
+}
+
+#disclaimer-content-check {
+    padding-bottom: 10px;
+
+    #content-label-check {
+        width: 90%;
+    }
+
+    #open-login-disclaimer {
+        color: gray;
+        margin-left: 4px;
+        margin-top: 2px;
+        position: absolute;
+    }
+}
+
+#disclaimer-content-default {
+    padding-bottom: 10px;
+
+    #open-login-disclaimer {
+        color: $primary-button-bg-normal-color;
+    }
+}
+
+#disclaimer-content {
+   
+    padding-bottom: 10px;
+
+    #open-login-disclaimer {
+        color: gray;
+        margin-left: 4px;
+        margin-top: 2px;
+        position: absolute;
+    }
+}
+
+#login-disclaimer-dialog {
+    #close-info-dialog {
+        font-size: 18px;
+        margin-right: 7px;
+        opacity: .7;
+        padding: 2px;
+    }
+
+    .fluent-item-popup-body {
+        min-height: 100px;
+        max-height: 300px;
+        overflow-y: auto;
+
+        #consent-message {
+            padding: 10px;
+        }
+    }
+
+    #close-button {
+        margin-left: 200px;
+        margin-top: 9px;
+        border: 1px solid $grey-400;
+        border-radius: 4px;
+        cursor: pointer;
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 600;
+        height: 28px;
+        line-height: 25px;
+        outline: none;
+        text-align: center;
+        min-width: 80px;
+        padding: 0 12px;
+    }
+
+    .e-dlg-content {
+        padding: 0px !important;
+    }
+}
+
+#login-disclaimer-dialog_dialog-content {
+    .fluent-popup-header {
+        background: var(--dialog-content-panel-bg-normal-color);
+        border-bottom: 1px solid $dialog-header-border-normal-color;
+        margin: 0;
+        height: 44px;
+        padding-top: 2px;
+        border-top: none;
+    }
+
+    .popup-title {
+        font-size: 14px;
+        color: var(--primary-text-color);
+        letter-spacing: .3px;
+        line-height: 21px;
+        font-weight: 600;
+        margin-left: 12px;
+    }
+
+    .fluent-popup-footer {
+        background: var(--dialog-content-panel-bg-normal-color);
+        border-top: 1px solid $dialog-footer-border-normal-color;
+        height: 48px;
+        border-bottom: none;
     }
 }

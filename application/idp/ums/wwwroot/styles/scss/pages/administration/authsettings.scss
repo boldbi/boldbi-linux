@@ -78,6 +78,9 @@
         width: 75%;
         margin: 0 !important;
     }
+    .domain{
+        margin-top:6px !important;
+    }
 }
 
 .auth-header {
@@ -97,10 +100,10 @@
                 }
             }
 
-            #jwt-signing-key.signing-key-width {
+            #jwt-signing-key.signing-key-width, #jwt-encryption-key.encryption-key-width {
                 width: 450px !important;
                 border-radius: 4px;
-                border-right: 1px solid $input-box-border-normal-color;
+                border-right: 1px solid $input-box-border-normal-color !important;
             }
 
             #oauth-userinfo-endpoint, #oauth-token-endpoint {
@@ -162,7 +165,6 @@
                     .upload-options {
                         height: 26px;
                         background-color: $grey-100;
-                        cursor: pointer;
 
                         input {
                             width: 0.1px;
@@ -181,9 +183,40 @@
                                 display: table-cell;
                                 vertical-align: middle;
                                 text-align: center;
+                                cursor: pointer;
                             }
                         }
+
+                        input[type="button"] {
+                            opacity: 0;
+                        }
                     }
+                }
+            }
+
+            .jwt-encryption-field {
+                
+                .inline-align {
+                    margin-bottom: 10px !important;
+                }
+                
+                .material-switch {
+                    float: left;
+                    width: 3%;
+                }
+
+                .info-message {
+                    margin-bottom: 12px !important;
+                }
+
+                #jwt-encryption-key {
+                    float: left;
+                    width: 32%;
+                    border-right: none;
+                }
+
+                #show-encryption-key {
+                    margin-left: -6px;
                 }
             }
 
@@ -192,21 +225,23 @@
                 border-right: 0px
             }
 
-            #show-signing-key {
+            #show-signing-key, #show-encryption-key {
                 border-left: none;
-                padding: 4px;
+                padding: 7px;
                 border-radius: 0px;
                 position: inherit;
             }
 
-            #copy-signing-key {
+            #copy-signing-key, #copy-encryption-key {
                 border-left: none;
                 border-radius: 0px;
+                cursor: pointer;
             }
 
-            #generate-signing-key {
+            #generate-signing-key, #generate-encryption-key {
                 border-radius: 0 4px 4px 0;
                 border-left: none;
+                cursor: pointer;
             }
 
             .copy-signing-key-values {

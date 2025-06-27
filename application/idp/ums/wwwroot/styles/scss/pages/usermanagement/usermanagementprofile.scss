@@ -19,7 +19,8 @@
             margin-right: 20px;
             letter-spacing: 0.3px;
             float: right;
-            display: inline-block !important
+            display: inline-block !important;
+            background-color: var(--background) !important;
         }
 
         .dropdown {
@@ -66,6 +67,7 @@
             margin-bottom: 16px;
             text-align: center;
             width: 64px;
+            position: relative;
 
             #first-letter {
                 font-size: $app-large-text-size + 4 !important;
@@ -79,6 +81,7 @@
             margin-top: 20px;
             margin-left: 10px;
             width: 750px;
+            position: relative;
 
             form {
                 display: table;
@@ -135,7 +138,7 @@
                     }
 
                     label {
-                        color: $grey-500;
+                        color: $grey-700;
                         width: 70px;
                     }
 
@@ -347,6 +350,21 @@
     .confirm-password {
         margin-bottom: 32px;
     }
+
+    .password-notification {
+        width: 632px;
+        border-radius: 4px;
+        margin-top: 0px;
+        margin-bottom: 32px;
+        padding: 12px;
+        letter-spacing: 0.26px;
+        background-color: $warning-bg-normal-color;
+        border: 1px solid $warning-border-normal-color;
+    }
+}
+
+.change-password-position {
+    position: relative !important;
 }
 
 //style for the UserManagementMenu
@@ -396,7 +414,7 @@
                 height: 50px;
 
                 .delete-msg {
-                    margin-top: 4px !important,
+                    margin-top: 4px !important;
                 }
             }
         }
@@ -655,7 +673,7 @@
                     height: $textbox-lg-height !important;
                 }
 
-                #new-password-validate, #confirm-password-validate {
+                #new-password-validate, #confirm-password-validate, #old-password-validate {
                     font-size: $app-text-size !important;
                 }
             }
@@ -736,7 +754,7 @@
     .recovery-code-containers {
         .bg-info {
             border-radius: 4px;
-            background-color: $warning-bg-normal-color;
+            background-color: $warning-bg-normal-color !important;
             border: 1px solid $warning-border-normal-color;
             margin: 4px 0px 16px 0px;
 
@@ -758,6 +776,7 @@
                 width: 23px;
                 float: right;
                 padding: 10px 0px;
+                cursor: pointer;
             }
 
             .recovery-code {
@@ -816,5 +835,19 @@
                 }
             }
         }
+    }
+}
+
+.dropdown {
+    .assign-role {
+        cursor: pointer !important;
+    }
+
+    .delete-user {
+        cursor: pointer !important;
+    }
+
+    .unlock-user {
+        cursor: pointer !important;
     }
 }

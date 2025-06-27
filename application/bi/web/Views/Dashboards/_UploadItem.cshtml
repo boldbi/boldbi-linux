@@ -3,7 +3,8 @@
     var globalAppSettings = _globalAppSettings;
     var identityResponse = Context.RequestServices.GetRequiredService<ServerPrincipal>();
     var dashboardServerResourceUrl = globalAppSettings.SystemSettings.CDNLink.TrimEnd('/');
-    var canCreateCategory = ViewData["CanCreateCategory"] != null ? Convert.ToBoolean(ViewData["CanCreateCategory"]) : false;
+    var itemAddPermissions = ViewBag.ItemAddOptions as Dictionary<ItemType, bool>;
+    var canCreateCategory = itemAddPermissions[ItemType.Category];
     var isDashboardFileUploaded = ViewBag.IsDashboardFileUploaded;
     var itemDetail = ViewBag.ItemDetail;
     var uploadedFileName = ViewBag.UploadedFileName;
@@ -99,7 +100,7 @@
                             <td class="text-right padding-right-15"></td>
                             <td>
                                 <div class="fileUpload btn btn-default" style="display: none">
-                                    <i id="fileUpload-popup" class="su su-delete pull-right"></i>
+                                    <i id="fileUpload-popup" class="su su-delete float-end"></i>
                                     <div id="uploaded-fileName"></div>
                                     <span id="validate-file"></span>
                                 </div>

@@ -4,7 +4,6 @@
     Layout = null;
     var globalAppSettings = _globalAppSettings;
     var idPUrl = globalAppSettings.SystemSettings.IDPUrl;
-    var isItemWatched = ViewBag.IsWatched != null ? ViewBag.IsWatched : false;
     var userId = ViewBag.UserId;
     var dashboardServerResourceUrl = globalAppSettings.SystemSettings.CDNLink.TrimEnd('/');
     var rootUrl = Context.Request.RouteValues["tenantName"] != null ? (GlobalAppSettings.HttpPathBase + "/" + ServerAppConfig.TenantIdentifierPrefix + "/" + Context.Request.RouteValues["tenantName"]).TrimEnd('/') : GlobalAppSettings.HttpPathBase.ToString();
@@ -44,9 +43,10 @@
     var getdefaultavatarUrl="@Url.Action("getdefaultavatar", "User")";
     var itemId = "@ViewBag.itemId";
     var isSydjViewer = "@ViewBag.ViewerVersion" == "v2";
-    var getItemWatchUrl = "@Url.Action("GetItemWatch", "Comments")";
+    var getItemWatchUrl = { "web": "@Url.Action("GetItemWatch", "Comments")", "api": "/comments/item-watch" };
     var cdnLink = "@dashboardServerResourceUrl";
     var enableApplicationEmbed =@ServerAppConfig.EnableSameTabLinkTarget.ToString().ToLower();
+    var userId = "@userId";
 </script>
     <environment include="Development,CloudDevelopment">
         <script asp-append-version="true" src="@dashboardServerResourceUrl/cdn/scripts/comments-page.js"></script>
@@ -65,8 +65,6 @@
         <textarea id="temp" class="hidden"></textarea>
         <div id="toRemoveCulture"></div>
     </div>
-    <div id="isadmin" class="displayNone">@ViewBag.isAdmin</div>
-    <div id="isWatch" class="displayNone">@isItemWatched</div>
     @if (ViewBag.ItemType == "dashboard")
     {
         <div id="itemType" class="displayNone" data-item-type="dashboard"></div>
@@ -77,59 +75,52 @@
     }
     <div class="base-comment-container">
         <input type="hidden" id="userName" value="@(userId)" />
-        <div class="header-section col-xs-12 no-padding">
-            <div id="header-pane" class="col-xs-10 no-padding">
-                <span class="view-heading col-xs-10 no-padding" id="view-heading" style="display: none">
+        <div class="header-section col-12 no-padding">
+            <div id="header-pane" class="col-10 no-padding">
+                <span class="view-heading col-10 no-padding" id="view-heading" style="display: none">
                     @T["COMMENTS"]
                 </span>
             </div>
-            <div class="col-xs-2 no-padding" id="close-comment">
+            <div class="col-2 no-padding" id="close-comment">
                 <a href="javascript:void(0);" title="@T["Close"]" class="PopupClose" style="display: none"><span class="su su-close"></span></a>
             </div>
         </div>
-        <div id="comment_action_area" class="col-xs-12">
+        <div id="comment_action_area" class="col-12">
             <input id="comment_action_slider" class="form-control" placeholder="@T["Write a comment"]" type="text">
         </div>
-        <div id="comment_submit_container" class="comment-submit-container pull-left" style="display: none;">
+        <div id="comment_submit_container" class="comment-submit-container float-start" style="display: none;">
             <textarea id="rte-post" class="form-control comment-area" maxlength="4000"></textarea>
             <span class='message'>*@T["4000 characters maximum"]</span>
             <span class="error-message"></span>
-            <div class="post-watch col-xs-12 no-right-padding no-left-padding">
+            <div class="post-watch col-12 no-right-padding no-left-padding">
 
-                <div class="col-xs-12 col-md-6 no-right-padding pull-right">
-                    <button class="secondary-button app-btn-secondary pull-right header-comment-close">@T["Cancel"]</button>
-                    <input id="post-comment" class="primary-button app-btn-primary pull-right" value="@T["Post"]" type="submit">
+                <div class="col-12 col-md-6 no-right-padding float-end">
+                    <button class="secondary-button app-btn-secondary float-end header-comment-close">@T["Cancel"]</button>
+                    <input id="post-comment" class="primary-button app-btn-primary float-end" value="@T["Post"]" type="submit">
                 </div>
             </div>
         </div>
 
-        <div class="col-xs-12 count-sort">
-            <div class="comments-count col-xs-6 no-padding">
+        <div class="col-12 count-sort">
+            <div class="comments-count col-6 no-padding">
                 <div class="watch-txt-container">
-                    @if (isItemWatched)
-                    {
-                        <span id="watchItem" class="su su-notification-settings watch-action unwatch" title="@T["Unwatch"]" data-html='false' data-toggle='tooltip'></span>
-                    }
-                    else
-                    {
-                        <span id="watchItem" class="su su-notification-settings watch-action watch" title="@T["Watch"]" data-html='false' data-toggle='tooltip'></span>
-                    }
+                    <span id="watchItem" class="su su-notification-settings watch-action watch" title="@T["Watch"]" data-html='false' data-bs-toggle='tooltip'></span>
                 </div>
                 <span id="comment_count">0</span>
                 <span class="">@T["Comment(s)"]</span>
             </div>
-            <div id="commentSorting" class="col-xs-6 no-padding">
-                <span class="col-xs-3 sort-new sort-active no-padding">@T["Newest"]</span>
-                <span class="col-xs-3 sort-old sort-inactive no-padding">@T["Oldest"]</span>
+            <div id="commentSorting" class="col-6 no-padding">
+                <span class="col-3 sort-new sort-active no-padding">@T["Newest"]</span>
+                <span class="col-3 sort-old sort-inactive no-padding">@T["Oldest"]</span>
             </div>
         </div>
         <div id="parent-scroll-element">
             <div id="scroll-element">
                 <div>
-                    <div id="list_container" class="col-xs-12 no-padding">
+                    <div id="list_container" class="col-12 no-padding">
                         <ul id="commentList" class="comment-list"></ul>
                     </div>
-                    <div class="additional-content col-xs-12">
+                    <div class="additional-content col-12">
                     </div>
                 </div>
             </div>
@@ -138,11 +129,6 @@
             <input type="text" id="autocomplete-input" />
         </div>
     </div>
-    <environment include="Development,CloudDevelopment">
-        <script asp-append-version="true" src="~/js/localizationcontent.js?v=@ServerAppConfig.ProductVersion&c=@System.Globalization.CultureInfo.CurrentCulture"></script>
-    </environment>
-    <environment exclude="Development,CloudDevelopment">
-        <script asp-append-version="true" src="~/js/localizationcontent.js?v=@ServerAppConfig.ProductVersion&c=@System.Globalization.CultureInfo.CurrentCulture"></script>
-    </environment>
+    <script asp-append-version="true" src="~/js/localizationcontent.js?v=@ServerAppConfig.ProductVersion&c=@System.Globalization.CultureInfo.CurrentCulture"></script>
 </body>
 </html>

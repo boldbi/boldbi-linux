@@ -1,0 +1,10 @@
+{
+    "boldbi_path": "C:\\BoldServices",
+    "AppSettings": {
+        "PrivateKeysPath": "../../app_data/configuration/privatekeys.dat",
+        "SystemConfigurationPath": "../../app_data/configuration/",
+        "AppDataPath": "../../app_data/",
+        "LogsPath": "../../app_data/logs/bi/dataservice",
+        "ConfigPath": "../../app_data/configuration"
+    },
+}
